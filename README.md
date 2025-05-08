@@ -37,3 +37,41 @@ flowchart LR
     Home --> Rec[Recettes]
     Home --> Profil[Profil Utilisateur]
 ```
+
+## 3. Implémentation technique
+
+### Frontend (React Native + Expo)
+
+- Navigation entre les écrans (React Navigation)
+- Gestion des formulaires (avis, signalement)
+- Affichage dynamique des parcs et contenus
+- Système de réservation basique
+
+### Backend (Node.js + Express)
+
+- Authentification utilisateur
+- Base de données pour stocker:
+  - Parcs et leurs équipements
+  - Réservations
+  - Recettes
+  - Activités
+
+## 4. Fonctionnalités secondaires
+
+- Favoris (parcs, recettes)
+- Notations ou avis
+- Section sociale (fil de publications, commentaires, événements)
+
+## 5. Tests
+
+- Vérification des formulaires
+- Navigation (passage d’écran)
+- Affichage correct des données\ n- Validité des règles et disponibilités
+
+## 6. Déploiement
+
+- Tests sur Expo Go ou TestFlight
+- Préparation pour publication sur les stores (iOS & Android)
+
+
+
