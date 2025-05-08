@@ -9,6 +9,8 @@ Application mobile pour organiser la réservation des spots dans les parcs de Mo
 - Consulter la liste des activités par parc
 - Réserver un emplacement / une activité
 - Optionnel : afficher des recettes / réseaux sociaux
+- Rechercher des parcs par nom ou équipements
+- Consulter les avis des utilisateurs
 
 ## 2. Architecture & Conception
 
@@ -20,6 +22,7 @@ Application mobile pour organiser la réservation des spots dans les parcs de Mo
 - **Réservation** : Sélection d’un créneau / d’une activité
 - **Recettes** : Idées de recettes et partages
 - **Profil** : Informations et historique utilisateur
+- **Écran de recherche** : Liste des parcs et recettes favorites
 
 ### b) Composants UI
 
@@ -55,6 +58,8 @@ flowchart LR
   - Réservations
   - Recettes
   - Activités
+- Gestion du système de réservation
+- Gestion du système de notification et avis
 
 ## 4. Fonctionnalités secondaires
 
@@ -73,5 +78,6 @@ flowchart LR
 - Tests sur Expo Go ou TestFlight
 - Préparation pour publication sur les stores (iOS & Android)
 
-
-
+```bash
+cd rapport
+```

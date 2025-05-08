@@ -76,6 +76,7 @@ plugins:
 
 extra_css:
     - css/no-sidebar.css
+    - css/custom.css
 
 nav:
     - Vue d'ensemble: index.md
