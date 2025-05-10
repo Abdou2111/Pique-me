@@ -4,7 +4,46 @@ h2 {
 h3 {
     color: #3e4e94;
 }
-p {
+p, ul , #projet-ift3150-pique-me {
+    color: #000000;
     line-height: 1.8;
     font-family: Arial, sans-serif;
 }
+.md-header, .md-tabs {
+    background-color: #71ff6c;
+    color: #672727;
+}
+.md-container {
+    background-color: #fcfde3;
+}
+.admonition.info{
+    background-color: #e8e78c;
+    border-left: 4px solid #ffffff;
+}
+.md-typeset .admonition.info{
+    border: 1px solid #000001;
+}
+.md-nav__title{
+    background-color: #f3f3f3;
+}
+.md-nav.md-nav--secondary {
+    --md-default-bg-color: #fafbe2;
+    --md-default-fg-color--light: #000002;
+}
+.md-typeset__table {
+    background-color: #fafbe2;
+}
+blockquote {
+    color: #9e9f8f;
+    background-color: #eaecd3;
+    border-left: 4px solid #aaab9a;
+}
+hr {
+    border : 3px solid #aaab9a;
+    background-color: #a9aa9a;
+    border-radius: 10px;
+}
+.md-header {
+    padding: 20px 0;
+}
+

@@ -60,6 +60,8 @@ pique-nique, de découvrir les parcs adaptés à leurs besoins.
 - Ajouter une fonctionnalité de signalement (équipements brisés, propreté...).
 - Intégrer une section communautaire (avis, photos / vidéo).
 
+***
+
 ## **Échéancier**
 
 | Jalon (*Milestone*)            | Date prévue   | Livrable                            | Statut      |
