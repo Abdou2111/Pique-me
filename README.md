@@ -159,4 +159,4 @@ Chaque fois qu'une nouvelle dépendance est ajoutée au projet, elle sera ajout�
 ### 9. Fichier `tsconfig.json`
 Contient les règles que TypeScript utilisera pour appliquer la sécurité des types dans tout le projet.
 
-## Plus de documentation sur _[Expo](https://docs.expo.dev/get-started/set-up-your-environment/)_
+> #### Plus de documentation sur _[Expo](https://docs.expo.dev/get-started/set-up-your-environment/)_
