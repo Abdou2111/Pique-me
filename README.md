@@ -54,10 +54,10 @@ flowchart LR
 
 - Authentification utilisateur
 - Base de données pour stocker:
-  - Parcs et leurs équipements
-  - Réservations
-  - Recettes
-  - Activités
+    - Parcs et leurs équipements
+    - Réservations
+    - Recettes
+    - Activités
 - Gestion du système de réservation
 - Gestion du système de notification et avis
 
@@ -82,13 +82,13 @@ flowchart LR
 
 ### 1. Installer les dépendances
 ```bash
-cd PiqueMe
-npm install
+    npm install
 ```
 
 ### 2.Lancer l'application
 
 ```bash
+   cd PiqueMe
    npx expo start
 ```
 
@@ -102,58 +102,58 @@ Dans la sortie, vous trouverez des options pour ouvrir l'application dans un:
 # Structure de l'application
 
 ### 1. Dossier `app`
-Contient la navigation de l'application, qui est basée sur les fichiers. La structure des 
-fichiers dans le répertoire `app` détermine la navigation de l'application. 
+Contient la navigation de l'application, qui est basée sur les fichiers. La structure des
+fichiers dans le répertoire `app` détermine la navigation de l'application.
 
-L'application a deux routes définies par deux fichiers : `app/(tabs)/index.tsx` et 
-`app/(tabs)/explore.tsx`. Le fichier de mise en page `app/(tabs)/_layout.tsx` configure le 
+L'application a deux routes définies par deux fichiers : `app/(tabs)/index.tsx` et
+`app/(tabs)/explore.tsx`. Le fichier de mise en page `app/(tabs)/_layout.tsx` configure le
 navigateur à onglets.
 
 ### 2. Dossier `assets`
 Contient `adaptive-icon.png` utilisé pour Android et `icon.png` utilisé pour iOS comme icônes
-de l'application. 
+de l'application.
 
-Il contient également `splash.png`, une image pour l'écran de démarrage 
+Il contient également `splash.png`, une image pour l'écran de démarrage
 du projet, et `favicon.png` si l'application s'exécute dans un navigateur.
 
 ### 3. Dossier `components`
-Contient des composants React Native, comme `ThemedText.tsx`, qui crée des éléments de texte 
+Contient des composants React Native, comme `ThemedText.tsx`, qui crée des éléments de texte
 utilisant le thème de couleurs de l'application en modes clair et sombre.
 
-Tous les components de l'application doivent être dans ce dossier et seront importés 
+Tous les components de l'application doivent être dans ce dossier et seront importés
 dans `app/(tabs)/_layout.tsx` pour les utiliser.
 
 ### 4. Dossier `constants`
 Contient des fichiers de configuration pour l'application, comme `Colors.ts` pour les couleurs
-utilisées dans l'application. 
+utilisées dans l'application.
 
 ### 5. Dossier `hooks`
-Contient des Hooks React, qui permettent de partager des comportements communs entre les 
-composants. 
+Contient des Hooks React, qui permettent de partager des comportements communs entre les
+composants.
 
-Par exemple, useThemeColor(), dans `useThemeColor.ts`, est un hook qui retourne une couleur en 
+Par exemple, useThemeColor(), dans `useThemeColor.ts`, est un hook qui retourne une couleur en
 fonction du thème actuel.
 
 ### 6. Dossier `scripts`
-Contient `reset-project.js`, qui peut être exécuté avec 
+Contient `reset-project.js`, qui peut être exécuté avec
 
 ```bash 
-npm run reset-project
+    npm run reset-project
 ```
 
 Ce script déplacera
-le répertoire `app` vers `app-example` et créera un nouveau répertoire `app` avec un fichier `index.tsx`. 
+le répertoire `app` vers `app-example` et créera un nouveau répertoire `app` avec un fichier `index.tsx`.
 On va l'utiliser plus tard pour commencer le projet à partir de zéro.
 
 ### 7. Fichier `app.json`
 Contient la configuration de l'application, comme le nom, l'icône et les paramètres de l'écran de démarrage...
 
 
-Ces options modifient le comportement du projet lors du développement, de la construction, de la 
+Ces options modifient le comportement du projet lors du développement, de la construction, de la
 soumission et de la mise à jour de l'application.
 
 ### 8. Fichier `package.json`
-Le fichier `package.json` contient les dépendances, les scripts et les métadonnées du projet. 
+Le fichier `package.json` contient les dépendances, les scripts et les métadonnées du projet.
 Chaque fois qu'une nouvelle dépendance est ajoutée au projet, elle sera ajoutée à ce fichier.
 
 ### 9. Fichier `tsconfig.json`
