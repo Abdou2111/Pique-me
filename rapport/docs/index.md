@@ -1,4 +1,4 @@
-# Projet IFT3150: Pique-me
+# Projet IFT3150: Pique-me {#h1}
 
 > **Thèmes**: Génie logiciel  
 > **Superviseur**: Louis-Édouard Lafontant  

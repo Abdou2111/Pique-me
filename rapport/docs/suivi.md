@@ -1,17 +1,13 @@
-# Suivi de projet
+# Suivi de projet {#h1}
 
 ## Semaine 1
 
-??? note "Mettre en place l'environnement"
-    - [x] Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    - [ ] Vestibulum convallis sit amet nisi a tincidunt
-        * [x] In hac habitasse platea dictumst
-        * [x] In scelerisque nibh non dolor mollis congue sed et metus
-        * [ ] Praesent sed risus massa
-    - [ ] Aenean pretium efficitur erat, donec pharetra, ligula non scelerisque
-
-!!! info "Notes"
-    - Il est possible que nous révisions les exigences après le prototypage
+!!! note "Mettre en place l'environnement"
+    - [x] Installer les dépendances
+    - [x] Configurer le projet
+    - [x] Créer la structure du projet
+    - [x] Se familiariser avec `mkdocs` et `markdown`
+    - [x] Personnaliser le thème rapport
 
 !!! warning "Difficultés rencontrées"
     - Le plugin Mermaid n'était pas reconnu : confusion entre `mkdocs-mermaid2-plugin` (pip) et `mermaid2` (plugin name)
@@ -24,6 +20,22 @@
 ---
 
 ## Semaine 2
+
+!!! note "Étude préliminaire"
+    - [x] Analyser le problème
+    - [x] Définir les exigences: 
+        * [x] Fonctionnelles 
+        * [x] Non fonctionnelles
+    - [x] Recherche de solutions:
+        * Frontend (React Native + Expo)
+        * Backend (Node.js + Express)
+        * API des parcs de Montréal
+    - [x] Définir la méthodologie:
+        * Méthode Agile
+
+!!! abstract "Prochaines étapes"
+    - Valider les exigences
+    - Finaliser le prototype
 
 ## Semaine 3
 

@@ -1,4 +1,4 @@
-# Références
+# Références {#h1}
 
 - Lister les ouvrages, articles et ressources académiques consultés.
 

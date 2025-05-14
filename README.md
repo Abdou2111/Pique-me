@@ -78,6 +78,22 @@ flowchart LR
 - Tests sur Expo Go ou TestFlight
 - Préparation pour publication sur les stores (iOS & Android)
 
+## Diagramme de navigation (pour nous)
+```mermaid
+flowchart
+Start[Ouvrir App] --> Decision1{Première fois?}
+Decision1 -->|Oui| Activity1[Page d'inscription]
+Decision1 -->|Non| Decision2{Est-ce que le user
+                            a déjà un compte?}
+Decision2 -->|Oui| Decision3{Le user s'est-t-il
+                            déconnecté la
+                            dernière fois?}
+
+Decision2 -->|Non| Activity1
+Decision3 -->|Oui| Activity3[Page de connexion]
+Decision3 -->|Non| Activity2[Page d'accueil]
+```
+
 # Comment exécuter
 
 ### 1. Installer les dépendances

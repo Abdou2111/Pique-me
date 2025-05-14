@@ -74,4 +74,3 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 🙋‍♀️ Questions ou problèmes ?
 
 En cas de problème, n'hésitez pas à ouvrir une issue sur GitHub ou à poser des questions au responsable du cours.
-# Pique-me

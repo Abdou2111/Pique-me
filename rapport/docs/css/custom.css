@@ -4,7 +4,7 @@ h2 {
 h3 {
     color: #3e4e94;
 }
-p, ul , #projet-ift3150-pique-me {
+p, ul , #h1 {
     color: #000000;
     line-height: 1.8;
     font-family: Arial, sans-serif;
@@ -43,7 +43,5 @@ hr {
     background-color: #a9aa9a;
     border-radius: 10px;
 }
-.md-header {
-    padding: 20px 0;
-}
+
 
