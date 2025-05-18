@@ -84,6 +84,22 @@ On peut y définir précisément quelles données sont accessibles et transforme
 
 - Inclure des diagrammes UML, maquettes, etc.
 
+### Diagramme d’architecture
+
+Le schéma suivant représente l’architecture logique de l’application *Pique-Me*. On y retrouve les trois couches principales :
+
+l’interface utilisateur (React Native), 
+
+le backend (Node.js + Express), 
+
+les sources de données (Firebase et l’API de la Ville de Montréal). 
+
+Il illustre les interactions entre chaque composant lors d’une requête typique, comme une réservation ou 
+une recherche de parc.
+
+![Architecture de Pique-Me](architecture.svg)
+
+
 ## Prototype
 
 - Inclure des diagrammes UML, maquettes, etc.
