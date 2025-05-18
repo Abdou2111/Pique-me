@@ -31,35 +31,74 @@ différents parcs de Montréal :
 - Si ce n'est pas le cas, lesquels permettent de faire des barbecues ? 
 - Quelles activités sont prévus dans les différents parcs proches de l’adresse de l’utilisateur ?
 - Il y a-t-il encore des barbecues disponibles à réserver ?
-- Etc...
+- Peut-on consulter les avis des autres usagers ?
 
-En plus de tout cela, le site fournit des règles à respecter avant un pique-nique ou un 
-barbecue, prodigue des conseils sur les matériels à apporter, fournit de recettes et des activités
-à faire en été. De surcroît, si le parc est privé, c’est-à-dire géré par une entreprise, l’utilisateur
-pourra même réserver un spot pour l’activité qu’il a prévue.
+En plus de tout cela, l'application affiche directement les règles propres à chaque parc sur leur page dédiée.
+Ell prodigue des conseils sur le matériel à apporter, propose des recettes adaptées aux sorties en plein air 
+ainsi que des idées d’activités estivales. 
+
+De surcroît, si le parc est privé, c’est-à-dire géré par une entreprise, l’utilisateur
+pourra même réserver un emplacement pour un évènement ou une activité qu’il a prévue.
+
+Et bien plus encore.
 
 ### Problématique ou motivations:
 
-- Vous êtes-vous déjà déplacé dans un parc pour faire un pique-nique et il n’y avait plus de place où 
-vous installer ?
-- Ou avez-vous déjà eu du mal à trouver un parc qui répond à vos attentes pour votre pique-nique ?
+- Vous êtes-vous déjà déplacé dans un parc pour faire un pique-nique et il n’y 
+- avait plus de place où vous installer ?
+- Ou avez-vous déjà eu du mal à trouver un parc qui répond à vos attentes pour 
+- votre sortie ?
 
-Ne vous sentez pas jugez, plusieurs personnes ont déjà vécu cela. La ville de Montréal dispose de nombreux parc 
-mais ses habitants ne savent pas toujours si celui-ci possède des places de pique-nique disponible, si oui ou
-non il est accessible aux personnes à mobilité réduite. A toutes ses questions, nous devrions avoir les réponses
-avant d’organiser notre sortie au parc. C’est là qu’intervient l’application Pique-me.
+
+Ne vous sentez pas jugé·e, plusieurs personnes ont déjà vécu cela. La ville de Montréal dispose de nombreux parcs,
+mais ses habitants ne savent pas toujours si ceux-ci possèdent des emplacements disponibles,
+ou s’ils sont accessibles aux personnes à mobilité réduite.
+
+À toutes ces questions, nous devrions avoir des réponses avant d’organiser notre sortie au parc.
+C’est là qu’intervient l’application Pique-Me.
 
 ### Proposition:
-Nous proposons de concevoir Pique-Me, une application mobile intuitive destinée à améliorer l'expérience 
-des usagers des parcs urbains. Cette application permettra aux citoyens de réserver des espaces de
-pique-nique, de découvrir les parcs adaptés à leurs besoins.
+
+Nous proposons de concevoir Pique-Me, une application mobile intuitive destinée
+à améliorer l’expérience des usagers des parcs urbains. L’application permettra 
+aux citoyens de découvrir les parcs adaptés à leurs besoins, de consulter leurs 
+équipements, de réserver un emplacement ou une activité, de configurer leurs 
+préférences, et de bénéficier d’une expérience personnalisée grâce à des filtres,
+des suggestions et des avis d’autres usagers.
+
 ### Objectifs:
 
-- Concevoir une interface mobile pour consulter les parcs disponibles et leurs caractéristiques (BBQ, jeux, accessibilité...).
-- Implémenter un système de réservation d’emplacements ou d’équipements.
-- Ajouter une fonctionnalité de signalement (équipements brisés, propreté...).
-- Intégrer une section communautaire (avis, photos / vidéo).
+- Concevoir une interface mobile intuitive pour consulter les parcs disponibles 
+et leurs caractéristiques (BBQ, jeux, accessibilité...).
+  
+    L’objectif est de permettre aux utilisateurs de parcourir facilement une 
+    liste de parcs, avec des fiches détaillées indiquant les équipements disponibles, 
+    l’accessibilité, les règlements, etc.
 
+- Permettre aux utilisateurs de configurer leurs préférences pour recevoir des 
+suggestions personnalisées.
+
+    Lors de la première utilisation (ou plus tard dans les paramètres), l’utilisateur 
+    pourra indiquer ses préférences (ex. : aime les BBQ, préfère les parcs avec jeux pour enfants). 
+    L’app proposera alors des parcs adaptés à ses goûts.
+
+- Intégrer une carte interactive avec filtres dynamiques selon les recherches 
+de l’utilisateur.
+
+    Une carte sera disponible dans l’app, affichant les parcs. Cette carte s’actualisera 
+    automatiquement en fonction des filtres (ex. : BBQ, accessible, activités) et 
+    des mots-clés recherchés.
+
+- Implémenter un système de réservation d’emplacements ou d’activités dans les parcs.
+
+    Pour les parcs qui le permettent, l’utilisateur pourra réserver une place ou
+    une activité via un formulaire simple avec confirmation.
+
+- Proposer une section communautaire permettant de consulter ou laisser des avis,
+notes et photos.
+
+    Les utilisateurs pourront consulter les avis des autres, attribuer une note, 
+    rédiger un commentaire, et partager des photos de leurs expériences dans les parcs.
 ***
 
 ## **Échéancier**
