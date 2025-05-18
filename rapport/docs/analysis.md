@@ -17,7 +17,7 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
   - **Inscription :**
     - L'utilisateur peut créer un compte en renseignant ses informations. Il peut aussi choisir de se connecter ou de continuer en tant qu'invité.
 
-  - **Configurer ses préférences à la première utilisation : **
+  - **Configurer ses préférences à la première utilisation :**
     - Lors du premier accès, l'utilisateur est invité à configurer ses préférences (ex. : types d’activités aimées, équipements préférés) à travers une interface intéressante. Ces préférences permettent de personnaliser les suggestions de parcs.
       Il peut aussi choisir de passer cette étape s’il ne souhaite pas la faire immédiatement.
     
@@ -26,14 +26,14 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
 
   - **Voir et Modifier les infos du compte :**
     - L'utilisateur peut consulter son profil, le modifier et gérer ses informations personnelles.
-    - 
+  
   - **Rechercher avec adresse :**
     - Grâce à la barre de recherche dans la page de recherche, l'utilisateur peut entrer une adresse ou un nom de parc. Les résultats affichés correspondent à l'élément de recherche.
 
   - **Filtre :**
     - Offre la possibilité d'afficher les parcs selon certains critères prédefinis (feu autorisé, BBQ présent, etc)
 
-  - ** Carte interactive dynamique : **
+  - **Carte interactive dynamique :**
     - Une carte est affichée avec tous les parcs disponibles (ex. : 500 parcs). Lorsqu’un utilisateur utilise la barre de recherche ou applique des filtres, la carte se met automatiquement à jour pour n'afficher que les parcs correspondants.
 
   - **Ajouter / Retirer des favoris (parcs et recettes) :**
@@ -45,8 +45,9 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
   - **Confimer sa réservation :**
     - L'utilisateur peut confirmer sa réservation en 2 étapes, une avant le début de la réservation et l'autre après le début de la réservation.
 
-  - ** Sondage post-visite ("Would you Pick-Me again?"): **
+  - **Sondage post-visite ("Would you Pick-Me again?"):**
     - Après avoir visité un parc, l’utilisateur reçoit une notification l’invitant à répondre à un mini formulaire pour évaluer son expérience.
+  
   - **Annuler automatiquement une réservation :**
     - Si aucune confirmation n’est faite une heure après le début, la réservation est annulée automatiquement.
 
@@ -86,51 +87,51 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
   - **Disponibilité:** Le service doit être disponible au moins 99 % du temps (hors maintenance planifiée).
 
 ## **Recherche de solutions**
- - **  Système de réservation de la bibliothèque de l’UdeM **
-   - Fonction couverte : Réservation de ressources à un moment précis (ex. : salle d’étude, studio d'enregistrement).
-   - Points forts :
+  - **Système de réservation de la bibliothèque de l’UdeM**
+    - Fonction couverte : Réservation de ressources à un moment précis (ex. : salle d’étude, studio d'enregistrement).
+    - Points forts :
        Interface simple et précise avec calendrier.
        Envoi de confirmation.
-   - Points faibles :
+    - Points faibles :
        Peu de personnalisation.
    
- - ** AllTrails **
-   - Fonction couverte : Recherche et filtrage de lieux de plein air (randonnées, parcs).
-   - Points forts :
+  - **AllTrails**
+    - Fonction couverte : Recherche et filtrage de lieux de plein air (randonnées, parcs).
+    - Points forts :
        Filtres riches (niveau, distance, accessibilité...).
        Carte interactive et avis des utilisateurs.
-   - Points faibles :
+    - Points faibles :
        Pas de réservation.
        Peu adapté aux pique-niques ou événements sociaux.
    
- - ** Airbnb **
-   - Fonction couverte : Réservation de lieux + filtres + favoris.
-   - Points forts :
+  - **Airbnb**
+    - Fonction couverte : Réservation de lieux + filtres + favoris.
+    - Points forts :
      Interface fluide pour choisir une date/heure.
      Personnalisation par préférences.
    
-   - Points faibles :
+    - Points faibles :
      Trop orienté hébergement, fonctionnalités limitées pour les parcs.
 
- - ** Google Maps **
-   - Fonction couverte : Carte interactive + recherche par adresse + avis.
-   - Points forts :
+  - **Google Maps**
+    - Fonction couverte : Carte interactive + recherche par adresse + avis.
+    - Points forts :
        Moteur de recherche puissant.
        Intégration des avis, photos et règles.
 
- - ** oo Good To Go **
-   - Fonction couverte : Réservation de paniers surprises → système de créneaux + notifications.
-   - Points forts :
+  - **Too Good To Go**
+    - Fonction couverte : Réservation de paniers surprises → système de créneaux + notifications.
+    - Points forts :
        Interface claire, système de réservation par tranche horaire.
        Notification de rappel.
-   - Points faibles :
+    - Points faibles :
        Fonctionnalité limitée à un usage très spécifique.
 
- - ** Strava **
-   - Fonction couverte : Suivi d’activités dans des lieux publics + carte dynamique.
-   - Points forts :
+  - **Strava**
+    - Fonction couverte : Suivi d’activités dans des lieux publics + carte dynamique.
+    - Points forts :
        Interface communautaire, carte qui évolue selon les préférences.
-   - Points faibles :
+    - Points faibles :
      Pas de filtres par équipements.
 
 ## **Méthodologie**
