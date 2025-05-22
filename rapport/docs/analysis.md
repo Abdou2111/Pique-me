@@ -14,63 +14,60 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
 ## **Exigences**
 
 ### 1. Exigences fonctionnelles :
-  - **Inscription :**
-    - L'utilisateur peut créer un compte en renseignant ses informations. Il peut aussi choisir de se connecter ou de continuer en tant qu'invité.
+- **Inscription :**
+  - L'utilisateur peut créer un compte en renseignant ses informations. Il peut aussi choisir de se connecter ou de continuer en tant qu'invité.
 
-  - **Configurer ses préférences à la première utilisation :**
-    - Lors du premier accès, l'utilisateur est invité à configurer ses préférences (ex. : types d’activités aimées, équipements préférés) à travers une interface intéressante. Ces préférences permettent de personnaliser les suggestions de parcs.
+    - **Configurer ses préférences à la première utilisation :**
+      Lors du premier accès, l'utilisateur est invité à configurer ses préférences (ex. : types d’activités aimées, équipements préférés) à travers une interface intéressante. Ces préférences permettent de personnaliser les suggestions de parcs.
       Il peut aussi choisir de passer cette étape s’il ne souhaite pas la faire immédiatement.
-    
+
   - **Connexion :**
     - Permet d’accéder à l’application si l’utilisateur a déjà un compte, en entrant ses identifiants.
 
   - **Voir et Modifier les infos du compte :**
     - L'utilisateur peut consulter son profil, le modifier et gérer ses informations personnelles.
-  
-  - **Rechercher avec adresse :**
-    - Grâce à la barre de recherche dans la page de recherche, l'utilisateur peut entrer une adresse ou un nom de parc. Les résultats affichés correspondent à l'élément de recherche.
 
-  - **Filtre :**
-    - Offre la possibilité d'afficher les parcs selon certains critères prédefinis (feu autorisé, BBQ présent, etc)
+  - **Recherche :**
 
-  - **Carte interactive dynamique :**
-    - Une carte est affichée avec tous les parcs disponibles (ex. : 500 parcs). Lorsqu’un utilisateur utilise la barre de recherche ou applique des filtres, la carte se met automatiquement à jour pour n'afficher que les parcs correspondants.
+      - **Rechercher avec adresse :**
+        Grâce à la barre de recherche dans la page de recherche, l'utilisateur peut entrer une adresse ou un nom de parc. Les résultats affichés correspondent à l'élément de recherche.
 
-  - **Ajouter / Retirer des favoris (parcs et recettes) :**
-    - Permet de sauvegarder des éléments pour un accès plus rapide aux éléments préférés (parc et recette) de l'utilisateur.
+      - **Filtre :**
+        Offre la possibilité d'afficher les parcs selon certains critères prédefinis (feu autorisé, BBQ présent, etc).
+
+      - **Carte interactive dynamique :**
+        Une carte est affichée avec tous les parcs disponibles (ex. : 500 parcs). Lorsqu’un utilisateur utilise la barre de recherche ou applique des filtres, la carte se met automatiquement à jour pour n'afficher que les parcs correspondants.
+
+  - **Ajouter / Retirer des favoris (parcs) :**
+    - Permet de sauvegarder des éléments pour un accès plus rapide aux éléments préférés (parc) de l'utilisateur.
 
   - **Réserver un spot ou une activité :**
-    - Lorsqu'un parc possède des places / activités réservables l'utilisateur peut en réserver une. Il remplit un formulaire en rentrant des informations telles que l'heure, la date et reçoit une notification de confirmation.
+    Lorsqu'un parc possède des places / activités réservables, l'utilisateur peut en réserver une. Il remplit un formulaire en rentrant des informations telles que l'heure, la date et reçoit une notification de confirmation.
 
-  - **Confimer sa réservation :**
-    - L'utilisateur peut confirmer sa réservation en 2 étapes, une avant le début de la réservation et l'autre après le début de la réservation.
+      - **Confirmer sa réservation :**
+        L'utilisateur peut confirmer sa réservation en 2 étapes, une avant le début de la réservation et l'autre après le début de la réservation.
 
-  - **Sondage post-visite ("Would you Pick-Me again?"):**
-    - Après avoir visité un parc, l’utilisateur reçoit une notification l’invitant à répondre à un mini formulaire pour évaluer son expérience.
-  
   - **Annuler automatiquement une réservation :**
     - Si aucune confirmation n’est faite une heure après le début, la réservation est annulée automatiquement.
+
+  - **Consulter mes réservations :**
+      - L'utilisateur peut voir toutes ses réservations faites à date ainsi que les détails qui lui sont liés.
+
+  - **Annuler une réservation:**
+      - Si après une heure l'utilisateur ne borne pas dans la zone du parc, sa réservation est automatiquement annulé.
 
   - **Afficher le règlement d'un parc :**
     - Chaque parc possède un règlement accessible depuis la page du parc. Ce règlement est fourni par la ville de Montréal.
 
-  - **Consulter mes réservations :**
-    - L'utilisateur peut voir toutes ses résevations faites à date ainsi que les détails qui lui sont liés. 
-
-  - **Donner son avis :**
-    - L'utilisateur peut laisser un commentaire sur un lieu et lui attribuer un nombre d'étoile allant de 0 à 5. Il peut aussi ajouter des photos.
+  - **Donner son avis via un système de badges :**
+    Après sa visite dans un parc, l'utilisateur reçoit une invitation à donner son avis sous forme d’un mini sondage (ex. : “Would you Pick-Me again?”). Il peut sélectionner des badges représentatifs de son expérience (ex. : “Propre”, “Convivial”, “Trop bondé”, etc.) et ajouter un commentaire ou des photos s’il le souhaite.
 
   - **Consulter les autres avis :**
     - Dans la page d'un parc, les avis des autres utilisateurs sont présents.
 
-  - **Consulter les recettes :**
-    - Voir la liste des idées de recettes à faire lors d'une sortie au parc.
 
   - **Consulter ses favoris :**
     - L'utilisateur peut voir la liste de tous ses favoris. La page est divisée en deux sections, une pour les parcs et l'autre pour les recettes.
-
-  - **Annuler une réservation:**
-    - Si après une heure l'utilisateur ne borne pas dans la zone du parc, sa réservation est automatiquement annulé.
 
   - **Déconnexion :**
     - Fermer une session active de son compte. S'il revient dans l'application, il devra se reconnecter.
@@ -87,52 +84,51 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
   - **Disponibilité:** Le service doit être disponible au moins 99 % du temps (hors maintenance planifiée).
 
 ## **Recherche de solutions**
-  - **Système de réservation de la bibliothèque de l’UdeM**
-    - Fonction couverte : Réservation de ressources à un moment précis (ex. : salle d’étude, studio d'enregistrement).
-    - Points forts :
-       Interface simple et précise avec calendrier.
-       Envoi de confirmation.
-    - Points faibles :
-       Peu de personnalisation.
-   
-  - **AllTrails**
-    - Fonction couverte : Recherche et filtrage de lieux de plein air (randonnées, parcs).
-    - Points forts :
-       Filtres riches (niveau, distance, accessibilité...).
-       Carte interactive et avis des utilisateurs.
-    - Points faibles :
-       Pas de réservation.
-       Peu adapté aux pique-niques ou événements sociaux.
-   
-  - **Airbnb**
-    - Fonction couverte : Réservation de lieux + filtres + favoris.
-    - Points forts :
-     Interface fluide pour choisir une date/heure.
-     Personnalisation par préférences.
-   
-    - Points faibles :
-     Trop orienté hébergement, fonctionnalités limitées pour les parcs.
 
-  - **Google Maps**
-    - Fonction couverte : Carte interactive + recherche par adresse + avis.
-    - Points forts :
-       Moteur de recherche puissant.
-       Intégration des avis, photos et règles.
+- **Système de réservation de la bibliothèque de l’UdeM**
+    - Fonction couverte : Réservation de ressources à un moment précis (ex. : salle d’étude, studio d'enregistrement). Ce système montre comment une interface simple, basée sur un calendrier, peut permettre de gérer efficacement des réservations dans un contexte public.
+    - Pourquoi c’est pertinent pour Pique-Me : Il montre comment gérer facilement la sélection d’un créneau horaire et l’envoi d’une confirmation, ce qui est utile pour la réservation d’emplacements dans Pique-Me.
+    - Points forts :  
+      Interface simple et fonctionnelle.  
+      Réservation rapide à travers un calendrier.  
+      Confirmation immédiate.
+    - Points faibles :  
+      Peu personnalisable.  
+      Interface peu intuitive.
 
-  - **Too Good To Go**
-    - Fonction couverte : Réservation de paniers surprises → système de créneaux + notifications.
-    - Points forts :
-       Interface claire, système de réservation par tranche horaire.
-       Notification de rappel.
-    - Points faibles :
-       Fonctionnalité limitée à un usage très spécifique.
+- **AllTrails**
+    - Fonction couverte : AllTrails est une application dédiée aux activités de plein air, surtout les randonnées. Elle permet aux utilisateurs de découvrir des sentiers ou des parcs grâce à une carte interactive et à des filtres comme la distance, le niveau de difficulté ou l’accessibilité. Les utilisateurs peuvent aussi consulter les avis et expériences d'autres personnes.
+    - Pourquoi c’est pertinent pour Pique-Me : AllTrails montre comment on peut aider les gens à trouver un lieu qui correspond à leurs préférences. C’est exactement ce que cherche à faire Pique-Me avec les parcs urbains.
+    - Points forts :  
+      Filtres variés (niveau, distance, accessibilité).  
+      Carte interactive.  
+      Avis des utilisateurs.
+    - Points faibles :  
+      Pas de système de réservation.  
+      Peu adapté aux pique-niques ou événements sociaux.
 
-  - **Strava**
-    - Fonction couverte : Suivi d’activités dans des lieux publics + carte dynamique.
-    - Points forts :
-       Interface communautaire, carte qui évolue selon les préférences.
-    - Points faibles :
-     Pas de filtres par équipements.
+- **Airbnb**
+    - Fonction couverte : Airbnb est une plateforme de réservation de logements entre particuliers. Elle permet aux utilisateurs de chercher un lieu selon des critères précis (prix, type de logement, services offerts, etc.), de filtrer les résultats, d’ajouter des favoris, et de réserver pour une période donnée avec confirmation immédiate.
+    - Pourquoi c’est pertinent pour Pique-Me : Airbnb montre comment on peut simplifier la réservation d’un lieu en utilisant filtres, préférences et calendrier. Ce modèle peut inspirer Pique-Me pour la réservation d’emplacements dans les parcs.
+    - Points forts :  
+      Interface fluide pour choisir une date ou une heure.  
+      Personnalisation selon les préférences de l’utilisateur.  
+      Processus de réservation rapide.
+    - Points faibles :  
+      Trop orienté vers l’hébergement.  
+      Peu adapté aux usages liés aux parcs.
+
+- **Google Maps**
+    - Fonction couverte : Google Maps est une application de cartographie et de navigation. Elle permet de localiser des lieux, de rechercher par adresse ou mots-clés, et d’accéder à des informations comme les avis, les photos ou les règles associées à un endroit.
+    - Pourquoi c’est pertinent pour Pique-Me : Google Maps montre comment centraliser des informations sur un lieu tout en facilitant la recherche avec une carte interactive. Cela peut inspirer Pique-Me pour l’affichage des parcs, de leurs règlements et pour la recherche par localisation.
+    - Points forts :  
+      Moteur de recherche puissant.  
+      Carte interactive intuitive.  
+      Intégration des avis, photos et règles.
+    - Points faibles :  
+      Pas conçu pour réserver des lieux ou des activités.  
+      Trop généraliste pour répondre aux besoins spécifiques liés aux parcs urbains (ex. : équipements, disponibilités en temps réel).
+
 
 ## **Méthodologie**
 Pour développer notre application Pique-Me, nous avons choisi la méthodologie Agile (Scrum). Elle permet de travailler en petites étapes (fonctionnalité par fonctionnalité), ce qui nous aide à organiser nos tâches, prioriser les fonctionnalités importantes et ajuster facilement le projet en cours de route.

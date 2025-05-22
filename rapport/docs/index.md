@@ -23,39 +23,25 @@
 ## **Description du projet**
 
 ### Contexte:
-Notre application nommée "Pique-Me" serait un ami des plus fidèles des utilisateurs amoureux des 
-activités en plein air. En effet, l’application leur permettrait de se tenir informés sur les 
-différents parcs de Montréal :
-
-- Quels parcs ont déjà des barbecues installés ? 
-- Si ce n'est pas le cas, lesquels permettent de faire des barbecues ? 
-- Quelles activités sont prévus dans les différents parcs proches de l’adresse de l’utilisateur ?
-- Il y a-t-il encore des barbecues disponibles à réserver ?
-- Peut-on consulter les avis des autres usagers ?
-
-En plus de tout cela, l'application affiche directement les règles propres à chaque parc sur leur page dédiée.
-Ell prodigue des conseils sur le matériel à apporter, propose des recettes adaptées aux sorties en plein air 
-ainsi que des idées d’activités estivales. 
-
-De surcroît, si le parc est privé, c’est-à-dire géré par une entreprise, l’utilisateur
-pourra même réserver un emplacement pour un évènement ou une activité qu’il a prévue.
-
-Et bien plus encore.
+À Montréal, les parcs occupent une place importante dans la vie quotidienne. Ils sont des
+lieux où l’on se retrouve pour relaxer, pique-niquer, faire du sport ou simplement passer 
+du bon temps. Ces espaces attirent une grande diversité de personnes : familles, groupes
+d’amis, sportifs, aînés, enfants… Chacun y cherche quelque chose de différent, selon ses
+envies ou ses besoins. Avec les beaux jours, les parcs deviennent de véritables points de 
+rencontre et d’activités en plein air, essentiels au rythme de la ville.
 
 ### Problématique ou motivations:
 
-- Vous êtes-vous déjà déplacé dans un parc pour faire un pique-nique et il n’y 
-- avait plus de place où vous installer ?
-- Ou avez-vous déjà eu du mal à trouver un parc qui répond à vos attentes pour 
-- votre sortie ?
+La ville de Montréal dispose de nombreux parcs, répartis dans tous ses quartiers, offrant des espaces verts accessibles à une grande diversité de citoyens. Pourtant, il reste souvent difficile pour les usagers de s’y retrouver et de planifier une sortie en toute tranquillité. Plusieurs questions reviennent régulièrement :
 
+- Le parc autorise-t-il les barbecues ?
+- Quels parcs disposent d’aires de jeux ou sont accessibles aux personnes à mobilité réduite ?
+- Y a-t-il encore des emplacements disponibles pour s’installer ou réserver une activité ?
+- Peut-on consulter les règlements propres à chaque parc ?
+- Est-il possible de lire les avis et recommandations d’autres visiteurs ?
 
-Ne vous sentez pas jugé·e, plusieurs personnes ont déjà vécu cela. La ville de Montréal dispose de nombreux parcs,
-mais ses habitants ne savent pas toujours si ceux-ci possèdent des emplacements disponibles,
-ou s’ils sont accessibles aux personnes à mobilité réduite.
+Aujourd’hui, ces informations sont dispersées, parfois incomplètes ou peu accessibles. C’est dans ce contexte qu’est née l’idée de **Pique-Me** : une application mobile conçue pour centraliser toutes ces données, proposer une carte interactive, permettre la réservation d’espaces, offrir une expérience personnalisée et adaptée à chaque utilisateur.
 
-À toutes ces questions, nous devrions avoir des réponses avant d’organiser notre sortie au parc.
-C’est là qu’intervient l’application Pique-Me.
 
 ### Proposition:
 
@@ -68,40 +54,18 @@ des suggestions et des avis d’autres usagers.
 
 ### Objectifs:
 
-- Concevoir une interface mobile intuitive pour consulter les parcs disponibles 
-et leurs caractéristiques (BBQ, jeux, accessibilité...).
-  
-    L’objectif est de permettre aux utilisateurs de parcourir facilement une 
-    liste de parcs, avec des fiches détaillées indiquant les équipements disponibles, 
-    l’accessibilité, les règlements, etc.
+- **Concevoir une interface mobile intuitive** pour consulter les parcs disponibles et leurs caractéristiques (BBQ, jeux, accessibilité...).  
+  L’objectif est de permettre aux utilisateurs de parcourir facilement une liste de parcs, avec des fiches détaillées indiquant les équipements disponibles, l’accessibilité, les règlements, etc.
 
-- Permettre aux utilisateurs de configurer leurs préférences pour recevoir des 
-suggestions personnalisées.
+- **Implémenter un système de réservation**   d’emplacements ou d’activités dans les parcs.
+  Pour les parcs qui le permettent, l’utilisateur pourra réserver une place ou une activité via un formulaire simple avec confirmation.
 
-    Lors de la première utilisation (ou plus tard dans les paramètres), l’utilisateur 
-    pourra indiquer ses préférences (ex. : aime les BBQ, préfère les parcs avec jeux pour enfants). 
-    L’app proposera alors des parcs adaptés à ses goûts.
+- **Proposer une section communautaire** permettant d’être informé des événements à venir dans les parcs. *(Optionnel)*  
+  L’utilisateur pourra recevoir des notifications ou des suggestions lorsqu’un événement est prévu dans un parc qu’il fréquente ou qu’il a mis en favori (ex. : fête de quartier, activité sportive, concert, etc.).
 
-- Intégrer une carte interactive avec filtres dynamiques selon les recherches 
-de l’utilisateur.
-
-    Une carte sera disponible dans l’app, affichant les parcs. Cette carte s’actualisera 
-    automatiquement en fonction des filtres (ex. : BBQ, accessible, activités) et 
-    des mots-clés recherchés.
-
-- Implémenter un système de réservation d’emplacements ou d’activités dans les parcs.
-
-    Pour les parcs qui le permettent, l’utilisateur pourra réserver une place ou
-    une activité via un formulaire simple avec confirmation.
-
-- Proposer une section communautaire permettant de consulter ou laisser des avis,
-notes et photos.
-
-    Les utilisateurs pourront consulter les avis des autres, attribuer une note, 
-    rédiger un commentaire, et partager des photos de leurs expériences dans les parcs.
 ***
 
-## **Échéancier**
+### **Échéancier**
 
 | Jalon (*Milestone*)            | Date prévue   | Livrable                            | Statut      |
 |--------------------------------|---------------|-------------------------------------|-------------|
