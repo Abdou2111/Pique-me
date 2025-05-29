@@ -81,7 +81,7 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
   - **Accessibilité:** L’interface doit être utilisable par des personnes ayant des limitations visuelles ou motrices
   - **Fiabilité:** L'application ne doit pas planter ou perdre de données lors d’une utilisation normale. Les données doivent aussi être à jour.
   - **Confidentialité:** Aucune donnée personnelle ne doit être partagée avec des tiers sans le consentement de l’utilisateur.
-  - **Disponibilité:** Le service doit être disponible au moins 99 % du temps (hors maintenance planifiée).
+  - **Disponibilité:** Le service doit être disponible au moins 99 % du temps (hors maintenance planifiée).
 
 ## **Recherche de solutions**
 
