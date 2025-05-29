@@ -82,8 +82,6 @@ On peut y définir précisément quelles données sont accessibles et transforme
 
 ## Modèles et diagrammes
 
-- Inclure des diagrammes UML, maquettes, etc.
-
 ### Diagramme d’architecture
 
 Le schéma suivant représente l’architecture logique de l’application *Pique-Me*. On y retrouve les trois couches principales :
@@ -99,6 +97,20 @@ une recherche de parc.
 
 ![Architecture de Pique-Me](architecture.svg)
 
+![Diagramme C1-C2](c1-c2.svg)
+
+![Diagramme C3](c3.svg)
+
+### Diagramme UML (représentation des données)
+Le schéma suivant montre le modèle de données UML utilisé pour l’application Pique-Me.
+Il présente les éléments importants de l’application, comme les utilisateurs, les parcs, les réservations, les événements, les équipements, les avis et les photos.
+On y voit aussi comment ces éléments sont liés entre eux. 
+
+Par exemple, un utilisateur peut faire des réservations ou laisser des avis sur un parc.
+
+Des types spéciaux comme le statut d’une réservation ou le type de badge sont gérés avec des listes de valeurs (ceux sont des ENUM).
+
+![Modele de données UML](donnée.svg)
 
 ## Prototype
 
