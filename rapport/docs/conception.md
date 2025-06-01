@@ -82,6 +82,10 @@ On peut y définir précisément quelles données sont accessibles et transforme
 
 ## Modèles et diagrammes
 
+### Diagramme d'activités (représentation des différents  flux d'activités)
+
+
+
 ### Diagramme d’architecture
 
 Le schéma suivant représente l’architecture logique de l’application *Pique-Me*. On y retrouve les trois couches principales :
@@ -110,7 +114,8 @@ Par exemple, un utilisateur peut faire des réservations ou laisser des avis sur
 
 Des types spéciaux comme le statut d’une réservation ou le type de badge sont gérés avec des listes de valeurs (ceux sont des ENUM).
 
-![Modele de données UML](donnée.svg)
+![Diagramme Entité-Association de Pique-Me](donnee.svg)
+
 
 ## Prototype
 
