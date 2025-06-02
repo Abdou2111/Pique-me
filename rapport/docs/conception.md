@@ -84,7 +84,63 @@ On peut y définir précisément quelles données sont accessibles et transforme
 
 ### Diagramme d'activités (représentation des différents  flux d'activités)
 
+#### Inscription et Connexion
 
+![Diagramme Inscription / Connexion](Inscription_Connexion.svg)
+
+Ce diagramme illustre les étapes principales du flux d’inscription et de connexion de l’utilisateur.
+
+#### Recherche & Filtrage de parcs
+
+![Diagramme Recherche & Filtrage](Recherche_Filtrage_Parcs.svg)
+
+Ce diagramme illustre le processus de recherche et de filtrage des parcs par l’utilisateur.
+
+#### Réservation d’un emplacement
+
+![Diagramme Réservation d’un emplacement](Reservation_d_un_emplacement.svg)
+
+Ce diagramme montre le parcours utilisateur pour choisir un spot sur la carte du parc, sélectionner la date/heure et confirmer la réservation.
+
+#### Réservation d’une activité
+
+![Diagramme Réservation d’une activité](Reservation_Activite.svg)
+
+Ce diagramme montre le parcours utilisateur pour sélectionner une activité dans la fiche du parc, choisir un créneau horaire et confirmer la réservation.
+
+#### Ajout / retrait d’un favori
+
+![Diagramme Ajout / retrait d’un favori](Ajout_retrait_d_un_favori.svg)
+
+Ce diagramme montre deux cas :
+
+1. **Ajouter ou retirer un favori depuis la fiche d’un parc** : l’utilisateur clique sur l’icône “cœur”, une décision vérifie si le parc est déjà en favori (pour l’ajouter ou le retirer) et l’icône se met à jour.
+
+2. **Retirer un favori depuis la page des favoris** : l’utilisateur clique sur le cœur plein d’un parc listé, celui-ci est supprimé des favoris et l’icône passe en cœur vide partout où le parc apparaît.
+
+#### Ajouter un avis
+
+![Diagramme Ajouter un avis](Ajouter_un_avis_spot.svg)
+
+Ce diagramme montre le parcours utilisateur depuis la fiche du spot :
+
+1. L’utilisateur descend jusqu’à la section “Avis utilisateur”.
+
+2. Il saisit un commentaire et peut ajouter une image.
+
+3. En cliquant sur l’icône “Envoyer”, son avis est soumis.
+
+4. Le clavier se ferme automatiquement.
+
+5. Une bulle de confirmation apparaît durant 2 – 3 secondes.
+
+6. Le nouvel avis (texte + image) apparaît en haut de la liste des commentaires.
+
+#### Sondage post-visite
+
+![Diagramme Sondage post-visite](Sondage_post_visite.svg)
+
+Ce diagramme montre le parcours utilisateur après la visite d’un parc. L’utilisateur reçoit une notification “Would you Pick-Me again ?”, puis sélectionne un ou plusieurs badges et saisit un commentaire facultatif. En cliquant sur “Soumettre”, un message de confirmation est affiché, puis l’utilisateur revient à l’écran précédent.
 
 ### Diagramme d’architecture
 
