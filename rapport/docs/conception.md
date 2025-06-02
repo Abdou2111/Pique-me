@@ -86,31 +86,31 @@ On peut y définir précisément quelles données sont accessibles et transforme
 
 #### Inscription et Connexion
 
-![Diagramme Inscription / Connexion](Inscription_Connexion.svg)
+![Diagramme Inscription / Connexion](diagrammes/Inscription_Connexion.svg)
 
 Ce diagramme illustre les étapes principales du flux d’inscription et de connexion de l’utilisateur.
 
 #### Recherche & Filtrage de parcs
 
-![Diagramme Recherche & Filtrage](Recherche_Filtrage_Parcs.svg)
+![Diagramme Recherche & Filtrage](diagrammes/Recherche_Filtrage_Parcs.svg)
 
 Ce diagramme illustre le processus de recherche et de filtrage des parcs par l’utilisateur.
 
 #### Réservation d’un emplacement
 
-![Diagramme Réservation d’un emplacement](Reservation_d_un_emplacement.svg)
+![Diagramme Réservation d’un emplacement](diagrammes/Reservation_d_un_emplacement.svg)
 
 Ce diagramme montre le parcours utilisateur pour choisir un spot sur la carte du parc, sélectionner la date/heure et confirmer la réservation.
 
 #### Réservation d’une activité
 
-![Diagramme Réservation d’une activité](Reservation_Activite.svg)
+![Diagramme Réservation d’une activité](diagrammes/Reservation_Activite.svg)
 
 Ce diagramme montre le parcours utilisateur pour sélectionner une activité dans la fiche du parc, choisir un créneau horaire et confirmer la réservation.
 
 #### Ajout / retrait d’un favori
 
-![Diagramme Ajout / retrait d’un favori](Ajout_retrait_d_un_favori.svg)
+![Diagramme Ajout / retrait d’un favori](diagrammes/Ajout_retrait_d_un_favori.svg)
 
 Ce diagramme montre deux cas :
 
@@ -120,7 +120,7 @@ Ce diagramme montre deux cas :
 
 #### Ajouter un avis
 
-![Diagramme Ajouter un avis](Ajouter_un_avis_spot.svg)
+![Diagramme Ajouter un avis](diagrammes/Ajouter_un_avis_spot.svg)
 
 Ce diagramme montre le parcours utilisateur depuis la fiche du spot :
 
@@ -138,7 +138,7 @@ Ce diagramme montre le parcours utilisateur depuis la fiche du spot :
 
 #### Sondage post-visite
 
-![Diagramme Sondage post-visite](Sondage_post_visite.svg)
+![Diagramme Sondage post-visite](diagrammes/Sondage_post_visite.svg)
 
 Ce diagramme montre le parcours utilisateur après la visite d’un parc. L’utilisateur reçoit une notification “Would you Pick-Me again ?”, puis sélectionne un ou plusieurs badges et saisit un commentaire facultatif. En cliquant sur “Soumettre”, un message de confirmation est affiché, puis l’utilisateur revient à l’écran précédent.
 
@@ -155,11 +155,11 @@ les sources de données (Firebase et l’API de la Ville de Montréal).
 Il illustre les interactions entre chaque composant lors d’une requête typique, comme une réservation ou 
 une recherche de parc.
 
-![Architecture de Pique-Me](architecture.svg)
+![Architecture de Pique-Me](diagrammes/architecture.svg)
 
-![Diagramme C1-C2](c1-c2.svg)
+![Diagramme C1-C2](diagrammes/c1-c2.svg)
 
-![Diagramme C3](c3.svg)
+![Diagramme C3](diagrammes/c3.svg)
 
 ### Diagramme UML (représentation des données)
 Le schéma suivant montre le modèle de données UML utilisé pour l’application Pique-Me.
@@ -170,9 +170,9 @@ Par exemple, un utilisateur peut faire des réservations ou laisser des avis sur
 
 Des types spéciaux comme le statut d’une réservation ou le type de badge sont gérés avec des listes de valeurs (ceux sont des ENUM).
 
-![Diagramme Entité-Association de Pique-Me](donnee.svg)
+![Diagramme Entité-Association de Pique-Me](diagrammes/donnee.svg)
 
 
 ## Prototype
 
-- Inclure des diagrammes UML, maquettes, etc.
+Lien Figma: [https://www.figma.com/design/kP7QEAejfvUB2yia4cleau/Pique-me?node-id=0-1&p=f&t=wV6v3W2tAVDqSN1p-0](https://www.figma.com/design/kP7QEAejfvUB2yia4cleau/Pique-me?node-id=0-1&p=f&t=wV6v3W2tAVDqSN1p-0)

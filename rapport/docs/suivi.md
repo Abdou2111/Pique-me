@@ -61,7 +61,31 @@
 
 ## Semaine 4
 
+!!! note "Conception"
+    - [x] Diagrammes d'architecture (plus détaillé)
+    - [x] Prototype de l'interface utilisateur (V2)
+
+!!! abstract "Prochaines étapes"
+    - Ajouter les liens dans le prototype (Interactive)
+    - Faire les diagrammes d'activités
+    - Faire le modèle de données
+
 ## Semaine 5
+
+!!! note "Conception"
+    - [x] Diagrammes d'activités
+        * Inscription et Connexion
+        * Recherche & Filtrage de parcs
+        * Réservation d’un emplacement
+        * Réservation d’une activité
+        * Ajout/retrait de favoris
+        * Ajouter un avis
+        * Sondage post-visite
+    - [x] Modèle de données
+    - [x] Finalisation du prototype de l'interface utilisateur (V3)
+
+!!! abstract "Prochaines étapes"
+    
 
 ## Semaine 6
 
