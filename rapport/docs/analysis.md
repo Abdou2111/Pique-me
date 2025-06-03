@@ -48,7 +48,7 @@ Les citoyens n’ont pas d’outil numérique adapté pour découvrir, filtrer, 
 
   - **Annuler une réservation:** Si après une heure l'utilisateur ne borne pas dans la zone du parc, sa réservation est automatiquement annulé.
 
-  - **Donner son avis via un système de badges :** Après sa visite dans un parc, l'utilisateur reçoit une invitation à donner son avis sous forme d’un mini sondage (ex. : “Would you Pick-Me again?”). Il peut sélectionner des badges représentatifs de son expérience (ex. : “Propre”, “Convivial”, “Trop bondé”, etc.) et ajouter un commentaire ou des photos s’il le souhaite.
+  - **Donner son avis via un système de badges :** Après sa visite dans un parc, l'utilisateur reçoit une invitation à donner son avis sous forme d’un mini sondage (ex. : “Would you Pick-Me again?”). Il peut sélectionner des badges représentatifs de son expérience (ex. : “Famille&Jeux”, “Espace pique-nique”, etc.) et ajouter un commentaire ou des photos s’il le souhaite.
 
   - **Consulter les autres avis :** Dans la page d'un parc, les avis des autres utilisateurs sont présents.
 
