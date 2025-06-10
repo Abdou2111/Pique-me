@@ -85,7 +85,9 @@
     - [x] Finalisation du prototype de l'interface utilisateur (V3)
 
 !!! abstract "Prochaines étapes"
-    
+    - Petite modification dans le diagramme de classe
+    - Dernières révisions du prototype figma
+    - Créer le projet React Native avec Expo et commencer l'implémentation
 
 ## Semaine 6
 
