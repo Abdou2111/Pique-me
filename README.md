@@ -81,7 +81,7 @@ flowchart LR
 ## Diagramme de navigation (pour nous)
 ```mermaid
 flowchart
-Start[Ouvrir App] --> Decision1{Première fois?}
+Start[Ouvrir Index] --> Decision1{Première fois?}
 Decision1 -->|Oui| Activity1[Page d'inscription]
 Decision1 -->|Non| Decision2{Est-ce que le user
                             a déjà un compte?}
@@ -121,7 +121,7 @@ Dans la sortie, vous trouverez des options pour ouvrir l'application dans un:
 Contient la navigation de l'application, qui est basée sur les fichiers. La structure des
 fichiers dans le répertoire `app` détermine la navigation de l'application.
 
-L'application a deux routes définies par deux fichiers : `app/(tabs)/index.tsx` et
+L'application a deux routes définies par deux fichiers : `app/(tabs)/Index.tsx` et
 `app/(tabs)/explore.tsx`. Le fichier de mise en page `app/(tabs)/_layout.tsx` configure le
 navigateur à onglets.
 
