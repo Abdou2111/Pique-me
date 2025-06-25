@@ -1,9 +1,8 @@
-// (tabs)/LoginScreen.js
+// screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Title } from 'react-native-paper';
 import {Avatar} from "@rneui/base";
-import {router} from "expo-router";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('');
@@ -12,9 +11,6 @@ export default function LoginScreen({ navigation }) {
     const handleLogin = () => {
         // TODO: Integrate Firebase auth here
         console.log("Login with:", email, password);
-
-        // Navigate to Index tab
-        router.replace('/(tabs)/(Home)'); // 👈 navigates to Index
     };
 
     return (
@@ -45,7 +41,7 @@ export default function LoginScreen({ navigation }) {
 
             <Text
                 style={styles.signupText}
-                onPress={() => router.replace('/SignUp')}
+                onPress={() => navigation.navigate('Signup')}
             >
                 Don't have an account? Sign up
             </Text>
