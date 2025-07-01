@@ -1,4 +1,4 @@
-
+// but : contenu de la liste des activités disponibles dans les parcs
 export const parkActivities = [
     {
         id: 'picnic',

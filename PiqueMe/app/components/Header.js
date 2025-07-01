@@ -1,3 +1,4 @@
+// but : Composant d'en-tête de l'application
 import React, { useState} from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 // bibliothèque d’icônes

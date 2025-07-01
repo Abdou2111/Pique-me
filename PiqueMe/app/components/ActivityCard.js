@@ -1,5 +1,4 @@
-// app/components/ActivityCard.js
-
+// Description: Composant React Native pour afficher une carte d'activité avec un label, un titre et une icône.
 import React from 'react';
 import {
     View,
@@ -13,12 +12,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 export default function ActivityCard({ label, title, icon, onPress }) {
     return (
         <View style={styles.wrapper}>
-            {/* Bandeau violet */}
-            <View style={styles.labelContainer}>
-                <FontAwesome5 name="gem" size={12} color="#7B1FA2" />
-                <Text style={styles.labelText}>{label}</Text>
-            </View>
-
             {/* Carte cliquable */}
             <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
                 {/* Container fixe pour l’icône */}
@@ -39,12 +32,9 @@ export default function ActivityCard({ label, title, icon, onPress }) {
 const styles = StyleSheet.create({
     wrapper: {
         margin: 8,
+
     },
-    labelContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 6,
-    },
+
     labelText: {
         marginLeft: 4,
         color: '#7B1FA2',
@@ -52,6 +42,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     card: {
+        width: 150,
+        height: 150,
         backgroundColor: '#EAF7EA',
         borderRadius: 12,
         paddingVertical: 16,
