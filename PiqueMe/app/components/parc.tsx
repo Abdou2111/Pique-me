@@ -1,137 +1,107 @@
-import * as React from 'react';
-import { Avatar, Button, Card, Text, Icon, MD3Colors, IconButton } from 'react-native-paper';
-import { StyleSheet, View } from 'react-native';
+// but: affichage d'un parc avec ses informations
+import React, { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { Card, Text, IconButton } from 'react-native-paper'
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
 
-// Apres avec la BD il va falloir modifier pour passer dynamiquement les informations du parc
-const CompoParc = () => {
-    const [favori, setFavori] = React.useState<boolean>(false);
-    const toggleFavori = () => {
-        setFavori(!favori);
-    };
+interface ParcProps {
+    id: string
+    name: string
+    imageUri: string
+    rating: number
+    reviews: number
+    distanceKm: number
+    initialFavorite?: boolean
+    onToggleFavorite?: (id: string, selected: boolean) => void
+}
 
-    // affichage dans favoris: changer card, image, content et remettre le style ligne.
-    // Quand on aura les pages mettre des if (utiliser route.name === 'Favoris') ternaire pour set automatiquement le style de l'affichage
+// Composant Parc
+const Parc: React.FC<ParcProps> = ({
+                                       id,
+                                       name,
+                                       imageUri,
+                                       rating,
+                                       reviews,
+                                       distanceKm,
+                                       initialFavorite = false,
+                                       onToggleFavorite,
+                                   }) => {
+    const [favori, setFavori] = useState(initialFavorite)
+
+    // Fonction pour gérer le toggle du favori
+    const handleToggle = () => {
+        const next = !favori
+        setFavori(next)
+        onToggleFavorite?.(id, next)
+    }
+
     return (
         <Card style={styles.card}>
-            {/*Quand la page favoris sera là tester pour voir si l'affichage change*/}
-            {/*<Card style={route.name === 'Favoris'? styles.cardFavoris : styles.card}>*/}
-
-            {/* View qui aligne image + contenu horizontalement : style={styles.ligne}*/}
-            <View >
-
-                {/* Image + coeur */}
-                <View style={styles.imageContainer}>
-                    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} style={styles.image} />
-                    <IconButton
-                        icon={favori ? 'heart' : 'heart-outline'}
-                        iconColor={favori ? 'red' : 'white'}
-                        size={24}
-                        style={styles.icon}
-                        onPress={toggleFavori}
-                    />
-                </View>
-
-                {/* Contenu à droite: */}
-                <View style={styles.content}>
-                    <Text variant="titleLarge" style={styles.title}>Parc Jarry</Text>
-                    <View style={styles.noteParc}>
-                        <Icon source="star" color="#FFD700" size={20} />
-                        <Text variant="bodyMedium" style={{ fontWeight: 'bold' }}>4.6</Text>
-                        <Text style={styles.text2}>(178 reviews)</Text>
-                    </View>
-                    <Text variant="bodyMedium" style={{ color: 'gray' }}>À 3.4 km</Text>
-                </View>
-
+            <View style={styles.imageContainer}>
+                <Card.Cover source={{ uri: imageUri }} style={styles.image} />
+                <IconButton
+                    icon={favori ? 'heart' : 'heart-outline'}
+                    iconColor={favori ? 'red' : 'white'}
+                    size={24}
+                    style={styles.icon}
+                    onPress={handleToggle}
+                />
             </View>
-
-            {/*<Card.Actions>
-        <Button>Cancel</Button>
-        <Button>Ok</Button>
-      </Card.Actions>*/}
+            <View style={styles.content}>
+                <Text variant="titleLarge">{name}</Text>
+                <View style={styles.noteParc}>
+                    <Icon name="star" size={20} color="#FFD700" style={styles.star} />
+                    <Text variant="bodyMedium" style={{ fontWeight: 'bold' }}>
+                        {rating.toFixed(1)}
+                    </Text>
+                    <Text style={styles.text2}>({reviews})</Text>
+                </View>
+                <Text variant="bodyMedium" style={styles.distance}>
+                    À {distanceKm.toFixed(1)} km
+                </Text>
+            </View>
         </Card>
-    );
-};
+    )
+}
 
 const styles = StyleSheet.create({
     card: {
         width: 180,
-        height: 260,
-        backgroundColor: 'white',
-        margin: 16,
-        flexDirection: 'column',
+        margin: 8,
     },
-
-    cardFavoris: {
-        width: '90%',
-        backgroundColor: 'white',
-        margin: 16,
-    },
-
-    ligne: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
-    title: {
-        color: 'green',
-    },
-
-    text2: {
-        marginLeft: 8,
-        color: 'grey',
-    },
-
     imageContainer: {
         position: 'relative',
     },
-
     image: {
-        padding: 8,
         height: 140,
         width: '100%',
-        backgroundColor: 'white',
-        borderRadius: 8,
     },
-
-    imageFavoris: {
-        height: 110,
-        width: 160,
-        backgroundColor: 'white',
-        borderRadius: 8,
-        padding: 8,
-    },
-
-    content:{
-        justifyContent: 'center',
-        margin: 10,
-    },
-
-    contentFavoris: {
-        flex: 1,
-        justifyContent: 'center',
-        margin: 10,
-    },
-
-
-
     icon: {
         position: 'absolute',
         top: 8,
         right: 8,
-        backgroundColor: 'rgba(0,0,0,0.4)', // petit fond sombre pour la lisibilité
-        borderRadius: 30,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        borderRadius: 20,
     },
-
+    content: {
+        padding: 8,
+    },
     noteParc: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingTop: 4,
-        paddingBottom: 4,
+        marginTop: 4,
     },
-
     star: {
         marginRight: 4,
     },
-});
+    text2: {
+        marginLeft: 4,
+        color: 'gray',
+    },
+    distance: {
+        color: 'gray',
+        marginTop: 4,
+    },
+})
 
-export default CompoParc;
+export default Parc
