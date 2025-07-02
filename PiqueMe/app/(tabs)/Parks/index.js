@@ -9,6 +9,7 @@ const Index = (() => {
             <Link href="/(tabs)/Parks/second" style={{color: 'blue', textDecorationLine: 'underline'}} push asChild>
                 <Text>Go to Second Page</Text>
             </Link>
+
         </View>
     )
 })

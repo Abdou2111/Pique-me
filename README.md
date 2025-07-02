@@ -158,7 +158,7 @@ Contient `reset-project.js`, qui peut être exécuté avec
 ```
 
 Ce script déplacera
-le répertoire `app` vers `app-example` et créera un nouveau répertoire `app` avec un fichier `index.tsx`.
+le répertoire `app` vers `app-example` et créera un nouveau répertoire `app` avec un fichier `index.js`.
 On va l'utiliser plus tard pour commencer le projet à partir de zéro.
 
 ### 7. Fichier `app.json`
