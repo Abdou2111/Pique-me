@@ -27,7 +27,7 @@ export default function RootLayout() {
                         )
                 }}/>
                 <Tabs.Screen name="Search" options={{
-                    title: "Search",
+                    title: "Seearch",
                     tabBarIcon: ({color, size}) => (
                             <FontAwesome name="search" size={size} color={color} />
                         )
