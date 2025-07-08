@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import { TextInput, Button, Text, Title } from 'react-native-paper';
 import { router } from 'expo-router';
-import {createUserWithEmailAndPassword, GoogleAuthProvider} from "firebase/auth";
+import {createUserWithEmailAndPassword} from "firebase/auth";
 import { auth } from '../../firebaseConfig';
 import HorizontalRule from "../components/HorizontalRule";
 import GoogleButton from "../components/GoogleButton";
 import FacebookButton from "../components/FacebookButton";
-import {signInWithPopup} from "@react-native-firebase/auth";
 
 
 export default function Index() {

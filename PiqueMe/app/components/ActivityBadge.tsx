@@ -1,5 +1,4 @@
 // but : badge d'activité avec icône, label et état
-// src/components/ActivityBadge.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
