@@ -1,61 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
-import ParcFavoris from './components/parcFavoris';   // ← chemin vers ton composant
+import React, { useState } from 'react';
+import {
+    SafeAreaView,
+    ScrollView,
+    View,
+    Pressable,
+    Text,
+    StyleSheet
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons'
 
-type Parc = {
-    id: string;
-    name: string;
-    imageUri: string;
-    rating: number;
-    reviews: number;
-    distanceKm: number;
-};
+import ActivityBadge, { Status } from './components/ActivityBadge';
+import { parkActivities }        from './components/Activity';
 
-const URL =
-    'https://donnees.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/' +
-    'resource/35796624-15df-4503-a569-797665f8768e/download/espace_vert.json';
+/* quelle couleur pour chaque index ? */
+const level = (i: number): Status =>
+    i === 0 ? 'gold'   :
+        i === 1 ? 'silver' :
+            i === 2 ? 'bronze' : 'neutral';
 
-export default function TestFavoris() {
-    const [data, setData] = useState<Parc[]>([]);
+export default function TestScreen() {
+    /* mémorise les badges neutres cliqués (verts foncés) */
+    const [selected, setSelected] = useState<Set<string>>(new Set());
 
-    useEffect(() => {
-        (async () => {
-            const res  = await fetch(URL);
-            const json = await res.json();
-
-            // garde uniquement les véritables “Parc”
-            const parsed: Parc[] = json.features
-                .filter((f: any) => f.properties.Type?.toLowerCase() === 'parc')
-                .map((f: any) => ({
-                    id: f.properties.NUM_INDEX,
-                    name: [f.properties.Type, f.properties.Lien, f.properties.Nom]
-                        .filter(Boolean)
-                        .join(' '),
-                    imageUri: 'https://via.placeholder.com/400x200',
-                    rating: 4.5,          // valeurs de démo
-                    reviews: 50,
-                    distanceKm: 2.3,
-                }));
-
-            setData(parsed.slice(0, 100));  // 10 cartes suffisent pour tester
-        })();
-    }, []);
+    const toggle = (id: string, sel: boolean) =>
+        setSelected(prev => {
+            const n = new Set(prev);
+            sel ? n.add(id) : n.delete(id);
+            return n;
+        });
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-                {data.map(p => (
-                    <ParcFavoris
-                        key={p.id}
-                        id={p.id}
-                        name={p.name}
-                        imageUri={p.imageUri}
-                        rating={p.rating}
-                        reviews={p.reviews}
-                        distanceKm={p.distanceKm}
+        <SafeAreaView style={styles.flex}>
+            <ScrollView contentContainerStyle={styles.grid}>
+                {parkActivities.map((act, idx) => (
+                    <ActivityBadge
+                        key={act.id}
+                        iconName={act.icon}
+                        label={act.title}
+                        status={level(idx)}
+                        onToggle={sel => toggle(act.id, sel)}
                     />
                 ))}
             </ScrollView>
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    flex: { flex: 1, backgroundColor: '#fff' },
+    grid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        padding: 16,
+    },
+});

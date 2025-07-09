@@ -8,6 +8,8 @@ interface ParcProps {
     id: string
     name: string
     imageUri: string
+    latitude:  number
+    longitude: number
     rating: number
     reviews: number
     distanceKm: number

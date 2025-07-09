@@ -42,9 +42,12 @@ const ActivityBadge: React.FC<Props> = ({
                 ? selectedColor
                 : statusColors['neutral'];
 
+    const isLocked = status !== 'neutral';
+
+
     return (
         <View style={styles.container}>
-            <Pressable onPress={handlePress}>
+            <Pressable onPress={handlePress} disabled={isLocked}>
                 <View style={[styles.circle, { backgroundColor: bgColor }]}>
                     <FontAwesome5 name={iconName} size={20} color="#000" />
                 </View>

@@ -10,6 +10,8 @@ export interface ParcFavorisProps {
     imageUri: string;
     rating: number;
     reviews: number;
+    latitude:  number
+    longitude: number
     distanceKm: number;
     initialFavorite?: boolean;
     onToggleFavorite?: (id: string, fav: boolean) => void;
