@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, IconButton, Text, Icon } from 'react-native-paper';
+import {router, useRouter} from 'expo-router';
+
+
 
 export interface ParcFavorisProps {
     id: string;
@@ -34,8 +37,13 @@ export default function ParcFavoris({
         onToggleFavorite?.(id, next);
     };
 
+    const handlePress = () => {
+        const url = `/Parks/PageParc?id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`;
+        router.push(url as any);
+    };
+
     return (
-        <Card style={styles.card}>
+        <Card style={styles.card} onPress={handlePress}>
             <View style={styles.row}>
                 {/* image + cœur */}
                 <View style={styles.imgWrap}>
