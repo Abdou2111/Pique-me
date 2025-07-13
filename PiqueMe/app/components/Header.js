@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     },
     logoImage: {
         width: 350,
-        height: 150,
+        height: 50,
         paddingRight: 200, // marge à droite pour l'espacement
         resizeMode: 'contain', // adapte la largeur en conservant le ratio
 

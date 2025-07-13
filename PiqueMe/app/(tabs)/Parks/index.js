@@ -1,6 +1,7 @@
 import {View} from "react-native";
 import {Text} from "react-native-paper";
 import {Link} from "expo-router";
+import ParcFavoris from "../../components/parcFavoris";
 
 const Index = (() => {
     return (
