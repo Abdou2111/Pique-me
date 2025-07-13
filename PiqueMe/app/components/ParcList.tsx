@@ -1,81 +1,76 @@
-// Affiche la liste des parcs de Montréal
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native';
-import Parc from './parc';
-
-// GeoJSON “Espaces verts” de la Ville de Montréal
-const GEOJSON_URL =
-    'https://donnees.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/' +
-    'resource/35796624-15df-4503-a569-797665f8768e/download/espace_vert.json';
+import React, { useEffect, useState, useMemo} from 'react'
+import { ScrollView, StyleSheet, ActivityIndicator, Text, View } from 'react-native'
+import Parc        from './parc'        // carte “normale”
+import ParcFavoris from './parcFavoris' // carte “favori”
 
 type ParkFeature = {
-    properties: {
-        NUM_INDEX: string;
-        Nom: string;
-        Type?: string;      // ← préfixe (« Parc », « Square »…)
-        Lien?: string;      // ← article (« du », « de la »…)
-        TYPO1?: string;     // non utilisé ici
-    };
-    geometry: { type: string; coordinates: any };
-};
+    properties:{ NUM_INDEX:string; Nom:string; Type?:string; Lien?:string }
+}
+export type ParkData = {
+    id:string; name:string; imageUri:string; filters:string[]
+}
+type Props = {
+    filterQuery?: string       // texte déjà normalisé
+    filterTags?:  string[]     // tags actifs
+    useFavorisCard?: boolean   // vrai → ParcFavoris
+    onCountChange?: (n:number)=>void // callback résultat
+}
 
-type ParkData = {
-    id: string;
-    name: string;
-    imageUri: string;
-};
+const URL =
+    'https://donnees.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/' +
+    'resource/35796624-15df-4503-a569-797665f8768e/download/espace_vert.json'
 
-export default function ParcList() {
-    const [parks, setParks] = useState<ParkData[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [favs, setFavs] = useState<Set<string>>(new Set());
+const norm = (s:string) =>
+    s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim()
 
+export default function ParcList({
+                                     filterQuery = '',
+                                     filterTags  = [],
+                                     useFavorisCard = false,
+                                     onCountChange,
+                                 }: Props) {
+
+    const [parks, setParks]   = useState<ParkData[]>([])
+    const [loading, setLoad]  = useState(true)
+
+    /* fetch unique */
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             try {
-                const res = await fetch(GEOJSON_URL);
-                const json = await res.json();
-                const features: ParkFeature[] = json.features ?? [];
+                const json = await (await fetch(URL)).json()
+                const list = (json.features as ParkFeature[])
+                    .filter(f => f.properties.Type?.toLowerCase() === 'parc')
+                    .map(f => ({
+                        id:   f.properties.NUM_INDEX,
+                        name: [f.properties.Type,f.properties.Lien,f.properties.Nom]
+                            .filter(Boolean).join(' '),
+                        imageUri:'https://via.placeholder.com/400x200',
+                        filters: ['bbq','sport','parking'].filter(()=>Math.random()<.5),
+                    }))
+                setParks(list)
+            } catch(e){ console.error(e) }
+            finally   { setLoad(false) }
+        })()
+    }, [])
 
-                // Garder uniquement les enregistrements dont Type === 'Parc'
-                const parksOnly = features.filter(
-                    f => f.properties.Type?.toLowerCase() === 'parc'
-                );
+    /* filtrage */
+    const shown = useMemo(() => parks.filter(p =>
+        (!filterQuery || norm(p.name).includes(filterQuery)) &&
+        (!filterTags.length || filterTags.every(t => p.filters.includes(t)))
+    ), [parks, filterQuery, filterTags])
 
-                const data = parksOnly.map(p => ({
-                    id: p.properties.NUM_INDEX,
-                    name: [p.properties.Type, p.properties.Lien, p.properties.Nom]
-                        .filter(Boolean)
-                        .join(' '),
-                    imageUri:
-                        'https://via.placeholder.com/400x200?text=Pas+d%27image',
-                }));
+    /* notifier Search du nombre */
+    useEffect(()=>{ onCountChange?.(shown.length) },[shown.length])
 
-                setParks(data);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        })();
-    }, []);
+    if (loading)       return <ActivityIndicator style={{flex:1}} size="large"/>
+    if (!shown.length) return <Text style={styles.empty}>Aucun parc trouvé</Text>
 
-    const toggleFav = (id: string, selected: boolean) => {
-        setFavs(prev => {
-            const next = new Set(prev);
-            selected ? next.add(id) : next.delete(id);
-            return next;
-        });
-    };
-
-    if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" />;
-
-    if (!parks.length) return <Text style={{ margin: 20 }}>Aucun parc reçu</Text>;
+    const Card = useFavorisCard ? ParcFavoris : Parc
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            {parks.map(p => (
-                <Parc
+            {shown.map(p => (
+                <Card
                     key={p.id}
                     id={p.id}
                     name={p.name}
@@ -83,19 +78,13 @@ export default function ParcList() {
                     rating={0}
                     reviews={0}
                     distanceKm={0}
-                    initialFavorite={favs.has(p.id)}
-                    onToggleFavorite={toggleFav}
                 />
             ))}
         </ScrollView>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        padding: 16,
-    },
-});
+    container:{flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:16},
+    empty:{margin:20,textAlign:'center'},
+})

@@ -1,24 +1,19 @@
 // but : Composant d'en-tête de l'application
-import React, { useState} from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 // bibliothèque d’icônes
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { SvgUri } from 'react-native-svg';
 
 import logo from '../../assets/images/Logoo.png';
 
 export default function Header({ navigation }) {
-    // Etat pour savour si l'utilisateur a mis en favoris ou non
-    const [favori, setavori] = useState(false);
-
-    // Fonction pour basculer l'état de favori
-    const toggleFavori = () => {
-        setavori(!favori);
-    };
+    const router = useRouter();
 
 
     return (
-        <View style={[styles.container, favori && styles.selected]}>
+        <View style={styles.container}>
             {/* Bloc logo-image + slogan */}
             <View style={styles.logoContainer}>
                 <Image
@@ -31,8 +26,8 @@ export default function Header({ navigation }) {
             {/* Bloc des icônes */}
             <View style={styles.icons}>
                 {/* Icône de favoris */}
-                <TouchableOpacity onPress={toggleFavori}>
-                    <FontAwesome name={favori ? 'heart' : 'heart-o'} size={28} color={favori ? 'red' : 'black'} />
+                <TouchableOpacity onPress={() => router.push('/Parks/Favorites')}>
+                    <FontAwesome name="heart" size={28} color="red" />
                 </TouchableOpacity>
 
                 {/* Bouton menu hamburger */}
