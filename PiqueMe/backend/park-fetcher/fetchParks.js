@@ -1,0 +1,133 @@
+/**
+ * Fetches the “espace_vert.json” GeoJSON via CKAN’s signed download URL,
+ * keeps only features whose properties.Type === "Parc",
+ * and upserts them into Firestore.
+ *
+ *   node fetchParks.js
+ */
+
+const admin = require("firebase-admin");
+let   fetch;               // poly-fetch for Node < 18
+if (typeof global.fetch === "function") {
+    fetch = global.fetch;
+} else {
+    fetch = (...a) => import("node-fetch").then(({ default: f }) => f(...a));
+}
+
+// ─── Firebase Admin ────────────────────────────────────────────────────────
+const serviceAccount = require("./serviceAccountKey.json");
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+const db = admin.firestore();
+
+// ─── CKAN constants ────────────────────────────────────────────────────────
+const RESOURCE_ID = "35796624-15df-4503-a569-797665f8768e";
+const CKAN_BASE   = "https://donnees.montreal.ca/api/3/action";
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+async function getSignedGeojsonUrl() {
+    const metaUrl = `${CKAN_BASE}/resource_show?id=${RESOURCE_ID}`;
+    const resMeta = await fetch(metaUrl);
+    const meta    = await resMeta.json();
+
+    if (!meta.success) {
+        throw new Error("CKAN resource_show returned success=false");
+    }
+    // CKAN stores the public download URL in result.url
+    let url = meta.result.url;
+
+    // Ensure ?alt=media is present (needed for raw file download)
+    if (!/alt=media/.test(url)) {
+        url += (url.includes("?") ? "&" : "?") + "alt=media";
+    }
+    return url;
+}
+
+async function downloadGeojson(url) {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error(`HTTP ${res.status} while fetching GeoJSON`);
+    }
+    return res.json(); // ⇒ FeatureCollection
+}
+
+function filterParcFeatures(fc) {
+    return fc.features.filter(
+        (f) =>
+            f?.properties &&
+            typeof f.properties.Type === "string" &&
+            /parc/i.test(f.properties.Type)
+    );
+}
+
+// ---------- helper: quick centroid for Polygon / MultiPolygon -------------
+function centroidOf(feature) {
+    try {
+        const coords =
+            feature.geometry.type === "Polygon"
+                ? feature.geometry.coordinates[0]      // outer ring
+                : feature.geometry.coordinates[0][0];  // first poly of multipoly
+
+        const [sumX, sumY] = coords.reduce(
+            ([sx, sy], [x, y]) => [sx + x, sy + y],
+            [0, 0]
+        );
+        const n = coords.length;
+        return { lat: sumY / n, lng: sumX / n };   // Firestore-friendly GeoPoint-like
+    } catch {
+        return null;
+    }
+}
+
+// ---------- saveToFirestore now strips geometry ---------------------------
+async function saveToFirestore(features) {
+    let batch = db.batch();
+    let count = 0;
+
+    for (const feat of features) {
+        const id = String(feat.properties.OBJECTID);
+        const data = {
+            ...feat.properties,           // all descriptive fields
+            centroid: centroidOf(feat),   // small helper field
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        batch.set(db.collection("parks").doc(id), data, { merge: true });
+        count++;
+
+        if (count === 500) {           // commit every 500 writes
+            await batch.commit();
+            batch = db.batch();
+            count = 0;
+        }
+    }
+    if (count) await batch.commit();
+}
+
+// ─── Main ──────────────────────────────────────────────────────────────────
+(async () => {
+    try {
+        //console.log("Getting signed download URL from CKAN…");
+        const signedUrl = await getSignedGeojsonUrl();
+
+        //console.log("Downloading GeoJSON…");
+        const geojson = await downloadGeojson(signedUrl);
+
+        //console.log("Filtering Type = \"Parc\" …");
+        const parcFeatures = filterParcFeatures(geojson);
+        console.log(`${parcFeatures.length} parcs trouve.`);
+
+        /*console.log(
+            "First 5 parcs:\n",
+            JSON.stringify(parcFeatures.slice(0, 5), null, 2)
+        );*/
+
+        //console.log("Writing to Firestore…");
+        await saveToFirestore(parcFeatures);
+
+        console.log("Import finished.");
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+})();
