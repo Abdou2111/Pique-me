@@ -3,7 +3,6 @@ name: Fetch Montréal parks — weekly
 on:
   schedule:
     - cron: "*/5 * * * *"    # cron: "10 4 * * 3" mercredi 04:10 UTC ≈ 00:10 heure de Montréal l’été
-  workflow_dispatch:        # permet de déclencher manuellement si besoin
 
 jobs:
   fetch:
