@@ -20,17 +20,18 @@ admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
 // ─── CKAN constants ────────────────────────────────────────────────────────
-const RESOURCE_ID = "35796624-15df-4503-a569-797665f8768e";
+const PARKS_RESOURCE_ID = "35796624-15df-4503-a569-797665f8768e";
+const INST_RESOURCE_ID  = "2dac229f-6089-4cb7-ab0b-eadc6a147d5d";
 const CKAN_BASE   = "https://donnees.montreal.ca/api/3/action";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
-async function getSignedGeojsonUrl() {
-    const metaUrl = `${CKAN_BASE}/resource_show?id=${RESOURCE_ID}`;
+async function getSignedGeojsonUrl(resourceId) {
+    const metaUrl = `${CKAN_BASE}/resource_show?id=${resourceId}`;
     const resMeta = await fetch(metaUrl);
     const meta    = await resMeta.json();
 
     if (!meta.success) {
-        throw new Error("CKAN resource_show returned success=false");
+        throw new Error(`resource_show failed for ${resourceId}`);
     }
     // CKAN stores the public download URL in result.url
     let url = meta.result.url;
@@ -62,6 +63,10 @@ function filterParcFeatures(fc) {
 // ---------- helper: quick centroid for Polygon / MultiPolygon -------------
 function centroidOf(feature) {
     try {
+        if (feature.geometry.type === "Point") {
+            const [lng, lat] = feature.geometry.coordinates;
+            return { lat, lng };
+        }
         const coords =
             feature.geometry.type === "Polygon"
                 ? feature.geometry.coordinates[0]      // outer ring
@@ -87,6 +92,7 @@ async function saveToFirestore(features) {
         const id = String(feat.properties.OBJECTID);
         const data = {
             ...feat.properties,           // all descriptive fields
+            installations: feat.installations ?? [],
             centroid: centroidOf(feat),   // small helper field
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
@@ -103,18 +109,38 @@ async function saveToFirestore(features) {
     if (count) await batch.commit();
 }
 
+function buildInstLookup(instFC) {
+    const lookup = {};
+    instFC.features.forEach((f) => {
+        const idx = f.properties?.INDEX_PARC;
+        if (!idx) return;
+        const lite = { ...f.properties, centroid: centroidOf(f) };
+        (lookup[idx] ||= []).push(lite);
+    });
+    return lookup;
+}
+
 // ─── Main ──────────────────────────────────────────────────────────────────
 (async () => {
     try {
         //console.log("Getting signed download URL from CKAN…");
-        const signedUrl = await getSignedGeojsonUrl();
+        const parcUrl = await getSignedGeojsonUrl(PARKS_RESOURCE_ID);
+        const instUrl  = await getSignedGeojsonUrl(INST_RESOURCE_ID);
 
         //console.log("Downloading GeoJSON…");
-        const geojson = await downloadGeojson(signedUrl);
+        const parcs = await downloadGeojson(parcUrl);
+        const inst  = await downloadGeojson(instUrl);
 
         //console.log("Filtering Type = \"Parc\" …");
-        const parcFeatures = filterParcFeatures(geojson);
+        const parcFeatures = filterParcFeatures(parcs);
         console.log(`${parcFeatures.length} parcs trouve.`);
+
+        const instByIndex = buildInstLookup(inst);
+        /* 3️⃣  Attach installations to their park by NUM_INDEX */
+        const joined = parcFeatures.map((f) => ({
+            ...f,
+            installations: instByIndex[f.properties.NUM_INDEX] ?? [],
+        }));
 
         /*console.log(
             "First 5 parcs:\n",
@@ -122,7 +148,12 @@ async function saveToFirestore(features) {
         );*/
 
         //console.log("Writing to Firestore…");
-        await saveToFirestore(parcFeatures);
+        /*console.log(
+            JSON.stringify(joined.slice(0, 1), null, 2)
+        );*/
+        await saveToFirestore(joined);
+
+
 
         console.log("Import finished.");
         process.exit(0);
