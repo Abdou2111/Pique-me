@@ -2,8 +2,8 @@ name: Fetch Montréal parks — weekly
 
 on:
   schedule:
-    # Tous les lundis à 02 h 15 UTC  (dimanche 22 h 15 à Montréal l'été)
-    - cron: "15 2 * * 1"
+    # mercredi 04:10 UTC ≈ 00:10 heure de Montréal l’été
+    - cron: "10 4 * * 3"
   workflow_dispatch:        # permet de déclencher manuellement si besoin
 
 jobs:
