@@ -28,7 +28,7 @@ jobs:
       # 4) Injecte la clé de service de Firebase
       - name: Write serviceAccountKey.json
         run: |
-          echo "${{ secrets.FIREBASE_SA_KEY_JSON }}" > serviceAccountKey.json
+          echo "${{ secrets.FIREBASE_SA_KEY_B64 }}" | base64 -d > serviceAccountKey.json
 
       # 5) Exécute ton script
       - run: node fetchParks.js
