@@ -1,24 +1,23 @@
-import React, { useEffect, useState, useMemo} from 'react'
-import { ScrollView, StyleSheet, ActivityIndicator, Text, View } from 'react-native'
-import Parc        from './parc'        // carte “normale”
-import ParcFavoris from './parcFavoris' // carte “favori”
+// ParcList.tsx — même logique, lecture depuis Firestore
+import React, { useEffect, useState, useMemo } from 'react'
+import { ScrollView, StyleSheet, ActivityIndicator, Text } from 'react-native'
+import Parc        from './parc'
+import ParcFavoris from './parcFavoris'
 
-type ParkFeature = {
-    properties:{ NUM_INDEX:string; Nom:string; Type?:string; Lien?:string }
-}
+// Firebase
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../../firebaseConfig'
+
+// Types
 export type ParkData = {
     id:string; name:string; imageUri:string; filters:string[]
 }
 type Props = {
-    filterQuery?: string       // texte déjà normalisé
-    filterTags?:  string[]     // tags actifs
-    useFavorisCard?: boolean   // vrai → ParcFavoris
-    onCountChange?: (n:number)=>void // callback résultat
+    filterQuery?: string
+    filterTags?:  string[]
+    useFavorisCard?: boolean
+    onCountChange?: (n:number)=>void
 }
-
-const URL =
-    'https://donnees.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/' +
-    'resource/35796624-15df-4503-a569-797665f8768e/download/espace_vert.json'
 
 const norm = (s:string) =>
     s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim()
@@ -30,28 +29,41 @@ export default function ParcList({
                                      onCountChange,
                                  }: Props) {
 
-    const [parks, setParks]   = useState<ParkData[]>([])
+    const [parks,   setParks] = useState<ParkData[]>([])
     const [loading, setLoad]  = useState(true)
 
-    /* fetch unique */
+    /* fetch unique via Firestore */
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             try {
-                const json = await (await fetch(URL)).json()
-                const list = (json.features as ParkFeature[])
-                    .filter(f => f.properties.Type?.toLowerCase() === 'parc')
-                    .map(f => ({
-                        id:   f.properties.NUM_INDEX,
-                        name: [f.properties.Type,f.properties.Lien,f.properties.Nom]
-                            .filter(Boolean).join(' '),
+                const toTag = (t:string|null|undefined) => {
+                    const s = (t ?? '').toLowerCase()
+                    if (s.includes('aire de jeu'))  return 'aireJeu'
+                    if (s.includes('récréatif'))    return 'recreatif'
+                    if (s.includes('plein air'))    return 'pleinAir'
+                    if (s.includes('pique-nique'))  return 'piqueNique'
+                    return null
+                }
+
+                const snap = await getDocs(collection(db, 'parks'))
+                const list = snap.docs.map(d => {
+                    const p:any = d.data()
+                    return {
+                        id:   p.NUM_INDEX,
+                        name: [p.Type, p.Lien, p.Nom].filter(Boolean).join(' '),
                         imageUri:'https://via.placeholder.com/400x200',
-                        filters: ['bbq','sport','parking'].filter(()=>Math.random()<.5),
-                    }))
+                        filters:(p.installations ?? [])
+                            .map((i:any)=>toTag(i.TYPE))
+                            .filter(Boolean),
+                    } as ParkData
+                })
+
                 setParks(list)
             } catch(e){ console.error(e) }
             finally   { setLoad(false) }
         })()
     }, [])
+
 
     /* filtrage */
     const shown = useMemo(() => parks.filter(p =>
@@ -69,9 +81,9 @@ export default function ParcList({
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            {shown.map(p => (
+            {shown.map((p, idx) => (
                 <Card
-                    key={p.id}
+                    key={`${p.id}-${idx}`}
                     id={p.id}
                     name={p.name}
                     imageUri={p.imageUri}

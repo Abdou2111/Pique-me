@@ -1,19 +1,28 @@
-import {View} from "react-native";
-import {Text} from "react-native-paper";
-import {Link} from "expo-router";
-import ParcFavoris from "../../components/parcFavoris";
+// app/(tabs)/Parks/index.js
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native-paper';
+import { Link } from 'expo-router';
 
-const Index = (() => {
+import Header from '../../components/Header';
+import ParcFavoris from '../../components/parcFavoris';
+
+export default function ParksIndex() {
     return (
-        <View>
-            <Text>Page des parks</Text>
-            <Link href="/(tabs)/Parks/second" style={{color: 'blue', textDecorationLine: 'underline'}} push asChild>
+        <View style={S.page}>
+
+            {/* bandeau logo‑cœur‑menu */}
+            <Header />
+
+            {/* démo de navigation */}
+            <Link
+                href="/(tabs)/Parks/second"
+                style={S.link}
+                push
+                asChild>
                 <Text>Go to Second Page</Text>
             </Link>
 
-            <Text style={{ fontSize: 20, padding: 16 }}>Page des parcs</Text>
-
-
+            {/* exemple de carte */}
             <ParcFavoris
                 id="42"
                 name="Parc Jarry"
@@ -22,9 +31,12 @@ const Index = (() => {
                 reviews={178}
                 distanceKm={3.4}
             />
-
         </View>
-    )
-})
+    );
+}
 
-export default Index;
+const S = StyleSheet.create({
+    page: { flex: 1 },
+    h1:   { fontSize: 24, fontWeight: '700', alignSelf: 'center', marginTop: 12 },
+    link: { color: 'blue', textDecorationLine: 'underline', margin: 16 },
+});

@@ -8,7 +8,7 @@ import { SvgUri } from 'react-native-svg';
 
 import logo from '../../assets/images/Logoo.png';
 
-export default function Header({ navigation }) {
+export default function Header() {
     const router = useRouter();
 
 
@@ -26,7 +26,7 @@ export default function Header({ navigation }) {
             {/* Bloc des icônes */}
             <View style={styles.icons}>
                 {/* Icône de favoris */}
-                <TouchableOpacity onPress={() => router.push('/Parks/Favorites')}>
+                <TouchableOpacity onPress={() => router.push('/favorites')}>
                     <FontAwesome name="heart" size={28} color="red" />
                 </TouchableOpacity>
 

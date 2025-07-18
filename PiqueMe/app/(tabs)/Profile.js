@@ -1,12 +1,16 @@
-import {View} from "react-native";
-import {Text} from "react-native-paper";
+import { View, Text, StyleSheet } from 'react-native';
+import Header from '../components/Header';
 
-const Profile = (() => {
+export default function Profile() {
     return (
-        <View>
-            <Text>Page du profil</Text>
+        <View style={S.page}>
+            <Header />
+            {/* contenu du profil */}
         </View>
-    )
-})
+    );
+}
 
-export default Profile;
+const S = StyleSheet.create({
+    page:{ flex:1 },
+    h1:{ fontSize:24, fontWeight:'700', alignSelf:'center', marginTop:12 }
+});

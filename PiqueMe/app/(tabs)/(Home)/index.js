@@ -1,16 +1,16 @@
-import {View} from "react-native";
-import {Text} from "react-native-paper";
-import {Link} from "expo-router";
+import { View, Text, StyleSheet } from 'react-native';
+import Header from '../../components/Header';
 
-const Home = (() => {
+export default function Home() {
     return (
-        <View>
-            <Text>Page home</Text>
-            <Link href="/(tabs)/(Home)/second" style={{color: 'blue', textDecorationLine: 'underline'}} push asChild>
-                <Text>Go to Second Page</Text>
-            </Link>
+        <View style={S.page}>
+            <Header />
+            {/*  le reste du contenu  */}
         </View>
-    )
-})
+    );
+}
 
-export default Home;
+const S = StyleSheet.create({
+    page:{ flex:1 },
+    h1:{ fontSize:24, fontWeight:'700', alignSelf:'center', marginTop:12 }
+});
