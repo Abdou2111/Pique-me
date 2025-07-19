@@ -8,8 +8,8 @@ import {
     Text,
 } from 'react-native';
 
-import Header from '../../components/Header';
-import ParcFavoris from '../../components/parcFavoris';
+import Header from '../components/Header';
+import ParcFavoris from '../components/parcFavoris';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const API_URL = 'http://localhost:3000';

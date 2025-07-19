@@ -4,8 +4,8 @@ import Header from '../../components/Header';
 export default function Home() {
     return (
         <View style={S.page}>
-            <Header />
-            {/*  le reste du contenu  */}
+            {/*<Header />
+              le reste du contenu  */}
         </View>
     );
 }

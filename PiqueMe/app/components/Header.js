@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',     // ← au cas où le parent centre ses enfants
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 16,      // marge haut/bas
+        paddingVertical: 30,      // marge haut/bas
         paddingLeft: 0,           // plus de marge à gauche
         paddingRight: 16,         // garde un peu de marge à droite si tu veux
         backgroundColor: '#fff',

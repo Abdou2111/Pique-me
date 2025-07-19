@@ -36,8 +36,16 @@ export default function ParcFavoris({
     };
 
     const handlePress = () => {
-        const url = `/Parks/PageParc?id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`;
-        router.push(url as any);
+        // Utilise la dernière valeur de fav avant navigation
+        const isFav = initialFavorite || fav;
+
+        router.push({
+            pathname: '/Park/PageParc',
+            params: {
+                id,
+                isFavorite: isFav.toString(),
+            },
+        });
     };
 
     return (
