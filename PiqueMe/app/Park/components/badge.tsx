@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     circle: {
         justifyContent: "center",
         alignItems: "center",
-        elevation: 3,
+        elevation: 2,
     },
     label: {
         marginTop: 4,

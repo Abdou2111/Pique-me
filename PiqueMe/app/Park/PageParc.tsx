@@ -1,3 +1,6 @@
+//TODO: ajouter le navbar du bas
+
+
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -18,6 +21,10 @@ import Badge from '../Park/components/badge';
 import { badgesData } from '@/app/Park/badgesData';
 import { TouchableWithoutFeedback } from 'react-native';
 import ActivityCard  from "@/app/components/ActivityCard";
+import { mapInstallationsToActivities} from "@/app/Park/functions";
+import fakeAvis from "@/app/Park/fakeAvis";
+import AvisList from "@/app/Park/components/AvisList";
+
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -28,6 +35,7 @@ export default function PageParc() {
     const [loading, setLoading] = useState(true);
     const [isFavorite, setIsFavorite] = useState<boolean>(false);
     const [visible, setVisible] = useState(false);
+    const [activitiesToDisplay, setActivitiesToDisplay] = useState<any>(null);
 
     const images = [
         'https://picsum.photos/id/1018/800/400',
@@ -47,7 +55,14 @@ export default function PageParc() {
         (async () => {
             if (typeof id === 'string') {
                 const result = await getParkById(id);
-                setPark(result);
+
+                if (result) {
+                    console.log("Installations brutes :", result.installations);
+                    setPark(result);
+                    setActivitiesToDisplay(mapInstallationsToActivities(result.installations));
+                    //console.log(activitiesToDisplay[0]);
+                }
+
             }
             setLoading(false);
         })();
@@ -55,6 +70,7 @@ export default function PageParc() {
 
     if (loading) return <ActivityIndicator size="large" style={{ marginTop: 40 }} />;
     if (!park) return <Text style={{ margin: 20 }}>Parc non trouvé.</Text>;
+    console.log("Activities to display: ", activitiesToDisplay);
 
     return (
         <>
@@ -156,20 +172,25 @@ export default function PageParc() {
 
                 {/*Activites*/}
                 <Text style={styles.title}>Activités</Text>
-                <ActivityCard
-                    label={"kayak"}
-                    title={"Kayak"}
-                    icon={'kayak'}
-                    onPress={() => alert('Kayak sélectionné')}
-                />
 
 
-                {/* Infos */}
-                <Text style={styles.text}>Type : {park.Type}</Text>
-                <Text style={styles.text}>ID : {park.NUM_INDEX}</Text>
-                <Text style={styles.text}>
-                    Installations : {park.installations?.map((i: any) => i.NOM).join(', ') || 'Aucune'}
-                </Text>
+                <View style={styles.activities}>
+                {Array.isArray(activitiesToDisplay) && activitiesToDisplay.map(activity => (
+                    <View key={activity.id} style={styles.activityWrapper}>
+                        <ActivityCard
+                            title={activity.title}
+                            icon={activity.icon}
+                            label={activity.label}
+                            onPress={() => console.log(activity.id)}
+                        />
+                    </View>
+                    ))}
+                </View>
+
+                {/*Commentaires*/}
+                <Text style={styles.title}>Avis utilisateurs</Text>
+                <AvisList avisList={fakeAvis} />
+
             </ScrollView>
         </>
     );
@@ -178,25 +199,27 @@ export default function PageParc() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
-        paddingBottom: 20,
-        paddingHorizontal: 6,
+        paddingBottom: 32,
+        paddingHorizontal: 16,
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 24,
-        marginHorizontal: 6,
-        marginTop: 16,
+        fontSize: 22,
+        marginTop: 24,
         marginBottom: 12,
+        paddingHorizontal: 4,
     },
     text: {
         fontSize: 16,
-        marginBottom: 10,
-        marginHorizontal: 20,
+        lineHeight: 22,
+        marginBottom: 16,
+        marginHorizontal: 4,
         textAlign: 'justify',
     },
     galleryContainer: {
         position: 'relative',
         height: 240,
+        marginBottom: 20,
     },
     imageContainer: {
         width: screenWidth,
@@ -204,16 +227,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: screenWidth - 40,
+        width: screenWidth - 32,
         height: 200,
         borderRadius: 16,
         resizeMode: 'cover',
-        marginHorizontal: 20,
     },
     heartIcon: {
         position: 'absolute',
         top: 16,
-        right: 20,
+        right: 24,
         backgroundColor: 'rgba(0,0,0,0.4)',
         borderRadius: 20,
     },
@@ -221,12 +243,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginHorizontal: 12,
-        marginTop: 10,
+        marginBottom: 16,
+        marginTop: 4,
     },
     ratingRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        //marginTop: 2,
     },
     ratingText: {
         fontWeight: 'bold',
@@ -235,7 +258,8 @@ const styles = StyleSheet.create({
     badges: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: 8,
+        //marginTop: 0,
     },
     overlay: {
         flex: 1,
@@ -247,24 +271,39 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        padding: 20,
+        padding: 24,
     },
     scroll: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        gap: 12,
-        paddingTop: 10,
+        gap: 16,
+        paddingTop: 16,
     },
     close: {
         marginTop: 20,
         textAlign: 'center',
         color: '#007AFF',
         fontWeight: '600',
+        fontSize: 16,
     },
     modalBackground: {
         flex: 1,
         justifyContent: 'flex-end',
-        backgroundColor: 'rgba(133,133,133,0.13)', // plus de voile noir
-},
+        backgroundColor: 'rgba(0,0,0,0.15)',
+    },
+    activities: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        gap: 12,
+        paddingBottom: 16,
+        paddingTop: 4,
+    },
+    activityWrapper: {
+        width: (screenWidth - 64) / 3, // Trois cartes par ligne, 16*2 padding horizontal + 12*2 gap horizontaux environ
+        marginBottom: 16,
+        alignItems: 'center', // Centrer les cartes dans leur wrapper (optionnel)
+    },
 });
+

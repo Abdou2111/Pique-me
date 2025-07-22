@@ -14,16 +14,16 @@ export default function ActivityCard({ label, title, icon, onPress }) {
         <View style={styles.wrapper}>
             {/* Carte cliquable */}
             <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
-                {/* Container fixe pour l’icône */}
-                <View style={styles.iconContainer}>
-                    <FontAwesome5
-                        name={icon}
-                        size={36}            // taille de l’icône à l’intérieur
-                        color="#A18F63"
-                    />
+                <View style={styles.contentContainer}>
+                    <View style={styles.iconContainer}>
+                        <FontAwesome5
+                            name={icon}
+                            size={26}
+                            color="#A18F63"
+                        />
+                    </View>
+                    <Text style={styles.title}>{title}</Text>
                 </View>
-
-                <Text style={styles.title}>{title}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -31,10 +31,8 @@ export default function ActivityCard({ label, title, icon, onPress }) {
 
 const styles = StyleSheet.create({
     wrapper: {
-        margin: 8,
-
+        margin: 0,
     },
-
     labelText: {
         marginLeft: 4,
         color: '#7B1FA2',
@@ -42,36 +40,41 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     card: {
-        width: 150,
-        height: 150,
+        width: 115,
+        height: 115,
         backgroundColor: '#EAF7EA',
         borderRadius: 12,
-        paddingVertical: 16,
         alignItems: 'center',
+        justifyContent: 'center',
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
+                shadowOffset: { width: 0, height: 0.5},
+                shadowOpacity: 0.01,
+                shadowRadius: 1,
             },
             android: {
-                elevation: 4,
+                elevation: 1,
             },
         }),
     },
-    // ► Container de taille fixe 60×60 pour rendre toutes les icônes uniformes
+    // Ajouté pour regrouper l’icône + texte
+    contentContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     iconContainer: {
         width: 60,
         height: 60,
-        marginBottom: 8,
         alignItems: 'center',
         justifyContent: 'center',
+        //marginBottom: 6, // petit espace entre icône et titre
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#384028',
         textAlign: 'center',
+        paddingHorizontal: 5,
     },
 });

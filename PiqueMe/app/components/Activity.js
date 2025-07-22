@@ -136,7 +136,7 @@ export const parkActivities = [
         id: 'rollerblading',
         label: 'Activité',
         icon: 'skating',
-        title: 'Roller',
+        title: 'Skating',
     },
     {
         id: 'boxing',
