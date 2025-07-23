@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.naromba.PiqueMe"
+      "bundleIdentifier": "com.naromba.PiqueMe",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Montre votre position sur la carte."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.naromba.PiqueMe"
+      "package": "com.naromba.PiqueMe",
+      "permissions": ["ACCESS_FINE_LOCATION"]
     },
     "web": {
       "bundler": "metro",

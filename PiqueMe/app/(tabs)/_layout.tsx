@@ -40,6 +40,7 @@ export default function RootLayout() {
                     name="Search"
                     options={{
                         title: "Search",
+                        headerShown: false,
                         tabBarIcon: ({ color, size }) => (
                             <FontAwesome name="search" size={size} color={color} />
                         ),
