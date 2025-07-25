@@ -7,6 +7,7 @@ import { auth } from '../../firebaseConfig';
 import HorizontalRule from "../components/HorizontalRule";
 import GoogleButton from "../components/GoogleButton";
 import FacebookButton from "../components/FacebookButton";
+import { ensureUserDoc } from '../utils/firebaseUtils'
 
 
 export default function Index() {
@@ -22,9 +23,11 @@ export default function Index() {
         }
 
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 // Signed up
                 const user = userCredential.user;
+                await ensureUserDoc(user.uid)
+                router.replace('./(tabs)/(Home)')
                 console.log("User signed up:", user);
                 router.replace('./(tabs)/(Home)'); // Navigate after successful sign-up
             })

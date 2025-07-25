@@ -1,4 +1,4 @@
-// app/(tabs)/Parks/index.js
+// app/(tabs)/Parks/index.tsx
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Link } from 'expo-router';

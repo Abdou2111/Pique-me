@@ -1,117 +1,85 @@
-// app/components/Favoris.js
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import Parc from './parc'; // ou ./parcFavoris si tu préfères
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+/*  Liste des parcs mis en favori
+    ─────────────────────────────
+    • Lit `uid`, `userDoc.favorites` et `toggleFav` via le contexte.
+    • Affiche les cartes <ParcFavoris /> que tu as déjà.
+    • AUCUN changement côté <Parc /> ou <ParcFavoris /> sauf un détail
+      de synchro expliqué plus bas.                                          */
 
-const API_URL = 'http://localhost:3000'; // IP LAN si device
+import React, { useEffect, useMemo, useState } from 'react'
+import { SafeAreaView, View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native'
+import Header        from '../components/Header'
+import ParcFavoris   from '../components/parcFavoris'      // ton composant existant
+import { useUserDoc } from '../context/UserDocContext'
 
-export default function Favoris({ parks }) {
-    const [userId, setUserId] = useState(null);
-    const [favMap, setFavMap] = useState({});
-    const [loadingFavs, setLoadingFavs] = useState(true);
+const API_URL = 'http://localhost:3000'     // 👉  catalogue complet (inchangé)
 
-    // 1. user connecté ?
+export default function FavoritesScreen() {
+    const { uid, userDoc, toggleFav } = useUserDoc()
+
+    /* ---- 1) charger le catalogue des parcs -------------------------------- */
+    const [parks, setParks] = useState([])
+    const [loadingParks, setLoadingParks] = useState(true)
+
     useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, user => {
-            if (user) {
-                setUserId(user.uid);
-            } else {
-                setUserId(null);
-                setFavMap({});
-            }
-        });
-        return unsubscribe;
-    }, []);
-
-    // 2. charger favoris user
-    useEffect(() => {
-        if (!userId) return;
-        setLoadingFavs(true);
-        fetch(`${API_URL}/favorites/${userId}`)
-            .then(res => res.json())
-            .then(favs => {
-                const map = {};
-                favs.forEach(f => {
-                    map[f.parkId] = f.id;
-                });
-                setFavMap(map);
-            })
-            .catch(console.error)
-            .finally(() => setLoadingFavs(false));
-    }, [userId]);
-
-    // 3. handler toggle
-    const onToggleFavorite = async (parkId, selected) => {
-        if (!userId) return; // pas connecté
-
-        if (selected) {
-            // add
+        let cancel = false
+        ;(async () => {
             try {
-                const res = await fetch(`${API_URL}/favorites`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, parkId }),
-                });
-                const { id: favId } = await res.json();
-                setFavMap(m => ({ ...m, [parkId]: favId }));
+                const res  = await fetch(`${API_URL}/parks`)
+                const data = await res.json()
+                if (!cancel) setParks(data)
             } catch (e) {
-                console.error('Ajout favori échoué', e);
+                console.error('fetch /parks', e)
+            } finally {
+                if (!cancel) setLoadingParks(false)
             }
-        } else {
-            // remove
-            const favId = favMap[parkId];
-            if (!favId) return;
-            try {
-                await fetch(`${API_URL}/favorites/${favId}`, { method: 'DELETE' });
-                setFavMap(m => {
-                    const copy = { ...m };
-                    delete copy[parkId];
-                    return copy;
-                });
-            } catch (e) {
-                console.error('Suppression favori échouée', e);
-            }
-        }
-    };
+        })()
+        return () => { cancel = true }
+    }, [])
 
-    // 4. loader
-    if (!userId || loadingFavs) {
-        return (
-            <View style={S.loader}>
-                <ActivityIndicator size="large" />
-            </View>
-        );
-    }
+    /* ---- 2) filtrer ceux présents dans userDoc.favorites ------------------ */
+    const favSet = new Set(userDoc?.favorites ?? [])
+    const favoriteParks = useMemo(
+        () => parks.filter(p => favSet.has(String(p.NUM_INDEX ?? p.id))),
+        [parks, favSet]
+    )
 
-    // 5. filtrer
-    const favoriteParks = parks.filter(p => favMap[p.id]);
+    /* ---- 3) états de chargement ------------------------------------------ */
+    if (!uid)                      return <Centered>Non connecté.</Centered>
+    if (!userDoc || loadingParks)  return <Centered><ActivityIndicator size="large" /></Centered>
 
+    /* ---- 4) toggle cœur --------------------------------------------------- */
+    const onToggle = (parkId, selected) =>
+        toggleFav(String(parkId), selected)
+
+    /* ---- 5) rendu --------------------------------------------------------- */
     return (
-        <FlatList
-            data={favoriteParks}
-            keyExtractor={item => String(item.id)}
-            numColumns={2}
-            renderItem={({ item }) => (
-                <Parc
-                    {...item}
-                    initialFavorite={true}
-                    onToggleFavorite={onToggleFavorite}
-                />
-            )}
-            contentContainerStyle={S.list}
-            ListEmptyComponent={
-                <View style={S.empty}>
-                    <Text>Aucun parc favori trouvé</Text>
-                </View>
-            }
-        />
-    );
+        <SafeAreaView style={S.root}>
+            <Header title="Parcs favoris" />
+            <FlatList
+                data={favoriteParks}
+                keyExtractor={(item,i)=>`${item.id ?? item.NUM_INDEX}-${i}`}
+                renderItem={({item})=>(
+                    <ParcFavoris
+                        {...item}
+                        initialFavorite={true}
+                        onToggleFavorite={onToggle}
+                    />
+                )}
+                contentContainerStyle={S.list}
+                ListEmptyComponent={<Centered>Aucun parc favori.</Centered>}
+            />
+        </SafeAreaView>
+    )
 }
 
+/* ---- petites aides visu ------------------------------------------------- */
+function Centered({ children }) {
+    return <View style={S.center}><Text>{children}</Text></View>
+}
+
+/* ---- styles ------------------------------------------------------------- */
 const S = StyleSheet.create({
-    loader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    list: { padding: 8 },
-    empty: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-});
+    root:   { flex:1, backgroundColor:'#fff' },
+    center: { flex:1, justifyContent:'center', alignItems:'center', padding:32 },
+    list:   { paddingVertical:8 },
+})
