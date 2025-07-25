@@ -40,7 +40,7 @@ export default function ParcFavoris({
         const isFav = initialFavorite || fav;
 
         router.push({
-            pathname: '/Park/PageParc',
+            pathname: '/Parks/Park/PageParc',
             params: {
                 id,
                 isFavorite: isFav.toString(),

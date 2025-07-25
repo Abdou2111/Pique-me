@@ -1,4 +1,4 @@
-import { parkActivities } from '../components/Activity';
+import { parkActivities } from '../../../components/Activity';
 
 /**
  * Convertit un nom d'installation (API MTL) en un identifiant de parkActivities
