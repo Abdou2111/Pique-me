@@ -24,6 +24,8 @@ const PARKS_RESOURCE_ID = "35796624-15df-4503-a569-797665f8768e";
 const INST_RESOURCE_ID  = "2dac229f-6089-4cb7-ab0b-eadc6a147d5d";
 const CKAN_BASE   = "https://donnees.montreal.ca/api/3/action";
 
+const MIN_SUPERFICIE = 5; // (hectares)
+
 // ─── Helpers ───────────────────────────────────────────────────────────────
 async function getSignedGeojsonUrl(resourceId) {
     const metaUrl = `${CKAN_BASE}/resource_show?id=${resourceId}`;
@@ -53,10 +55,14 @@ async function downloadGeojson(url) {
 
 function filterParcFeatures(fc) {
     return fc.features.filter(
-        (f) =>
-            f?.properties &&
-            typeof f.properties.Type === "string" &&
-            /parc/i.test(f.properties.Type)
+        (f) => {
+            const p = f?.properties;
+            if (!p) return false;
+            const isParc  = typeof p.Type === "string" && /parc/i.test(p.Type);
+            const area  = Number(p.SUPERFICIE);
+            const bigEnough = !Number.isNaN(area) && area >= MIN_SUPERFICIE;
+            return isParc && bigEnough;
+        }
     );
 }
 

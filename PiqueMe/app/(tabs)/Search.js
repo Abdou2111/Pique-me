@@ -154,7 +154,7 @@ export default function Search() {
             });
         };
         load();
-    }, []);
+    }, [region]);
 
     /* helper – is a park inside current viewport? */
     const inside = useCallback((p, r) => {
