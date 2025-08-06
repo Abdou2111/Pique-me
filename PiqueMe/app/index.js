@@ -44,23 +44,23 @@ export default function LoginScreen() {
                     const errorMessage = error.message;
                     // Handle Errors here.
                     if (errorCode === 'auth/invalid-credential') {
-                        setError("Invalid credentials. Please check your email and password.");
+                        setError("Email ou mot de passe erroné.");
                     } else if (errorCode === 'auth/invalid-email') {
-                        setError("Invalid email format.");
+                        setError("Format email invalide.");
                     } else {
-                        setError(`Sign-in error: ${errorMessage}`);
+                        setError(`Erreur de connexion: ${errorMessage}`);
                     }
                     // You can display an error message to the user here
                 });
         } catch (error) {
-            console.error("An unexpected error occurred:", error);
+            console.error("Erreur inattendue", error);
             // Handle unexpected errors
         }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <Image source={require('../assets/images/Logoo.png')} style={styles.logo} />
+            <Image source={require('../assets/images/Logoo.png')} style={styles.logo} resizeMode="contain" />
 
             <TextInput
                 label="Email"

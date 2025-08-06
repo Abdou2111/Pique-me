@@ -18,7 +18,7 @@ export default function Index() {
 
     const handleSignUp = () => {
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError("Les mots de passe ne correspondent pas.");
             return;
         }
 
@@ -33,18 +33,18 @@ export default function Index() {
             })
             .catch((error) => {
                 if(error.code === 'auth/email-already-exists') {
-                    setError("This email is already in use.");
+                    setError("Courriel déjà utilisé.");
                 } else if(error.code === 'auth/invalid-email') {
-                    setError("Invalid email format.");
+                    setError("Email invalide.");
                 } else {
-                    setError(`Sign-up error: ${error.message}`);
+                    setError(`Erreur d'inscription: ${error.message}`);
                 }
             });
     };
 
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/images/Logoo.png')} style={styles.logo} />
+            <Image source={require('../../assets/images/Logoo.png')} style={styles.logo} resizeMode="contain" />
 
             <TextInput
                 label="Email"
@@ -57,7 +57,7 @@ export default function Index() {
             />
 
             <TextInput
-                label="Password"
+                label="Mot de passe"
                 value={password}
                 onChangeText={text => {
                     setPassword(text);
@@ -70,7 +70,7 @@ export default function Index() {
             />
 
             <TextInput
-                label="Confirm Password"
+                label="Confirmer le mot de passe"
                 value={confirmPassword}
                 onChangeText={text => {
                     setConfirmPassword(text);
@@ -84,14 +84,14 @@ export default function Index() {
 
             {error && <Text style={{ color: 'red', marginBottom: 16 }}>{error}</Text>}
             <Button mode="contained" onPress={handleSignUp} style={styles.button}>
-                Sign Up
+                S'inscrire
             </Button>
 
             <Text
                 style={styles.loginText}
                 onPress={() => router.replace('./')}
             >
-                Already have an account? Log in
+                Vous avez déjà un compte ? Connectez-vous
             </Text>
 
             <HorizontalRule color="#ccc" thickness={1} margin={20} />
