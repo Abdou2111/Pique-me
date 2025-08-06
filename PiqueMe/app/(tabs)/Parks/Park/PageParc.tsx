@@ -1,3 +1,5 @@
+//TODO: centrer la carte  sur le parc
+
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -25,7 +27,7 @@ import fakeAvis from "@/app/(tabs)/Parks/Park/fakeAvis";
 import AvisList from "@/app/(tabs)/Parks/Park/components/AvisList";
 import commentaire from "@/app/components/commentaire";
 import Commentaire from "@/app/components/commentaire";
-
+import { router } from 'expo-router';
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -38,6 +40,8 @@ export default function PageParc() {
     const [visible, setVisible] = useState(false);
     const [activitiesToDisplay, setActivitiesToDisplay] = useState<any>(null);
     const [imageIndex, setImageIndex] = useState(0);
+    const [coordonnees, setCoordonnees] = useState<any>(null);
+
 
     const images = [
         'https://picsum.photos/id/1018/800/400',
@@ -58,7 +62,41 @@ export default function PageParc() {
 
     const handleReservation = () => {
         console.log("Réservation demandée !");
+        //console.log("Coordonnées du parc: ", coordonnees);
+
+        const coordAire = getCoordAire();
+        //console.log("Coordonnées des aires: ", coordAire);
+
+        console.log("SupaaaaaAAA", park.SUPERFICIE);
+
+        router.push({
+            pathname: '/Parks/Reservation/Reservation',
+            params: {
+                coordParc: JSON.stringify(coordonnees),
+                coordAires: JSON.stringify(coordAire),
+                superficie: park.SUPERFICIE?.toString() || "0",
+                nomParc: park.Nom,
+
+
+            },
+        });
     };
+
+    const getCoordAire = () => {
+        if (!park || !park.installations) return [];
+
+        return park.installations
+            .filter((inst: any) =>
+                inst.NOM?.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "") === "aire de pique-nique"
+                && inst.centroid
+            )
+            .map((inst: any) => ({
+                id: inst.ID,
+                lat: inst.centroid.lat,
+                lng: inst.centroid.lng,
+            }));
+    };
+
 
     useEffect(() => {
         if (typeof isFavoriteParam === 'string') {
@@ -70,9 +108,15 @@ export default function PageParc() {
                 const result = await getParkById(id);
 
                 if (result) {
-                    console.log("Installations brutes :", result.installations);
+                    //console.log("Installations brutes :", result.installations);
                     setPark(result);
                     setActivitiesToDisplay(mapInstallationsToActivities(result.installations));
+                    setCoordonnees(result.centroid);
+                    //console.log("centroid :" , result.centroid);
+                    //console.log('');
+                    //console.log('');
+                    //console.log("Saved coords: ", coordonnees);
+                    //console.log(result.Nom);
                     //console.log(activitiesToDisplay[0]);
                 }
 
@@ -85,9 +129,13 @@ export default function PageParc() {
     if (!park) return <Text style={{ margin: 20 }}>Parc non trouvé.</Text>;
     console.log("Activities to display: ", activitiesToDisplay);
 
+
+
+
+
     return (
         <>
-            <Header />
+            <Header title={undefined} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{flex: 1}}
