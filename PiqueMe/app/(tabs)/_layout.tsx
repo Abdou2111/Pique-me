@@ -1,6 +1,7 @@
 import React from "react";
 import { StatusBar } from "react-native";
-import { Tabs } from "expo-router";
+import { Tabs, router} from "expo-router";
+import {useSheet} from "@/app/stores/useSheet";
 
 // Icons
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -8,6 +9,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function RootLayout() {
+
+    const { expand, collapse } = useSheet();
     return (
         <>
             <StatusBar barStyle="light-content" />
@@ -45,6 +48,13 @@ export default function RootLayout() {
                             <FontAwesome name="search" size={size} color={color} />
                         ),
                     }}
+                    listeners={{
+                        tabPress: e => {
+                            e.preventDefault();        // stay on the same component
+                            collapse();                // collapse the sheet
+                            router.navigate("/Search"); // navigate to Search
+                        },
+                    }}
                 />
 
                 {/* PARKS  */}
@@ -58,6 +68,13 @@ export default function RootLayout() {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialIcons name="park" size={size} color={color} />
                         ),
+                    }}
+                    listeners={{
+                        tabPress: e => {
+                            e.preventDefault();
+                            expand();
+                            router.navigate("/Parks");
+                        },
                     }}
                 />
 

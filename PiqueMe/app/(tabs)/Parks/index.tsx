@@ -11,7 +11,7 @@ export default function ParksIndex() {
         <View style={S.page}>
 
             {/* bandeau logo‑cœur‑menu */}
-            <Header />
+            <Header title={undefined} />
 
             {/* démo de navigation */}
             <Link
