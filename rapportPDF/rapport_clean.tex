@@ -3,6 +3,8 @@
 % --------------------------------------------------------
 %              PACKAGES ET CONFIGURATION
 % --------------------------------------------------------
+%              PACKAGES ET CONFIGURATION
+% --------------------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
@@ -12,15 +14,17 @@
 \onehalfspacing
 \usepackage{csquotes}
 \usepackage{graphicx}
-\usepackage{hyperref}
-\hypersetup{
-  colorlinks=true,
-  linkcolor=black,
-  urlcolor=blue,
-  citecolor=black,
-  pdfauthor={Naromba Condé, Tunwend-raabo Fahîma Carmen DABO, Abdelghafour Rahmouni},
-  pdftitle={IFT3150 - Rapport final : Pique-Me}
-}
+
+\usepackage[dvipsnames]{xcolor} % Active les couleurs étendues
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=OliveGreen,
+    citecolor=black,
+    pdfauthor={Naromba Condé, Tunwend-raabo Fahîma Carmen DABO, Abdelghafour Rahmouni},
+    pdftitle={IFT3150 - Rapport final : Pique-Me}
+]{hyperref}
+
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=1.5em}
 \setlist[enumerate]{leftmargin=1.5em}
@@ -44,6 +48,8 @@ Dans le cadre du cours IFT3150 : Projet d'informatique}
 % --------------------------------------------------------
 %                        DOCUMENT
 % --------------------------------------------------------
+
+
 \begin{document}
 \pagenumbering{gobble}
 
@@ -83,18 +89,32 @@ majeurs. Pourtant, il n'existe toujours pas de moyen numérique unique
 et fiable pour connaître les différents espaces, se renseigner sur l'accessibilité ou la
 disponibilité d'un équipement avant de s'y rendre.
 
+Il existe l'initiative \textit{Accès nature} permet de 
+réserver gratuitement des accès dans plus de trente parcs régionaux via le site \href{https://www.parq.ca/ressources/acces-nature}{toutlemondedehors.ca}, 
+mais cette ressource est encore méconnue du grand public et est plus centrée sur les parcs régionaux du Québec.
+
 \subsection*{Problématique}
 Les usagers se posent invariablement les mêmes questions :
 \textit{Le parc autorise-t-il les barbecues ? Est-il accessible aux personnes à mobilité réduite ?
-Reste-t-il des emplacements libres ? Comment trouver le parc qui repond le mieux à nos préférences ?}  
-Les informations sont dispersées ou incomplètes ce qui crée une
-planification laborieuse et une expérience parfois décevante.
+Reste-t-il des emplacements libres ? Comment trouver le parc qui répond le mieux à nos préférences ?}  
+Ces interrogations sont loin d'être anodines. 
+
+Par exemple, à Montréal, l'utilisation de barbecues est 
+autorisée dans certains parcs comme Angrignon, Jarry ou La Fontaine, mais elle dépend du type d'appareil 
+(charbon ou propane) et de la signalisation sur place. De plus, des barbecues collectifs sont disponibles 
+dans certains lieux, mais peu de gens savent où les trouver dans le parc.
+
+
+En somme, les informations sont dispersées, parfois incomplètes ou obsolètes, ce qui crée une planification laborieuse et une expérience 
+parfois décevante. Une centralisation intelligente et interactive de ces données améliorerait considérablement l'expérience des usagers.
+
 
 \subsection*{Proposition}
-\textbf{Pique-Me} vise à concentrer toutes ces données dans une
+\href{https://github.com/Abdou2111/Pique-me}{\textbf{Pique-Me}} vise à concentrer toutes ces données dans une
 application mobile intuitive : carte interactive, fiches synthétiques de
 parcs, filtres personnalisés, réservation d'emplacements ou d'activités,
 système d'avis/badges et notifications d'événements.
+
 
 \subsection*{Objectifs}
 \vspace{-0.25\baselineskip}
@@ -157,7 +177,7 @@ L'utilisateur peut ajouter ou retirer un parc de sa liste de favoris, qu'il peut
 
 \subsection{Exigences non fonctionnelles}
 \begin{description}
-  \item[Performance] L'application doit être rapide : la plupart des requêtes doivent s'afficher en un temps minime. L'écran d'accueil doit être mis à jour automatiquement en fonction des préférences et de la localisation de l'utilisateur.
+  \item[Performance] L'application doit être rapide : la plupart des requêtes doivent s'afficher en moins de 3 secondes. L'écran d'accueil doit être mis à jour automatiquement en fonction des préférences et de la localisation de l'utilisateur.
   
   \item[Sécurité] Les connexions doivent être sécurisées, et les mots de passe bien protégés. Seules les personnes autorisées peuvent accéder aux données.
   
@@ -172,14 +192,14 @@ L'utilisateur peut ajouter ou retirer un parc de sa liste de favoris, qu'il peut
 
 
 %-------------------------------------------------------------------
-\subsection{Méthodologie retenue}
+\subsection{Méthodologie}
 
 Pour développer notre application \textit{Pique-Me}, nous avons choisi une approche Agile en utilisant la méthode Scrum. Cette méthode permet d'avancer de manière itérative, en découpant le projet en sprints de une semaines. Chaque sprint se concentre sur un ensemble clair de fonctionnalités à livrer, facilitant la planification, l'adaptation continue et l'évaluation du progrès.
 
 
 Cette approche nous permet de rester flexibles, réactifs aux retours, et de garantir un produit fonctionnel à chaque étape importante du projet.
 
-
+\clearpage
 % =========================================================
 % 3. CONCEPTION
 % =========================================================
@@ -227,11 +247,12 @@ On y voit aussi comment ces éléments sont liés entre eux.
 \subsection{Choix technologiques et justifications}
 
 \begin{itemize}
-  \item \textbf{React Native + Expo :} développement multiplateforme rapide, composants UI réutilisables, configuration simplifiée.
-  \item \textbf{Node.js + Express :} création d'une API REST structurée et découplée de l'interface.
-  \item \textbf{Firebase :} base de données temps réel, authentification sécurisée, simplicité de déploiement.
-  \item \textbf{API Ville de Montréal :} source officielle des données des parcs.
-  \item \textbf{Expo Location :} géolocalisation pour rechercher les parcs à proximité.
+  \item \textbf{\href{https://reactnativeelements.com/docs}{React Native} + \href{https://expo.dev/}{Expo} :} développement multiplateforme rapide, composants UI réutilisables, configuration simplifiée.
+  \item \textbf{\href{https://nodejs.org/fr}{Node.js} + \href{https://expressjs.com/}{Express} :} création d'une API REST structurée et découplée de l'interface.
+  \item \href{https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChsSEwiM4Orq6PmOAxViNwgFHbacK74YACICCAEQABoCbWQ&ae=2&co=1&ase=2&gclid=Cj0KCQjwndHEBhDVARIsAGh0g3CzPQvyJd7N1QFfaHlNtQieItuY35or26fmic90wBTJjrjov_X6acgaAh71EALw_wcB&ohost=www.google.com&cid=CAESeuD2dnsW8F6EJZBiaVN85dCR5-w8i7Bxvv0zbySgiBEsgnlWa9mX6tfoEvZI6bz1pF3d6ToXgs7VDoFJs4AabCc_2EMsFT3_-5KD6H5ks0JrQLvrG4FbyLgAoQt3RyvcFPnw3QdtBBGOQ776bJXTnpTxa3EGUF2VetWl&category=acrcp_v1_79&sig=AOD64_1rXZkpno1mca9k1OC4XcXaRW9hPQ&q&nis=4&adurl&ved=2ahUKEwiG7eXq6PmOAxVOv4kEHVFFJ2EQ0Qx6BAgJEAE}{\textbf{Firebase} :} base de données temps réel, authentification sécurisée, simplicité de déploiement.
+  \item \href{https://donnees.montreal.ca/dataset/grands-parcs-parcs-d-arrondissements-et-espaces-publics}{\textbf{API Ville de Montréal} :} source officielle des données des parcs et leurs installations.
+  \item \href{https://donnees.montreal.ca/dataset/installations-recreatives-sportives-et-culturelles}{\textbf{API installations Ville Montréal} : } source officielle sur les installations sportives, recreatives et culturelles de la ville de Montréal.
+  \item \href{https://docs.expo.dev/versions/latest/sdk/location/}{\textbf{Expo Location} :} géolocalisation pour rechercher les parcs à proximité.
 \end{itemize}
 
 %----------------------------------------------------------
@@ -315,15 +336,9 @@ Le design de l'application a été pensé pour offrir une expérience intuitive,
 \vspace{0.5em}
 \noindent\textbf{Lien Figma :} \url{https://www.figma.com/design/kP7QEAejfvUB2yia4cleau/Pique-me?node-id=0-1}
 
-\subsection{Contraintes et considérations}
-
-\begin{itemize}
-  \item \textbf{Techniques :} limiter le nombre d'appels vers les services externes, garantir une connexion correcte même si le réseau est lent ou instable.
-  \item \textbf{Réglementaires :} respecter la vie privée des utilisateurs ; permettre la suppression de leurs données s'ils le demandent.
-  \item \textbf{Fonctionnelles :} demander à l'utilisateur de confirmer sa réservation, l'annuler automatiquement s'il ne se présente pas dans l'heure, et éviter qu'un même créneau soit réservé deux fois.
-\end{itemize}
 
 
+\clearpage
 % =========================================================
 % 4. IMPLÉMENTATION ET RÉALISATION TECHNIQUE
 % =========================================================
@@ -403,7 +418,7 @@ Si un badge reçoit beaucoup de votes, le parc obtient une médaille (bronze, ar
 %----------------------------------------------------------
 
 
-
+\clearpage
 % =========================================================
 % 5. ÉVALUATION
 % =========================================================
@@ -413,6 +428,8 @@ Si un badge reçoit beaucoup de votes, le parc obtient une médaille (bronze, ar
 \subsection{Évaluation d'utilisabilité}
 \subsection{Comparaison avec les objectifs initiaux}
 
+
+\clearpage
 % =========================================================
 % 6. DISCUSSION CRITIQUE
 % =========================================================
@@ -483,7 +500,7 @@ pour un nouveau développeur.
 
 \medskip\noindent
 
-
+\clearpage
 % =========================================================
 % 7. CONCLUSION
 % =========================================================
@@ -509,7 +526,7 @@ Nous avons mesuré la force et les limites d'une solution entièrement basée su
 En définitive, \textit{Pique-Me} prouve qu'une architecture simple et modulaire peut rendre un service concret et apprécié. Avec ces améliorations, nous pourrons \textbf{étendre la couverture et faire de \textit{Pique-Me} l'outil de référence des sorties dans les parcs montréalais}.
 
 
-
+\clearpage
 % =========================================================
 % 8. REMERCIEMENTS (facultatif)
 % =========================================================
@@ -522,13 +539,13 @@ Nous remercions également \textbf{M. Louis-Édouard Lafontant}, notre enseignan
 Enfin, nous tenons à saluer \textbf{notre propre engagement} : malgré une session intense, nous avons su rester investis, rigoureux et persévérants, jusqu'à la finalisation de ce projet.
 
 
+\clearpage
 % =========================================================
 % 9. RÉFÉRENCES
 % =========================================================
 \section*{Références}
 
 \begin{itemize}
-  \item Lafontant, L.-É. \textit{Supervision, encadrement et conseils}. 
 
   \item Google. (2024). \textit{Documentation Firebase}. Disponible en ligne : \url{https://firebase.google.com/docs}
 
@@ -540,10 +557,62 @@ Enfin, nous tenons à saluer \textbf{notre propre engagement} : malgré une sess
 \end{itemize}
 
 
+\clearpage
 % =========================================================
 % 10. ANNEXES
 % =========================================================
 \appendix
 \section{Annexes}
+
+Capture d'écran des principales page du prototype figma:
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/HomeConnected.pdf}
+  \caption{Page d'accueil de l'application Pique-Me.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.5\linewidth]{attachments/Evaluation1.pdf}
+  \caption{Page d'évaluation.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/PageParcsFavori.pdf}
+  \caption{Page des favoris.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/pageParc.pdf}
+  \caption{Page d'un parc.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/PageActivite.pdf}
+  \caption{Page d'une activité si elle est reservable.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/reserverSpot1.pdf}
+  \caption{Première étape de la réservation: Choisir le spot souhaité.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/reserverSpot2.pdf}
+  \caption{Deuxième étape de la réservation: Choisir le le créneau horaire.}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{attachments/PageUser.pdf}
+  \caption{Page d'affichage des informations liées à l'utilisateur connecté.}
+\end{figure}
+
 
 \end{document}
