@@ -37,9 +37,21 @@
 \contentsline {subsection}{\numberline {4.8}Difficultés résolues}{17}{subsection.4.8}%
 \contentsline {section}{\numberline {5}Évaluation}{19}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Tests unitaires et fonctionnels}{19}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Évaluation de performance}{19}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Évaluation d'utilisabilité}{19}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Comparaison avec les objectifs initiaux}{19}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Discussion critique}{20}{section.6}%
-\contentsline {section}{\numberline {7}Conclusion}{22}{section.7}%
-\contentsline {section}{\numberline {A}Annexes}{25}{appendix.A}%
+\contentsline {paragraph}{Méthode.}{19}{section*.14}%
+\contentsline {paragraph}{Unitaires (exemples représentatifs).}{19}{section*.15}%
+\contentsline {paragraph}{Fonctionnels (scénarios clés).}{19}{section*.16}%
+\contentsline {paragraph}{Couverture.}{20}{section*.17}%
+\contentsline {subsection}{\numberline {5.2}Évaluation de performance}{20}{subsection.5.2}%
+\contentsline {paragraph}{Protocole.}{20}{section*.18}%
+\contentsline {paragraph}{Résultats synthétiques.}{20}{section*.19}%
+\contentsline {paragraph}{Bottlenecks observés et mitigations.}{20}{section*.20}%
+\contentsline {subsection}{\numberline {5.3}Évaluation d’utilisabilité}{20}{subsection.5.3}%
+\contentsline {paragraph}{Méthode.}{20}{section*.21}%
+\contentsline {paragraph}{Résultats.}{21}{section*.22}%
+\contentsline {paragraph}{Points d’amélioration issus des tests.}{21}{section*.23}%
+\contentsline {subsection}{\numberline {5.4}Comparaison avec les objectifs initiaux}{21}{subsection.5.4}%
+\contentsline {paragraph}{Limites actuelles.}{21}{section*.24}%
+\contentsline {paragraph}{Conclusion de l’évaluation.}{22}{section*.25}%
+\contentsline {section}{\numberline {6}Discussion critique}{23}{section.6}%
+\contentsline {section}{\numberline {7}Conclusion}{25}{section.7}%
+\contentsline {section}{\numberline {A}Annexes}{28}{appendix.A}%
