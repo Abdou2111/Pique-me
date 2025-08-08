@@ -14,6 +14,7 @@
 \onehalfspacing
 \usepackage{csquotes}
 \usepackage{graphicx}
+\usepackage{pdflscape}
 
 \usepackage[dvipsnames]{xcolor} % Active les couleurs étendues
 \usepackage[
@@ -564,55 +565,84 @@ Enfin, nous tenons à saluer \textbf{notre propre engagement} : malgré une sess
 \appendix
 \section{Annexes}
 
-Capture d'écran des principales page du prototype figma:
+Capture d'écran des principales pages du prototype Figma:
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{attachments/HomeConnected.pdf}
-  \caption{Page d'accueil de l'application Pique-Me.}
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[height=3\linewidth]{attachments/HomeConnected.pdf}
+      \caption{Page d'accueil.}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/Evaluation1.pdf}
+      \caption{Page d'évaluation.}
+    }
+  \end{minipage}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.5\linewidth]{attachments/Evaluation1.pdf}
-  \caption{Page d'évaluation.}
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/PageParcsFavori.pdf}
+      \caption{Page des favoris.}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[height=3\linewidth]{attachments/pageParc.pdf}
+      \caption{Page d'un parc.}
+    }
+  \end{minipage}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{attachments/PageParcsFavori.pdf}
-  \caption{Page des favoris.}
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/PageActivite.pdf}
+      \caption{Page d'une activité si elle est réservable.}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/reserverSpot1.pdf}
+      \caption{Choix du spot pour la réservation.}
+    }
+  \end{minipage}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.9\linewidth]{attachments/pageParc.pdf}
-  \caption{Page d'un parc.}
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/reserverSpot2.pdf}
+      \caption{Choix du créneau horaire.}
+    }
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\linewidth}
+    \vtop{
+      \centering
+      \includegraphics[width=\linewidth]{attachments/PageUser.pdf}
+      \caption{Page utilisateur connecté.}
+    }
+  \end{minipage}
 \end{figure}
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\linewidth]{attachments/PageActivite.pdf}
-  \caption{Page d'une activité si elle est reservable.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\linewidth]{attachments/reserverSpot1.pdf}
-  \caption{Première étape de la réservation: Choisir le spot souhaité.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\linewidth]{attachments/reserverSpot2.pdf}
-  \caption{Deuxième étape de la réservation: Choisir le le créneau horaire.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\linewidth]{attachments/PageUser.pdf}
-  \caption{Page d'affichage des informations liées à l'utilisateur connecté.}
-\end{figure}
 
 
 \end{document}
