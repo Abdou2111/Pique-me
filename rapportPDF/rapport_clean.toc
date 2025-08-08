@@ -7,33 +7,39 @@
 \contentsline {subsection}{\numberline {2.4}Méthodologie}{4}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Conception}{5}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Architecture du système}{5}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Modèle de données}{5}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Choix technologiques et justifications}{5}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Diagrammes d'activités (flux utilisateurs)}{7}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Inscription et connexion}{7}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Recherche et filtrage de parcs}{7}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.3}Réservation d'un emplacement}{7}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {3.4.4}Réservation d'une activité}{7}{subsubsection.3.4.4}%
-\contentsline {subsubsection}{\numberline {3.4.5}Ajout ou retrait d'un favori}{9}{subsubsection.3.4.5}%
-\contentsline {subsubsection}{\numberline {3.4.6}Ajout d'un avis}{9}{subsubsection.3.4.6}%
-\contentsline {subsubsection}{\numberline {3.4.7}Sondage post-visite}{9}{subsubsection.3.4.7}%
-\contentsline {subsection}{\numberline {3.5}Prototypes et maquettes}{9}{subsection.3.5}%
-\contentsline {section}{\numberline {4}Implémentation et réalisation technique}{13}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Particularités rencontrées}{13}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Flux principaux par page}{14}{subsection.4.2}%
-\contentsline {paragraph}{Accueil \\}{14}{section*.6}%
-\contentsline {paragraph}{Recherche \\}{14}{section*.7}%
-\contentsline {paragraph}{Détail d'un parc \\}{14}{section*.8}%
-\contentsline {paragraph}{Réservation \\}{14}{section*.9}%
-\contentsline {paragraph}{Favoris \\}{14}{section*.10}%
-\contentsline {paragraph}{Profil \\}{14}{section*.11}%
-\contentsline {paragraph}{Avis \\}{15}{section*.12}%
-\contentsline {subsection}{\numberline {4.3}Difficultés résolues}{15}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Évaluation}{16}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Tests unitaires et fonctionnels}{16}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Évaluation de performance}{16}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Évaluation d'utilisabilité}{16}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Comparaison avec les objectifs initiaux}{16}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Discussion critique}{17}{section.6}%
-\contentsline {section}{\numberline {7}Conclusion}{19}{section.7}%
-\contentsline {section}{\numberline {A}Annexes}{22}{appendix.A}%
+\contentsline {subsection}{\numberline {3.2}Modèle de données}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Choix technologiques et justifications}{7}{subsection.3.3}%
+\contentsline {paragraph}{\textbf {\href {https://reactnative.dev}{React Native}} + \textbf {\href {https://expo.dev}{Expo}} — interface mobile}{7}{section*.6}%
+\contentsline {paragraph}{\textbf {\href {https://expo.github.io/router}{Expo Router}} — navigation}{7}{section*.7}%
+\contentsline {paragraph}{\textbf {\href {https://callstack.github.io/react-native-paper}{react-native-paper}} + \textbf {\href {https://icons.expo.fyi}{bibliothèques d’icônes}} — interface}{8}{section*.8}%
+\contentsline {paragraph}{\textbf {\href {https://github.com/react-native-maps/react-native-maps}{react-native-maps}} + \textbf {\href {https://docs.expo.dev/versions/latest/sdk/location/}{Expo Location}} + \textbf {\href {https://github.com/firebase/geofire-js}{geofire-common}} — carte et proximité}{8}{section*.9}%
+\contentsline {paragraph}{\textbf {\href {https://firebase.google.com}{Firebase}} — comptes et données en temps réel}{8}{section*.10}%
+\contentsline {paragraph}{\textbf {\href {https://donnees.montreal.ca/dataset/grands-parcs-parcs-d-arrondissements-et-espaces-publics}{Données parcs Montréal}} + \textbf {\href {https://donnees.montreal.ca/dataset/installations-recreatives-sportives-et-culturelles}{installations}} — import et unification}{8}{section*.11}%
+\contentsline {paragraph}{\textbf {Contexts + hooks} (et \textbf {Zustand} ponctuel) — gestion d’état}{8}{section*.12}%
+\contentsline {paragraph}{\textbf {Synthèse et risques}}{9}{section*.13}%
+\contentsline {subsection}{\numberline {3.4}Diagrammes d'activités (flux utilisateurs)}{9}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Inscription et connexion}{9}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Recherche et filtrage de parcs}{10}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Réservation d'un emplacement}{10}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Réservation d'une activité}{11}{subsubsection.3.4.4}%
+\contentsline {subsubsection}{\numberline {3.4.5}Ajout ou retrait d'un favori}{12}{subsubsection.3.4.5}%
+\contentsline {subsubsection}{\numberline {3.4.6}Ajout d'un avis}{13}{subsubsection.3.4.6}%
+\contentsline {subsubsection}{\numberline {3.4.7}Sondage post-visite}{14}{subsubsection.3.4.7}%
+\contentsline {subsection}{\numberline {3.5}Prototypes et maquettes}{15}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Implémentation et réalisation technique}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Front-end uniquement : source de vérité et synchro}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Recherche + Carte }{16}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Fiche parc : actions clés}{16}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Réservation : flux et garanties}{17}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Favoris et profil}{17}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Navigation (Expo Router) }{17}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Notes d’implémentation côté code }{17}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Difficultés résolues}{17}{subsection.4.8}%
+\contentsline {section}{\numberline {5}Évaluation}{19}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Tests unitaires et fonctionnels}{19}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Évaluation de performance}{19}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Évaluation d'utilisabilité}{19}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Comparaison avec les objectifs initiaux}{19}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Discussion critique}{20}{section.6}%
+\contentsline {section}{\numberline {7}Conclusion}{22}{section.7}%
+\contentsline {section}{\numberline {A}Annexes}{25}{appendix.A}%

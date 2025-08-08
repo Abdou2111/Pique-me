@@ -15,6 +15,9 @@
 \usepackage{csquotes}
 \usepackage{graphicx}
 \usepackage{pdflscape}
+\usepackage{float} 
+\DeclareUnicodeCharacter{2009}{\,}  
+\DeclareUnicodeCharacter{202F}{\,}
 
 \usepackage[dvipsnames]{xcolor} % Active les couleurs étendues
 \usepackage[
@@ -227,7 +230,7 @@ L'application \textit{Pique-Me} repose sur une architecture en trois couches, ch
   \end{itemize}
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/architecture.pdf}
   \caption{Architecture logique de l'application Pique-Me.}
@@ -239,22 +242,72 @@ Le schéma suivant montre le modèle de données UML utilisé pour l'application
 Il présente les éléments importants de l'application, comme les utilisateurs, les parcs, les réservations, les événements, les équipements, les avis et les photos.
 On y voit aussi comment ces éléments sont liés entre eux. 
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/donnee.pdf}
   \caption{Diagramme Entité–Association de Pique-Me.}
 \end{figure}
 
+
 \subsection{Choix technologiques et justifications}
 
+\paragraph{\textbf{\href{https://reactnative.dev}{React Native}} + \textbf{\href{https://expo.dev}{Expo}} — interface mobile}
 \begin{itemize}
-  \item \textbf{\href{https://reactnativeelements.com/docs}{React Native} + \href{https://expo.dev/}{Expo} :} développement multiplateforme rapide, composants UI réutilisables, configuration simplifiée.
-  \item \textbf{\href{https://nodejs.org/fr}{Node.js} + \href{https://expressjs.com/}{Express} :} création d'une API REST structurée et découplée de l'interface.
-  \item \href{https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChsSEwiM4Orq6PmOAxViNwgFHbacK74YACICCAEQABoCbWQ&ae=2&co=1&ase=2&gclid=Cj0KCQjwndHEBhDVARIsAGh0g3CzPQvyJd7N1QFfaHlNtQieItuY35or26fmic90wBTJjrjov_X6acgaAh71EALw_wcB&ohost=www.google.com&cid=CAESeuD2dnsW8F6EJZBiaVN85dCR5-w8i7Bxvv0zbySgiBEsgnlWa9mX6tfoEvZI6bz1pF3d6ToXgs7VDoFJs4AabCc_2EMsFT3_-5KD6H5ks0JrQLvrG4FbyLgAoQt3RyvcFPnw3QdtBBGOQ776bJXTnpTxa3EGUF2VetWl&category=acrcp_v1_79&sig=AOD64_1rXZkpno1mca9k1OC4XcXaRW9hPQ&q&nis=4&adurl&ved=2ahUKEwiG7eXq6PmOAxVOv4kEHVFFJ2EQ0Qx6BAgJEAE}{\textbf{Firebase} :} base de données temps réel, authentification sécurisée, simplicité de déploiement.
-  \item \href{https://donnees.montreal.ca/dataset/grands-parcs-parcs-d-arrondissements-et-espaces-publics}{\textbf{API Ville de Montréal} :} source officielle des données des parcs et leurs installations.
-  \item \href{https://donnees.montreal.ca/dataset/installations-recreatives-sportives-et-culturelles}{\textbf{API installations Ville Montréal} : } source officielle sur les installations sportives, recreatives et culturelles de la ville de Montréal.
-  \item \href{https://docs.expo.dev/versions/latest/sdk/location/}{\textbf{Expo Location} :} géolocalisation pour rechercher les parcs à proximité.
+  \item \textbf{React Native:} nous écrivons un seul code pour \emph{iOS} et \emph{Android}, ce qui réduit le temps de développement et la maintenance tout en gardant des écrans fluides et natifs.
+  \item \textbf{Expo:} Des outils prêts à l’emploi (tests sur téléphone, permissions, galerie, localisation) qui évitent une configuration lourde et nous laissent nous concentrer sur l’expérience.
+  \item \textbf{Concrètement:} Nous avons construit les écrans \emph{Recherche} (carte et filtres), \emph{Page parc} (photos, badges, avis, bouton «Réserver»), \emph{Profil} (préférences, favoris) et des composants réutilisables (\emph{Parc}, \emph{ParcFavoris}, \emph{SpotsImages}, \emph{RatingCard}, \emph{ActivityBadge}, \emph{AvisList}, \emph{Commentaire}, \emph{HeartButton}).
+  \item \textbf{Alternatives écartées:} \emph{Natif pur} (Swift/Kotlin) : deux applis à maintenir donc coûts/délais plus élevés. \emph{Flutter} : excellent, mais l’équipe est déjà à l’aise avec React/JS, d’où un démarrage plus rapide avec React Native.
 \end{itemize}
+
+\paragraph{\textbf{\href{https://expo.github.io/router}{Expo Router}} — navigation}
+\begin{itemize}
+  \item \textbf{Principe.} Un fichier correspond à un écran : ajouter une page revient à ajouter un fichier au bon endroit, sans lourde configuration.
+  \item \textbf{Impact.} La structure est claire et facile à maintenir ; l’onboarding est plus rapide.
+\end{itemize}
+
+\paragraph{\textbf{\href{https://callstack.github.io/react-native-paper}{react-native-paper}} + \textbf{\href{https://icons.expo.fyi}{bibliothèques d’icônes}} — interface}
+\begin{itemize}
+  \item \textbf{Pourquoi.} Des composants UI cohérents (boutons, cartes, champs) et des icônes standard (Ionicons/FontAwesome) améliorent la lisibilité et accélèrent l’évolution de l’interface.
+  \item \textbf{Effet.} Des écrans propres et familiers, par exemple les cartes de parc (titre, note, distance, cœur), les badges d’activités et le carrousel d’images.
+\end{itemize}
+
+\paragraph{\textbf{\href{https://github.com/react-native-maps/react-native-maps}{react-native-maps}} + \textbf{\href{https://docs.expo.dev/versions/latest/sdk/location/}{Expo Location}} + \textbf{\href{https://github.com/firebase/geofire-js}{geofire-common}} — carte et proximité}
+\begin{itemize}
+  \item \textbf{Carte.} \emph{react-native-maps} affiche la carte et les marqueurs avec de bonnes performances.
+  \item \textbf{Position.} \emph{Expo Location} centre la carte autour de l’utilisateur (avec son accord) pour montrer d’abord ce qui est utile.
+  \item \textbf{Recherche locale.} Chaque parc est indexé par un \emph{geohash} (petit code lié à sa position) via \emph{geofire-common}, ce qui permet d’interroger uniquement la zone visible : résultats rapides et carte lisible (pas 500 points d’un coup).
+\end{itemize}
+
+\paragraph{\textbf{\href{https://firebase.google.com}{Firebase}} — comptes et données en temps réel}
+\begin{itemize}
+  \item \textbf{Auth.} Inscription/connexion sécurisées sans serveur à maintenir.
+  \item \textbf{Firestore.} Données (parcs, favoris, préférences, profils, réservations, avis) synchronisées en temps réel : quand une information change, l’écran se met à jour automatiquement.
+  \item \textbf{Règles d’accès.} Nous définissons qui peut lire/écrire quelles données (par exemple, chacun ne modifie que son propre profil).
+  \item \textbf{Alternative.} Une API maison (Node/Express + Mongo/PostgreSQL) offrirait plus de liberté mais demanderait hébergement, sécurité et monitoring ; Firebase couvre le besoin avec moins d’opérations.
+\end{itemize}
+
+\paragraph{\textbf{\href{https://donnees.montreal.ca/dataset/grands-parcs-parcs-d-arrondissements-et-espaces-publics}{Données parcs Montréal}} + \textbf{\href{https://donnees.montreal.ca/dataset/installations-recreatives-sportives-et-culturelles}{installations}} — import et unification}
+\begin{itemize}
+  \item \textbf{Constat.} Les sources officielles sont dispersées et parfois lentes en direct.
+  \item \textbf{Choix.} Nous importons, nettoyons et fusionnons ces données en amont, puis les stockons dans une collection unique \texttt{parks} (avec centroïde et geohash).
+  \item \textbf{Résultat.} Une seule source maîtrisée, des réponses rapides et stables, et une navigation fluide sur la carte.
+\end{itemize}
+
+\paragraph{\textbf{Contexts + hooks} (et \textbf{Zustand} ponctuel) — gestion d’état}
+\begin{itemize}
+  \item \textbf{Principe.} Les informations partagées (utilisateur, favoris, préférences) passent par des Contexts et des hooks dédiés, ce qui garantit le même comportement d’un écran à l’autre.
+  \item \textbf{Avantage.} Moins de duplication de logique et un code plus simple à faire évoluer ; \emph{Zustand} est utilisé ponctuellement pour piloter un panneau coulissant.
+\end{itemize}
+
+\paragraph{\textbf{Synthèse et risques}}
+\begin{itemize}
+  \item \textbf{Pourquoi cette pile.} Aller vite, rester clair et livrer une app réactive sur deux plateformes, avec des coûts d’infrastructure bas.
+  \item \textbf{Risque principal.} Dépendance à Firebase ; nous la limitons en isolant l’accès aux données, en documentant le schéma et en prévoyant l’export si une migration devient nécessaire.
+\end{itemize}
+
+\medskip
+\noindent\textit{Remarque.} Les liens ci-dessus pointent vers la documentation officielle. Pour les autres ressources, les références détaillées figurent en fin de rapport.
+
 
 %----------------------------------------------------------
 \subsection{Diagrammes d'activités (flux utilisateurs)}
@@ -264,7 +317,7 @@ On y voit aussi comment ces éléments sont liés entre eux.
 
 Ce diagramme illustre les étapes principales du flux d'inscription et de connexion de l'utilisateur.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Inscription_Connexion.pdf}
   \caption{Flux : Inscription et connexion}
@@ -274,7 +327,7 @@ Ce diagramme illustre les étapes principales du flux d'inscription et de connex
 
 Ce diagramme montre le processus de recherche et de filtrage des parcs par l'utilisateur.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Recherche_Filtrage_Parcs.pdf}
   \caption{Flux : Recherche et filtrage de parcs}
@@ -284,7 +337,7 @@ Ce diagramme montre le processus de recherche et de filtrage des parcs par l'uti
 
 Parcours utilisateur pour choisir un emplacement sur la carte du parc, sélectionner une date/heure puis confirmer la réservation.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Reservation_d_un_emplacement.pdf}
   \caption{Flux : Réservation d'un emplacement}
@@ -294,7 +347,7 @@ Parcours utilisateur pour choisir un emplacement sur la carte du parc, sélectio
 
 Étapes pour sélectionner une activité dans la fiche du parc, choisir un créneau horaire et confirmer la réservation.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Reservation_Activite.pdf}
   \caption{Flux : Réservation d'une activité}
@@ -304,7 +357,7 @@ Parcours utilisateur pour choisir un emplacement sur la carte du parc, sélectio
 
 Deux cas sont couverts : retirer un parc des favoris depuis la fiche du parc ou depuis la page des favoris.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Ajout_retrait_d_un_favori.pdf}
   \caption{Flux : Ajout / retrait d'un favori}
@@ -314,7 +367,7 @@ Deux cas sont couverts : retirer un parc des favoris depuis la fiche du parc ou 
 
 L'utilisateur descend jusqu'à la section « Avis », saisit un commentaire, ajoute éventuellement une image, puis envoie son avis.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Ajouter_un_avis_spot.pdf}
   \caption{Flux : Ajout d'un avis}
@@ -324,7 +377,7 @@ L'utilisateur descend jusqu'à la section « Avis », saisit un commentaire, ajo
 
 Après la visite, l'utilisateur reçoit une notification « Would you Pick-Me again ? », sélectionne des badges et peut laisser un commentaire.
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\linewidth]{attachments/Sondage_post_visite.pdf}
   \caption{Flux : Sondage post-visite}
@@ -345,63 +398,73 @@ Le design de l'application a été pensé pour offrir une expérience intuitive,
 % =========================================================
 \section{Implémentation et réalisation technique}
 
-Cette section présente comment nous avons transformé le projet Pique-Me en une vraie application mobile.
-Après avoir défini les fonctionnalités clés, nous avons découpé l'app en petits composants simples, chacun responsable d'une tâche précise (ex. affichage d'un parc, ajout aux favoris, formulaire de réservation…).
-En cours de route, nous avons ajusté la conception. Par exemple, l'API de Montréal ne répondait pas entièrement à nos besoins : nous avons donc fusionné plusieurs sources de données, puis stocké le tout dans Firebase.
-Chaque page suit un flux logique clair, et les données s'actualisent en temps réel grâce aux outils fournis par Firebase.
+Cette section décrit le fonctionnement réel de l’application côté mobile (écrans, navigation, données, interactions). Elle complète la section~3 (conception). À ce stade, nous n’utilisons plus de backend Node/Express en production : l’application accède directement au service de données (authentification, profils, favoris, réservations, avis) avec synchronisation en temps réel.
 
 %----------------------------------------------------------
+\subsection{Front-end uniquement : source de vérité et synchro}
+
 \begin{itemize}
-\item L'\textbf{interface mobile}, développée avec React Native et Expo, affiche toutes les pages de l'application. Elle gère les gestes de l'utilisateur (clics, défilement, navigation…).
-\item La \textbf{base de données en ligne}, hébergée sur Firebase, contient les informations essentielles : comptes des utilisateurs, réservations d'activités ou d'emplacements, parcs favoris et avis. Elle permet aussi de recevoir les mises à jour instantanément sans avoir à rafraîchir manuellement.
-
-\item Un \textbf{script d'importation} a été conçu pour récupérer plusieurs ensembles de données ouvertes (emplacements des parcs, installations sportives, règles d'usage). Ces fichiers sont fusionnés, nettoyés et organisés dans une base unifiée, appelée \texttt{parks}, utilisée dans toute l'application.
-\end{itemize}
-
-Cette architecture simple évite la gestion d'un serveur complexe : tout est centralisé dans Firebase, ce qui accélère le développement et garantit une bonne réactivité sur mobile.
-
-%----------------------------------------------------------
-\subsection{Particularités rencontrées}
-\begin{itemize}
-\item \textbf{Découverte de Firebase :} au début du projet, nous ne connaissions pas Firebase. Il a fallu apprendre à l'utiliser, notamment pour gérer les droits d'accès, les mises à jour en temps réel, l'authentification et la structure des données. Finalement, cela nous a permis de déléguer toute la logique serveur (sécurité, réservations, notifications), ce qui a simplifié considérablement notre code.
-\item \textbf{Gestion correcte des favoris :} pour éviter les doublons ou les incohérences, nous avons conçu une fonction centrale qui gère l'ajout ou la suppression de favoris depuis n'importe quelle page. Ainsi, les états restent synchronisés automatiquement entre l'accueil, la page de favoris et les fiches de parc.
-
-\item \textbf{Carte et affichage limité des parcs :} pour ne pas saturer visuellement la carte ni ralentir les performances, nous avons limité l'affichage des « pins » aux parcs situés dans un rayon de 2 km autour de l'utilisateur. Cela rend la carte plus fluide et plus lisible, surtout dans les quartiers denses.
-
-\item \textbf{Réservations concurrentes :} pour éviter que deux utilisateurs réservent le même emplacement au même moment, la base de données vérifie chaque requête en temps réel. Si le créneau est déjà pris, un message d'erreur clair est retourné immédiatement.
-
-
+  \item \textbf{Données} : comptes, préférences, favoris, parcs (avec centroïde et geohash), avis et réservations sont stockés côté service de données et lus/écrits directement depuis l’app.
+  \item \textbf{Temps réel} : les écrans s’abonnent aux collections/documents pertinents; toute mise à jour (ex.: ajout d’un favori) est répercutée instantanément dans l’UI, sans rechargement manuel.
+  \item \textbf{Sécurité} : règles d’accès par utilisateur (lecture/écriture sur son profil, création d’avis, réservation atomique pour éviter les collisions).
 \end{itemize}
 
 %----------------------------------------------------------
-\subsection{Flux principaux par page}
+\subsection{Recherche + Carte }
 
-\paragraph{Accueil \\}
-Cette page met en avant deux types de parcs : ceux recommandés selon les préférences de l'utilisateur (plein air, sport, famille, etc.), et ceux situés à proximité (sur un rayon de deux kilomètres à la ronde). Chaque carte de parc peut être cliquée pour accéder à sa fiche détaillée, ou ajoutée directement aux favoris.
+\begin{itemize}
+  \item \textbf{Ouverture} : demande de permission de localisation, centrage initial sur l’utilisateur, définition d’une fenêtre (viewport) adaptée à l’écran.
+  \item \textbf{Chargement progressif} : les parcs visibles dans la fenêtre courante sont affichés en premier pour donner une première réponse rapide; le reste est chargé en arrière-plan.
+  \item \textbf{Filtrage local} : la barre de recherche (texte sans accents) et les étiquettes (ex.: aire de jeu, pique-nique) filtrent \emph{uniquement} ce qui est à l’écran, pour préserver fluidité et lisibilité.
+  \item \textbf{Liste liée à la carte} : un panneau coulissant présente la liste synchronisée des mêmes résultats; taper un élément ouvre sa fiche.
+\end{itemize}
 
-\paragraph{Recherche \\}
-L'utilisateur peut rechercher un parc par mot-clé ou appliquer des filtres (type de parc, activités disponibles, etc.).  
-\textbf{Astuce de vitesse :} au lieu d'attendre que tous les résultats soient prêts, la page affiche immédiatement quelques parcs très pertinents. En parallèle, le reste de la liste continue à se charger discrètement. Cela donne une impression de fluidité et de réactivité.
+%----------------------------------------------------------
+\subsection{Fiche parc : actions clés}
 
-\paragraph{Détail d'un parc \\}
-Chaque fiche de parc présente une image principale, les équipements disponibles ou activités, et deux boutons :  
- « Réserver » pour choisir un créneau ;  
- une icône en forme de cœur pour ajouter ou retirer ce parc de la liste personnelle.  
-L'ensemble est mis à jour en temps réel via Firebase.
+\begin{itemize}
+  \item \textbf{Contenu} : galerie d’images, équipements/activités dérivés des installations, note visuelle, bouton \og Réserver \fg.
+  \item \textbf{Favori} : l’icône cœur bascule l’état et l’enregistre immédiatement; l’information se répercute sur la liste et la carte sans délai.
+  \item \textbf{Avis} : saisie simple (texte + photo optionnelle) et badges thématiques. Les agrégations (seuils bronze/argent/or) sont reflétées sur la fiche.
+\end{itemize}
 
-\paragraph{Réservation \\}
-L'utilisateur sélectionne un emplacement et un créneau horaire. Une confirmation visuelle apparaît.  
-60 minutes avant l'heure choisie, une notification est envoyée. Si l'utilisateur ne se présente pas, la réservation est annulée automatiquement une heure après le début prévu.
+%----------------------------------------------------------
+\subsection{Réservation : flux et garanties}
 
-\paragraph{Favoris \\}
-Les parcs ajoutés aux favoris sont listés dans une page dédiée. Chaque carte peut être retirée en cliquant sur l'icône cœur. Toute modification est immédiatement répercutée sur les autres pages.
+\begin{itemize}
+  \item \textbf{Étapes} : choix d’un emplacement sur la carte du parc, puis sélection d’un créneau horaire.
+  \item \textbf{Validation} : enregistrement immédiat et retour visuel; rappels avant l’heure prévue; annulation automatique en cas de non-confirmation après le début.
+  \item \textbf{Concurrence} : écriture atomique pour empêcher deux réservations sur le même créneau; message clair si déjà pris.
+\end{itemize}
 
-\paragraph{Profil \\}
-Cette page permet de modifier le nom, le mot de passe et les préférences (tags). Chaque modification est enregistrée automatiquement dès que l'utilisateur quitte le champ de saisie. Les préférences servent à personnaliser les suggestions de parcs à l'accueil.
+%----------------------------------------------------------
+\subsection{Favoris et profil}
 
-\paragraph{Avis \\}
-Après une visite, l'utilisateur reçoit une notification l'invitant à donner son avis. Il peut sélectionner un ou plusieurs badges (ex. : propre, calme, familial), laisser un commentaire et ajouter une photo.  
-Si un badge reçoit beaucoup de votes, le parc obtient une médaille (bronze, argent ou or), visible dans sa fiche.
+\begin{itemize}
+  \item \textbf{Favoris} : page dédiée avec les parcs enregistrés; toute action (ajout/retrait) est visible sur tous les écrans grâce à la synchro temps réel.
+  \item \textbf{Profil} : mise à jour du nom, du mot de passe et des préférences (tags). Les préférences nourrissent les recommandations d’accueil et influencent la recherche.
+\end{itemize}
+
+%----------------------------------------------------------
+\subsection{Navigation (Expo Router) }
+
+\begin{itemize}
+  \item \textbf{Paramètres} : ouverture d’une fiche avec l’identifiant du parc; passage des coordonnées/infos utiles au flux de réservation; retour natif pris en charge.
+  \item \textbf{UX mobile} : transitions natives, panneau coulissant pour la liste, et icône cœur en surimpression dans les galeries.
+\end{itemize}
+
+%----------------------------------------------------------
+\subsection{Notes d’implémentation côté code }
+
+\begin{itemize}
+  \item \textbf{Composants réutilisables} : cartes de parc, carrousel d’images, badges/étoiles, champ d’avis. Les propriétés restent simples pour limiter les effets de bord.
+  \item \textbf{État minimal global} : utilisateur, préférences et favoris sont partagés; le reste (scroll, pagination, sélection locale) reste proche des écrans.
+  \item \textbf{Performance} : limitation des marqueurs à la zone visible, chargement progressif, pagination visuelle des images; filtrage local pour éviter des requêtes inutiles.
+  \item \textbf{Robustesse UX} : gestion explicite des permissions (localisation, galerie) et messages d’erreur compréhensibles en cas de souci réseau.
+\end{itemize}
+
+
+
 
 %----------------------------------------------------------
 \subsection{Difficultés résolues}
