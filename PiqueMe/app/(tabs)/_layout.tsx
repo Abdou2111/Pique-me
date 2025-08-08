@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import { Tabs, router} from "expo-router";
 import {useSheet} from "@/app/stores/useSheet";
@@ -8,6 +8,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
+// Firebase
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+
+/**
+ * Garde d'authentification :
+ * - Si pas d'utilisateur connecté, on force la redirection vers '/'
+ *   (ton écran de connexion = app/index.js).
+ */
 export default function RootLayout() {
 
     const { expand, collapse } = useSheet();
@@ -30,15 +39,13 @@ export default function RootLayout() {
                     options={{
                         title: "Home",
                         headerShown: false,
-                        tabBarLabel: "Home",
-                        tabBarLabelStyle: { fontSize: 12 },
                         tabBarIcon: ({ color, size }) => (
                             <MaterialIcons name="home" size={size} color={color} />
                         ),
                     }}
                 />
 
-                {/* SEARCH  */}
+                {/* SEARCH */}
                 <Tabs.Screen
                     name="Search"
                     options={{
@@ -57,7 +64,7 @@ export default function RootLayout() {
                     }}
                 />
 
-                {/* PARKS  */}
+                {/* PARKS */}
                 <Tabs.Screen
                     name="Parks"
                     options={{
@@ -77,7 +84,6 @@ export default function RootLayout() {
                         },
                     }}
                 />
-
 
                 {/* PROFILE */}
                 <Tabs.Screen

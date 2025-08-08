@@ -142,6 +142,7 @@ Ce diagramme montre le parcours utilisateur depuis la fiche du spot :
 
 Ce diagramme montre le parcours utilisateur après la visite d’un parc. L’utilisateur reçoit une notification “Would you Pick-Me again ?”, puis sélectionne un ou plusieurs badges et saisit un commentaire facultatif. En cliquant sur “Soumettre”, un message de confirmation est affiché, puis l’utilisateur revient à l’écran précédent.
 
+
 ### Diagramme d’architecture
 
 Le schéma suivant représente l’architecture logique de l’application *Pique-Me*. On y retrouve les trois couches principales :

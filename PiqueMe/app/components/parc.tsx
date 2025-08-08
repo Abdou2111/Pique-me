@@ -1,65 +1,109 @@
-// app/components/Parc.js
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Card, Text, IconButton } from 'react-native-paper'
+import { Card, Text } from 'react-native-paper'
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons'
+import { router } from 'expo-router'
+import HeartButton from './HeartButton'
+import useFavorites from '@/app/hooks/useFavorites'
 
-export interface ParcProps {
+type Props = {
     id: string
     name: string
     imageUri: string
-    rating: number
-    reviews: number
-    distanceKm: number
+    rating?: number
+    reviews?: number
+    distanceKm?: number
+    /** compat */
     initialFavorite?: boolean
+    isFavorite?: boolean
     onToggleFavorite?: (id: string, selected: boolean) => void
 }
 
+const CARD_WIDTH  = 180
+const CARD_HEIGHT = 240
+const IMG_HEIGHT  = 130
+
 export default function Parc({
-                                 id, name, imageUri, rating, reviews, distanceKm,
-                                 initialFavorite = false,
-                                 onToggleFavorite,
-                             }: ParcProps) {
-    const [fav, setFav] = useState(initialFavorite)
-    useEffect(() => { setFav(initialFavorite) }, [initialFavorite])
+                                 id, name, imageUri,
+                                 rating = 0, reviews = 0, distanceKm = 0,
+                                 initialFavorite, isFavorite, onToggleFavorite,
+                             }: Props) {
+    const { isFavorite: isFavHook, setFavorite } = useFavorites()
+    const favFromHook = isFavHook(id)
+    const fav = typeof isFavorite === 'boolean'
+        ? isFavorite
+        : (typeof initialFavorite === 'boolean' ? initialFavorite : favFromHook)
 
     const toggle = () => {
         const next = !fav
-        setFav(next)
         onToggleFavorite?.(id, next)
+        setFavorite(id, next)
+    }
+
+    const openDetails = () => {
+        router.push({ pathname: '/Parks/Park/PageParc', params: { id, isFavorite: String(fav) } })
     }
 
     return (
-        <Card style={S.card}>
+        <Card style={S.card} onPress={openDetails}>
+            {/* Image + cœur overlay */}
             <View style={S.imgWrap}>
                 <Card.Cover source={{ uri: imageUri }} style={S.img} />
-                <IconButton
-                    icon={fav ? 'heart' : 'heart-outline'}
-                    iconColor={fav ? 'red' : 'white'}
-                    size={24}
-                    style={S.heart}
-                    onPress={toggle}
-                />
+                <HeartButton isFavorite={fav} onToggle={toggle} />
             </View>
-            <View style={S.info}>
-                <Text variant="titleLarge">{name}</Text>
-                <View style={S.note}>
-                    <Icon name="star" size={20} color="#FFD700" style={{ marginRight: 4 }} />
-                    <Text variant="bodyMedium" style={{ fontWeight: 'bold' }}>{rating.toFixed(1)}</Text>
-                    <Text style={S.grey}>({reviews})</Text>
+
+            {/* Corps fixe: toujours même hauteur, rien ne disparaît */}
+            <View style={S.body}>
+                {/* Nom */}
+                <Text variant="titleMedium" numberOfLines={1} ellipsizeMode="tail" style={S.title}>
+                    {name || 'Parc'}
+                </Text>
+
+                {/* Note + (reviews) */}
+                <View style={S.row}>
+                    <Icon name="star" size={18} color="#FFD700" style={{ marginRight: 4 }} />
+                    <Text variant="bodyMedium" style={S.bold}>
+                        {Number(rating).toFixed(1)}
+                    </Text>
+                    <Text style={S.muted}> ({Number(reviews)})</Text>
                 </View>
-                <Text variant="bodyMedium" style={S.grey}>À {distanceKm.toFixed(1)} km</Text>
+
+                {/* Distance */}
+                <Text variant="bodyMedium" numberOfLines={1} ellipsizeMode="tail" style={S.muted}>
+                    À {Number(distanceKm).toFixed(1)} km
+                </Text>
             </View>
         </Card>
     )
 }
 
 const S = StyleSheet.create({
-    card:{ width:180, margin:8 },
-    imgWrap:{ position:'relative' },
-    img:{ height:140, width:'100%' },
-    heart:{ position:'absolute', top:8, right:8, backgroundColor:'rgba(0,0,0,0.4)', borderRadius:20 },
-    info:{ padding:8 },
-    note:{ flexDirection:'row', alignItems:'center', marginTop:4 },
-    grey:{ marginLeft:4, color:'gray' },
+    card: {
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        margin: 8,
+        borderRadius: 12,
+        overflow: 'hidden',              // rien ne déborde
+        backgroundColor: '#fff',
+    },
+    imgWrap: {
+        position: 'relative',
+        width: '100%',
+        height: IMG_HEIGHT,
+    },
+    img: {
+        width: '100%',
+        height: IMG_HEIGHT,
+    },
+    body: {
+        // Hauteur fixe = total - image
+        height: CARD_HEIGHT - IMG_HEIGHT,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        justifyContent: 'space-between', // répartit proprement les 3 blocs
+    },
+    title: { fontWeight: '600' },
+    row: { flexDirection: 'row', alignItems: 'center' },
+    bold: { fontWeight: 'bold' },
+    muted: { color: 'gray' },
 })

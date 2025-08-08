@@ -1,42 +1,159 @@
 // app/(tabs)/Parks/index.tsx
-import { View, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
-import { Link } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react'
+import {
+    SafeAreaView,
+    View,
+    SectionList,
+    StyleSheet,
+    ActivityIndicator,
+    Text,
+} from 'react-native'
+import * as Location from 'expo-location'
+import ParcFavoris from '../../components/parcFavoris'
+import useFavorites from '../../hooks/useFavorites'
+import { subscribeParks, type Park } from '../../utils/firebaseUtils'
+import Header from '../../components/Header' // ← logo + cœur Favoris
 
-import Header from '../../components/Header';
-import ParcFavoris from '../../components/parcFavoris';
+/* ---- tags: mapping identique à HOME ---- */
+const toTag = (txt?: string | null): string | null => {
+    const s = (txt ?? '').toLowerCase()
+    if (s.includes('aire de jeu'))  return 'aireJeu'
+    if (s.includes('récréatif'))    return 'recreatif'
+    if (s.includes('plein air'))    return 'pleinAir'
+    if (s.includes('pique-nique'))  return 'piqueNique'
+    return null
+}
+const deriveTags = (p: Park): string[] => {
+    const raw = (p.tags ?? []).map(t => (t ?? '').toLowerCase())
+    const out = new Set<string>()
+    if (raw.some(s => s.includes('aire de jeu')))  out.add('aireJeu')
+    if (raw.some(s => s.includes('récréatif')))    out.add('recreatif')
+    if (raw.some(s => s.includes('plein air')))    out.add('pleinAir')
+    if (raw.some(s => s.includes('pique-nique')))  out.add('piqueNique')
+    return [...out]
+}
+/* distance en mètres */
+const distM = (la1:number, lo1:number, la2?:number, lo2?:number) => {
+    if (la2 == null || lo2 == null) return Number.NaN
+    const R = 6371e3
+    const φ1 = la1 * Math.PI/180, φ2 = la2 * Math.PI/180
+    const dφ = (la2 - la1) * Math.PI/180, dλ = (lo2 - lo1) * Math.PI/180
+    const a = Math.sin(dφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(dλ/2)**2
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
 
-export default function ParksIndex() {
+function Center({ children }: { children: React.ReactNode }) {
+    return <View style={S.center}><Text>{children}</Text></View>
+}
+
+export default function ParksScreen() {
+    const { ready } = useFavorites()
+    const [parks, setParks] = useState<Park[]>([])
+    const [loading, setLoading] = useState(true)
+    const [coords, setCoords] = useState<{lat:number,lng:number} | null>(null)
+
+    useEffect(() => {
+        const unsub = subscribeParks((list) => { setParks(list); setLoading(false) })
+        return unsub
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const { status } = await Location.requestForegroundPermissionsAsync()
+                if (status !== 'granted') return
+                const loc = await Location.getCurrentPositionAsync({})
+                setCoords({ lat: loc.coords.latitude, lng: loc.coords.longitude })
+            } catch {}
+        })()
+    }, [])
+
+    // on lit les préférences depuis le contexte comme en Home
+    const { userDoc } = require('../../context/UserDocContext').useUserDoc?.() ?? { userDoc: null }
+    const prefs: string[] = Array.isArray(userDoc?.preferences)
+        ? userDoc.preferences
+        : (typeof userDoc?.preferences === 'string'
+            ? userDoc.preferences.split(',').map((s:string)=>s.trim()).filter(Boolean)
+            : [])
+
+    const recommended = useMemo(() => {
+        if (!parks.length) return []
+        if (!prefs.length) {
+            const arr = parks.slice()
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[arr[i], arr[j]] = [arr[j], arr[i]]
+            }
+            return arr.slice(0, 7)
+        }
+        const matched = parks.filter(p => {
+            const tags = deriveTags(p)
+            return prefs.every(t => tags.includes(t))
+        })
+        return (matched.length ? matched : parks).slice(0, 7)
+    }, [parks, prefs])
+
+    const nearParks = useMemo(() => {
+        if (!coords) return []
+        return parks
+            .filter(p => !Number.isNaN(distM(coords.lat, coords.lng, p.lat, p.lng)) &&
+                distM(coords.lat, coords.lng, p.lat, p.lng) <= 5000)
+            .slice(0, 7)
+    }, [parks, coords])
+
+    const sections = useMemo(() => ([
+        { title: 'Parcs recommandés', data: recommended },
+        { title: 'Parcs à proximité', data: nearParks  },
+    ]), [recommended, nearParks])
+
+    if (loading || !ready) return <Center><ActivityIndicator size="large" /></Center>
+
     return (
-        <View style={S.page}>
+        <SafeAreaView style={S.ctn}>
+            <Header title="Parcs" />
 
-            {/* bandeau logo‑cœur‑menu */}
-            <Header title={undefined} />
-
-            {/* démo de navigation */}
-            <Link
-                href="/(tabs)/Parks/second"
-                style={S.link}
-                push
-                asChild>
-                <Text>Go to Second Page</Text>
-            </Link>
-
-            {/* exemple de carte */}
-            <ParcFavoris
-                id="42"
-                name="Parc Jarry"
-                imageUri="https://picsum.photos/700"
-                rating={4.6}
-                reviews={178}
-                distanceKm={3.4}
+            <SectionList
+                sections={sections}
+                keyExtractor={(item) => item.id}
+                style={S.list}
+                contentContainerStyle={S.content}
+                renderSectionHeader={({ section }) => (
+                    <Text style={S.h2}>{section.title}</Text>
+                )}
+                renderItem={({ item }) => {
+                    let distanceKm = 0
+                    if (coords && item.lat != null && item.lng != null) {
+                        const d = distM(coords.lat, coords.lng, item.lat, item.lng)
+                        if (!Number.isNaN(d)) distanceKm = d / 1000
+                    }
+                    return (
+                        <View style={S.rowCard}>
+                            <ParcFavoris
+                                id={item.id}
+                                name={item.name}
+                                imageUri={item.imageUri}
+                                rating={0}
+                                reviews={0}
+                                distanceKm={distanceKm}
+                            />
+                        </View>
+                    )
+                }}
+                ListEmptyComponent={<Center>Aucun parc.</Center>}
+                SectionSeparatorComponent={() => <View style={{ height: 8 }} />}
             />
-        </View>
-    );
+        </SafeAreaView>
+    )
 }
 
 const S = StyleSheet.create({
-    page: { flex: 1 },
-    h1:   { fontSize: 24, fontWeight: '700', alignSelf: 'center', marginTop: 12 },
-    link: { color: 'blue', textDecorationLine: 'underline', margin: 16 },
-});
+    ctn: { flex: 1, backgroundColor: '#fff' },
+    list: { flex: 1 },
+    center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
+    content: { paddingVertical: 8 },
+    h2: {
+        fontSize: 18, fontWeight: '700', color: '#0f6930',
+        marginHorizontal: 12, marginTop: 8, marginBottom: 6,
+    },
+    rowCard: { alignItems: 'center' },
+})

@@ -80,14 +80,18 @@ const toTag = (t: unknown): string | null => {
 const norm = (s: string) =>
     s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
 
-/* helper: convert Firestore doc → UI model */
-const asPark = (p: DocumentData): Park => ({
-    id:   String(p.NUM_INDEX),
-    name: String(p.Nom ?? ''),
-    lat:  Number(p.centroid?.lat ?? 0),
-    lng:  Number(p.centroid?.lng ?? 0),
-    tags: (p.installations ?? []).map((i: DocumentData) => toTag(i.TYPE)).filter(Boolean),
-    filters: (p.installations ?? []).map((i: DocumentData) => toTag(i.TYPE)).filter(Boolean),
+/* helper: convert Firestore data → UI model, avec fallback docId si NUM_INDEX absent */
+const asPark = (p, fallbackId) => ({
+    id:   String(p.NUM_INDEX ?? fallbackId ?? p.id),
+    name: p.Nom,
+    lat:  p.centroid?.lat,
+    lng:  p.centroid?.lng,
+    tags: (p.installations ?? [])
+        .map(i => toTag(i.TYPE))
+        .filter(Boolean),
+    filters: (p.installations ?? [])
+        .map(i => toTag(i.TYPE))
+        .filter(Boolean),
 });
 
 /* tiny utility – returns parks whose geohash falls in `region` */
@@ -110,7 +114,8 @@ async function fetchParksInRegion(region: Region): Promise<Park[]> {
         ),
     );
 
-    return snaps.flatMap(s => s.docs.map(d => asPark(d.data())));
+    const snaps = await Promise.all(promises);
+    return snaps.flatMap(s => s.docs.map(d => asPark(d.data(), d.id)));
 }
 
 /* merge two arrays without duplicates (by id) */
@@ -130,9 +135,9 @@ export default function Search() {
     const insets = useSafeAreaInsets();
 
     /* UI state */
-    const [query,  setQuery]  = useState('');
-    const [active, setActive] = useState<Set<string>>(new Set());
-    const [region, setRegion] = useState<Region | null>(null);
+    const [queryText,  setQueryText]  = useState('');
+    const [active, setActive] = useState(new Set());
+    const [region, setRegion] = useState(null);
 
     /* data state */
     const [parks, setParks] = useState<Park[]>([]);
@@ -174,9 +179,15 @@ export default function Search() {
             setParks(initial);
 
             InteractionManager.runAfterInteractions(async () => {
+<<<<<<< HEAD:PiqueMe/app/(tabs)/Search.tsx
                 const snap = await getDocs(collection(db, 'parks'));
                 const all  = snap.docs.map(d => asPark(d.data()));
                 setParks(prev => mergeById(prev, all));
+=======
+                const snapshot = await getDocs(collection(db, 'parks'));
+                const allParks = snapshot.docs.map(d => asPark(d.data(), d.id));
+                setParks(prev => mergeById(prev, allParks));
+>>>>>>> 6cff355e (integration du feedback pour la home page et la page de profil, gestion des favoris):PiqueMe/app/(tabs)/Search.js
             });
         };
         load();
@@ -205,10 +216,10 @@ export default function Search() {
             parks.filter(
                 p =>
                     inside(p, region) &&
-                    (!query || norm(p.name).includes(norm(query))) &&
+                    (!queryText || norm(p.name).includes(norm(queryText))) &&
                     (![...active].length || [...active].every(t => p.tags.includes(t))),
             ),
-        [parks, region, query, active, inside],
+        [parks, region, queryText, active, inside],
     );
 
     const toggle = (id: string) => {
@@ -290,8 +301,8 @@ export default function Search() {
             {/* search bar + chips */}
             <View style={[S.topOverlay, { top: insets.top + 8 }]}>
                 <SearchBar
-                    value={query}
-                    onChange={setQuery}
+                    value={queryText}
+                    onChange={setQueryText}
                     placeholder="Rechercher des parcs…"
                 />
 
@@ -329,6 +340,7 @@ export default function Search() {
                         <Text style={S.title}>{shown.length} Résultats</Text>
                     </View>
 
+<<<<<<< HEAD:PiqueMe/app/(tabs)/Search.tsx
                     <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
                         <ParcList
                             parks={shown}
@@ -339,6 +351,17 @@ export default function Search() {
                     </ScrollView>
                 </Animated.View>
             </GestureDetector>
+=======
+                <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+                    <ParcList
+                        parks={shown}                         // ← id = String(NUM_INDEX || doc.id)
+                        filterQuery={norm(queryText)}
+                        filterTags={[...active]}
+                        useFavorisCard
+                    />
+                </ScrollView>
+            </View>
+>>>>>>> 6cff355e (integration du feedback pour la home page et la page de profil, gestion des favoris):PiqueMe/app/(tabs)/Search.js
         </SafeAreaView>
     );
 }
