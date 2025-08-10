@@ -4,6 +4,7 @@ import {
     collection, query, where, getDocs,
     doc, getDoc, setDoc, updateDoc, deleteDoc,
     onSnapshot, arrayUnion, arrayRemove,
+    addDoc, Timestamp
 } from 'firebase/firestore'
 import { deleteUser } from 'firebase/auth'
 
@@ -16,6 +17,7 @@ export type Park = {
     lng?: number
     tags?: string[]
 }
+import fakeAvis from "@/app/(tabs)/Parks/Park/fakeAvis";
 
 export function toStableParkId(data: any, fallback: string) {
     return String(data?.NUM_INDEX ?? fallback)
@@ -129,3 +131,125 @@ export async function deleteAccountCompletely() {
     await deleteUserData(user.uid)           // 1) Firestore
     await deleteUser(user)                   // 2) Auth (peut demander un recent login)
 }
+
+/**
+ * Crée une nouvelle réservation dans Firestore
+ * @param idParc - identifiant du parc
+ * @param dateDebut - objet Date ou Timestamp du début
+ * @param dateFin - objet Date ou Timestamp de fin
+ * @param userId - identifiant de l'utilisateur
+ * @returns JSON { success: boolean, message: string, idReservation?: string }
+ */
+export async function createReservation(
+    idParc: string,
+    idSpot: string,
+    spotLabel: string,
+    dateDebut: Date,
+    dateFin: Date,
+    userId: string
+) {
+    try {
+        console.log("c-1");
+        // Validation des entrées
+        if (!idParc || !idSpot || !dateDebut || !dateFin || !userId) {
+            console.log("c-2");
+            return {
+                success: false,
+                message: "Champs manquants pour créer la réservation"
+            };
+        }
+        console.log("c-3");
+
+        if (dateDebut >= dateFin) {
+            console.log("c-4");
+            return {
+                success: false,
+                message: "La date de début doit être avant la date de fin"
+            };
+        }
+
+        console.log("c-5");
+        // Création de l'objet à stocker
+        const reservationData = {
+            etat: "en attente",
+            dateDebut: Timestamp.fromDate(dateDebut),
+            dateFin: Timestamp.fromDate(dateFin),
+            idParc,
+            spot: {idSpot, spotLabel},
+            userId,
+            confirmation1: false,
+            confirmation2: false,
+            createdAt: Timestamp.now()
+        };
+        console.log("c-6");
+        console.log(JSON.stringify(reservationData, null, 2));
+
+        // Ajout dans Firestore
+        const docRef = await addDoc(collection(db, "reservations"), reservationData);
+
+        console.log("c-7"); // Erreur au moment de l'ajout dans FS
+
+        // Ajout de la reservation dans la BD du user
+        const addToUser = await addReservationToUser(userId, docRef.id );
+        if (addToUser.success) {
+            return {
+                success: true,
+                message: "Réservation créée avec succès",
+                idReservation: docRef.id
+            };
+        }
+        else {
+            return {
+                success: false,
+                message: addToUser.message,
+            }
+        }
+
+
+    } catch (error) {
+        console.log("c-8");
+        console.error("Erreur createReservation:", error);
+        return {
+            success: false,
+            message: "Erreur lors de la création de la réservation"
+        };
+    }
+}
+
+/**
+ * Ajoute une réservation à l'utilisateur dans Firestore
+ * @param uid - identifiant de l'utilisateur
+ * @param idReservation - identifiant de la réservation
+ * @returns JSON { success: boolean, message: string }
+ */
+export async function addReservationToUser(uid: string, idReservation: string) {
+    try {
+        const userRef = await ensureUserDoc(uid); // récupère ou crée le doc utilisateur
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+            // Si le doc n'existe pas, on le crée avec le champ reservations
+            //await updateDoc(userRef, { reservations: [idReservation] });
+            return { success: true, message: 'Utilisateur non existant.' };//créé et réservation ajoutée.' };
+        }
+
+        const userData = userSnap.data();
+
+        if (!userData.reservations || !Array.isArray(userData.reservations)) {
+            // Si le champ n'existe pas ou est invalide, on le crée
+            await updateDoc(userRef, { reservations: [idReservation] });
+            return { success: true, message: 'Champ reservations créé et réservation ajoutée.' };
+        }
+
+        // Ajout sécurisé avec arrayUnion
+        await updateDoc(userRef, {
+            reservations: arrayUnion(idReservation)
+        });
+
+        return { success: true, message: 'Réservation ajoutée avec succès.' };
+    } catch (error) {
+        console.error('Erreur dans addReservationToUser:', error);
+        return { success: false, message: 'Échec de l’ajout de la réservation.' };
+    }
+}
+

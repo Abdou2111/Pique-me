@@ -76,6 +76,7 @@ export default function PageParc() {
                 coordAires: JSON.stringify(coordAire),
                 superficie: park.SUPERFICIE?.toString() || "0",
                 nomParc: park.Nom,
+                idParc: id,
 
 
             },
