@@ -9,6 +9,7 @@ import {
 } from '../utils/firebaseUtils'
 
 export type UserDoc = {
+    reservations: any[];
   favorites?: string[]
   preferences?: string[] | string
   firstName?: string

@@ -13,6 +13,13 @@ import { auth } from '../../firebaseConfig'
 import { deleteAccountCompletely } from '../utils/firebaseUtils'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { router } from 'expo-router'
+import CompoReservation, {Spot, Reservation} from '../components/CompoReservation'
+import { getReservation } from '../utils/firebaseUtils'
+import { useFocusEffect } from 'expo-router'
+
+import AllResevation from './Parks/Reservation/AllReservation'
+
+
 
 /* ————— Tags ————— */
 const ALL_TAGS = ['aireJeu', 'recreatif', 'pleinAir', 'piqueNique', 'sport', 'culture'] as const
@@ -34,12 +41,16 @@ const ICONS: Record<TagKey, keyof typeof Ionicons.glyphMap> = {
     culture: 'book'
 }
 
+
 export default function Profile() {
     const { uid, userDoc, updateProfile } = useUserDoc()
 
     const [firstName, setFirst] = useState('')
     const [lastName,  setLast]  = useState('')
     const [prefs,     setPrefs] = useState<string[]>([])
+    const [allReservation, setAllReservations] = useState<Reservation[]>([])
+    const [latestReservation, setLatestReservation] = useState<Reservation | null>(null)
+    const [hasReservations, setHasReservations] = useState(false)
 
     useEffect(() => {
         if (!userDoc) return
@@ -49,7 +60,39 @@ export default function Profile() {
         if (Array.isArray(p)) setPrefs(p as string[])
         else if (typeof p === 'string') setPrefs(p.split(',').map(s => s.trim()).filter(Boolean))
         else setPrefs([])
+        console.log(userDoc)
     }, [userDoc])
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchReservations = async () => {
+                const ids = userDoc?.reservations ?? []
+                if (!Array.isArray(ids) || ids.length === 0) {
+                    setHasReservations(false)
+                    setLatestReservation(null)
+                    return
+                }
+
+                console.log("Les reservation: " + ids)
+                const all = await Promise.all(ids.map(id => getReservation(id)))
+                const valid = all.filter(r => r !== null)
+
+                valid.sort((a, b) => {
+                    const dateA = new Date(a.dateDebut).getTime()
+                    const dateB = new Date(b.dateDebut).getTime()
+                    return dateB - dateA // plus récent en premier
+                })
+
+                setHasReservations(valid.length > 0);
+                setLatestReservation(valid[0]);
+                setAllReservations(valid);
+            }
+
+            fetchReservations()
+        }, [userDoc])
+    )
+
 
     const [showName, setShowName] = useState(false)
     const [showPwd,  setShowPwd]  = useState(false)
@@ -107,6 +150,12 @@ export default function Profile() {
         updateProfile({ preferences: next }) // même logique côté Firestore
     }
 
+    /* Annulation de la reservation */
+    const handleCancel = (idReservation: string) => {
+        // appeler cancelReservation (idReseva) de firebase utils
+
+    }
+
     return (
         <Page title="Profil">
             <ScrollView contentContainerStyle={S.ctn}>
@@ -151,6 +200,28 @@ export default function Profile() {
                         {prefs.length === 0 && <Text style={{ color:'#6b7280' }}>Aucun</Text>}
                     </View>
                 </Card>
+
+                {/* Mes reservations */}
+                <Card title="Mes réservations">
+                    {hasReservations && latestReservation ? (
+                        <>
+                            <CompoReservation
+                                reservation={latestReservation}
+                                onCancel={() => {handleCancel(latestReservation?.id)}}
+                                onConfirm={() => {}}
+                            />
+                            <Pressable onPress={() => router.push({
+                                pathname: '/Parks/Reservation/AllReservation',
+                                params: { reservations: JSON.stringify(allReservation) } // ou latestList si tu stockes la liste
+                            })}>
+                                <Text style={S.linkTxt}>Voir tout ›</Text>
+                            </Pressable>
+                        </>
+                    ) : (
+                        <Text style={{ color:'#6b7280' }}>Aucune réservation faite. </Text>
+                    )}
+                </Card>
+
 
                 {/* Liens actions */}
                 <Pressable onPress={handleLogout} style={S.linkRow}>

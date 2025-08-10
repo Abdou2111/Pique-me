@@ -18,6 +18,7 @@ export type Park = {
     tags?: string[]
 }
 import fakeAvis from "@/app/(tabs)/Parks/Park/fakeAvis";
+import { Reservation } from '../components/CompoReservation'
 
 export function toStableParkId(data: any, fallback: string) {
     return String(data?.NUM_INDEX ?? fallback)
@@ -253,3 +254,44 @@ export async function addReservationToUser(uid: string, idReservation: string) {
     }
 }
 
+/**
+ * Récupère une réservation par son ID depuis Firestore
+ * @param idReservation - identifiant de la réservation
+ * @returns un objet contenant les données de la réservation ou null si introuvable
+ */
+export async function getReservation(idReservation: string)
+    : Promise<Reservation | null> {
+
+    try {
+        const ref = doc(db, 'reservations', idReservation);
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) {
+            console.warn('Réservation introuvable:', idReservation);
+            return null;
+        }
+
+        const data = snap.data()
+
+        // Vérification facultative pour s'assurer que les champs existent
+        if (!data.dateDebut || !data.dateFin || !data.spot || !data.idParc) {
+            console.warn('Données de réservation incomplètes:', data)
+            return null
+        }
+
+        return {
+            id: snap.id,
+            confirmation2: data.confirmation2,
+            createdAt: data.createdAt.toDate?.() ?? new Date(data.createdAt),
+            dateDebut: data.dateDebut.toDate?.() ?? new Date(data.dateDebut),
+            dateFin: data.dateFin.toDate?.() ?? new Date(data.dateFin),
+            etat: data.etat,
+            idParc: data.idParc,
+            spot: data.spot,
+            userId: data.userId
+        }
+    } catch (error) {
+        console.error('Erreur getReservation:', error);
+        return null;
+    }
+}

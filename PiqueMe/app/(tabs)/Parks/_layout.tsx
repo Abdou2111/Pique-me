@@ -6,5 +6,6 @@ export default function RootLayout() {
         <Stack.Screen name="PageParc" options={{ title: "Détails du parc", headerShown: false }} />
         <Stack.Screen name="Reservation" options={{ title: "Réservation", headerShown: false }} />
         <Stack.Screen name="Reservation2" options={{ title: "Réservation2", headerShown: false }} />
+        <Stack.Screen name="AllReservation" options={{ title: "AllReservation", headerShown: false }} />
     </Stack>);
 }
