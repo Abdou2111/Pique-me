@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     View,
     StyleSheet,
@@ -9,9 +9,10 @@ import {
     Image,
 } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import {useLocalSearchParams, useNavigation, useRouter} from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '@/app/components/Header';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 type AireCoord = {
     id: string;
@@ -25,16 +26,21 @@ type Coord = {
 };
 
 export default function Reservation() {
-    const { coordParc, coordAires, superficie, nomParc } = useLocalSearchParams<{
+    const {coordParc, coordAires, superficie, nomParc, idParc} = useLocalSearchParams<{
         coordParc?: string;
         coordAires?: string;
         superficie?: string;
         nomParc?: string;
+        idParc?: string;
     }>();
+
+    const navigation = useNavigation();
+    useEffect(() => {
+        navigation.setOptions({ headerShown: false, title: '' });
+    }, [navigation]);
 
     const router = useRouter();
 
-    // Parsing sécurisé
     let parcCoords: Coord[] = [];
     try {
         parcCoords = coordParc ? JSON.parse(coordParc) : [];
@@ -55,7 +61,6 @@ export default function Reservation() {
     const [selectedAire, setSelectedAire] = React.useState<AireCoord | null>(null);
     const mapRef = React.useRef<MapView>(null);
 
-    // Images fictives pour les aires
     const images = [
         "https://picsum.photos/200/150",
         "https://picsum.photos/200/150",
@@ -88,7 +93,7 @@ export default function Reservation() {
                     longitudeDelta = Math.max(longitudeDelta, deltaFromArea);
                 }
 
-                const newRegion = { latitude, longitude, latitudeDelta, longitudeDelta };
+                const newRegion = {latitude, longitude, latitudeDelta, longitudeDelta};
                 setRegion(newRegion);
 
                 if (mapRef.current) {
@@ -110,6 +115,23 @@ export default function Reservation() {
         }
     }, [coordParc, superficie]);
 
+    // Fonction de réservation : redirige vers Reservation2 avec les infos de l'aire sélectionnée
+    const handleReservation = () => {
+        if (!selectedAire) {
+            console.warn("Aucune aire sélectionnée.");
+            return;
+        }
+
+        router.push({
+            pathname: '/Parks/Reservation/Reservation2',
+            params: {
+                idParc: idParc,
+                idSpot: selectedAire.id,
+                spotLabel: `Aire ${aireCoords.findIndex(a => a.id === selectedAire.id) + 1}`,
+            },
+        });
+    };
+
     const handleMarkerPress = (aire: AireCoord, index: number) => {
         setSelectedAire(aire);
     };
@@ -117,33 +139,30 @@ export default function Reservation() {
     if (!region) {
         return (
             <View style={styles.loader}>
-                <ActivityIndicator size="large" color="#FF0000" />
+                <ActivityIndicator size="large" color="#FF0000"/>
             </View>
         );
     }
 
     return (
-        <>
-            <Header title={undefined} />
+        <SafeAreaView style={{ flex: 1 }}>
+            <Header title={undefined}/>
 
             <View style={styles.page}>
-                {/* Flèche retour + nom du parc */}
                 <View style={styles.textZone}>
                     <View style={styles.header}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                            <Ionicons name="arrow-back" size={24} color="black" />
+                            <Ionicons name="arrow-back" size={24} color="black"/>
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>{nomParc || "Nom du parc"}</Text>
                     </View>
 
-                    {/* Zone texte */}
                     <Text style={styles.text}>
                         Sélectionnez un spot en cliquant {'\n'}
                         sur un des pins.
                     </Text>
                 </View>
 
-                {/* Carte */}
                 <View style={styles.mapContainer}>
                     <MapView ref={mapRef} style={styles.map} initialRegion={region}>
                         {parcCoords.length > 0 && (
@@ -162,7 +181,7 @@ export default function Reservation() {
                         {aireCoords.map((aire, index) => (
                             <Marker
                                 key={aire.id}
-                                coordinate={{ latitude: aire.lat, longitude: aire.lng }}
+                                coordinate={{latitude: aire.lat, longitude: aire.lng}}
                                 title={`Aire ${index + 1}`}
                                 pinColor={selectedAire?.id === aire.id ? "blue" : "green"}
                                 onPress={() => handleMarkerPress(aire, index)}
@@ -171,7 +190,6 @@ export default function Reservation() {
                     </MapView>
                 </View>
 
-                {/* Section Aire avec images */}
                 <View style={styles.aireSection}>
                     <Text style={styles.aireTitle}>
                         {selectedAire
@@ -180,17 +198,16 @@ export default function Reservation() {
                     </Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
                         {images.map((img, index) => (
-                            <Image key={index} source={{ uri: img }} style={styles.aireImage} />
+                            <Image key={index} source={{uri: img}} style={styles.aireImage}/>
                         ))}
                     </ScrollView>
                 </View>
 
-                {/* Bouton réserver */}
-                <TouchableOpacity style={styles.reserveButton}>
+                <TouchableOpacity style={styles.reserveButton} onPress={handleReservation}>
                     <Text style={styles.reserveButtonText}>Réserver le spot</Text>
                 </TouchableOpacity>
             </View>
-        </>
+        </SafeAreaView>
     );
 }
 

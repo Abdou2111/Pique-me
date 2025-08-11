@@ -1,8 +1,9 @@
 // app/(tabs)/Parks/Favorites.js
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, View, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, ActivityIndicator, StyleSheet } from 'react-native'
 import Header from '../../components/Header'
 import Favoris from '../../components/Favoris'
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const API_URL = 'http://localhost:3000'
 

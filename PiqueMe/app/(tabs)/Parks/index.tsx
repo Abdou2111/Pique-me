@@ -1,7 +1,6 @@
-// app/(tabs)/Parks/index.tsx
-import React, { useEffect, useMemo, useState } from 'react'
+// app/(tabs)/Parks/Home.tsx
+import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {
-    SafeAreaView,
     View,
     SectionList,
     StyleSheet,
@@ -13,6 +12,7 @@ import ParcFavoris from '../../components/parcFavoris'
 import useFavorites from '../../hooks/useFavorites'
 import { subscribeParks, type Park } from '../../utils/firebaseUtils'
 import Header from '../../components/Header' // ← logo + cœur Favoris
+import {SafeAreaView} from "react-native-safe-area-context";
 
 /* ---- tags: mapping identique à HOME ---- */
 const toTag = (txt?: string | null): string | null => {
@@ -46,15 +46,28 @@ function Center({ children }: { children: React.ReactNode }) {
     return <View style={S.center}><Text>{children}</Text></View>
 }
 
+const uniqueById = <T extends { id: string }>(list: T[]): T[] => {
+    const seen = new Set<string>();
+    return list.filter(p => !seen.has(p.id) && seen.add(p.id));
+};
+
 export default function ParksScreen() {
     const { ready } = useFavorites()
     const [parks, setParks] = useState<Park[]>([])
     const [loading, setLoading] = useState(true)
     const [coords, setCoords] = useState<{lat:number,lng:number} | null>(null)
 
+    // Pour le refresh
+    const [refreshing, setRefreshing] = useState(false)
+    const unsubRef = useRef<null | (() => void)>(null)
+
     useEffect(() => {
-        const unsub = subscribeParks((list) => { setParks(list); setLoading(false) })
-        return unsub
+        const unsub = subscribeParks((list) => {
+            setParks(uniqueById(list));       // Parcs uniques par ID
+            setLoading(false);
+        });
+        unsubRef.current = unsub
+        return unsub;
     }, [])
 
     useEffect(() => {
@@ -68,6 +81,33 @@ export default function ParksScreen() {
         })()
     }, [])
 
+    const onRefresh = async () => {
+        try {
+            setRefreshing(true)
+
+            // Refresh location (no extra prompt)
+            const perm = await Location.getForegroundPermissionsAsync()
+            if (perm.status === 'granted') {
+                const loc = await Location.getCurrentPositionAsync({})
+                setCoords({ lat: loc.coords.latitude, lng: loc.coords.longitude })
+            }
+
+            // Re-subscribe to force a fresh snapshot
+            if (unsubRef.current) {
+                unsubRef.current()
+                unsubRef.current = null
+            }
+            const unsub = subscribeParks((list) => {
+                setParks(uniqueById(list))
+                setRefreshing(false)   // stop spinner when fresh data arrives
+                setLoading(false)
+            })
+            unsubRef.current = unsub
+        } catch {
+            setRefreshing(false)
+        }
+    }
+
     // on lit les préférences depuis le contexte comme en Home
     const { userDoc } = require('../../context/UserDocContext').useUserDoc?.() ?? { userDoc: null }
     const prefs: string[] = Array.isArray(userDoc?.preferences)
@@ -77,28 +117,33 @@ export default function ParksScreen() {
             : [])
 
     const recommended = useMemo(() => {
-        if (!parks.length) return []
+        if (!parks.length) return [];
+
+        let base: Park[];
         if (!prefs.length) {
-            const arr = parks.slice()
+            const arr = parks.slice();
             for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1))
-                ;[arr[i], arr[j]] = [arr[j], arr[i]]
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-            return arr.slice(0, 7)
+            base = arr;
+        } else {
+            const matched = parks.filter(p => {
+                const tags = deriveTags(p);
+                return prefs.every(t => tags.includes(t));
+            });
+            base = matched.length ? matched : parks;
         }
-        const matched = parks.filter(p => {
-            const tags = deriveTags(p)
-            return prefs.every(t => tags.includes(t))
-        })
-        return (matched.length ? matched : parks).slice(0, 7)
-    }, [parks, prefs])
+        return uniqueById(base).slice(0, 7);
+    }, [parks, prefs]);
 
     const nearParks = useMemo(() => {
         if (!coords) return []
-        return parks
-            .filter(p => !Number.isNaN(distM(coords.lat, coords.lng, p.lat, p.lng)) &&
-                distM(coords.lat, coords.lng, p.lat, p.lng) <= 5000)
-            .slice(0, 7)
+        const within = parks.filter(p => {
+            const d = distM(coords.lat, coords.lng, p.lat, p.lng);
+            return !Number.isNaN(d) && d <= 5000;
+        });
+        return uniqueById(within).slice(0, 7);
     }, [parks, coords])
 
     const sections = useMemo(() => ([
@@ -117,6 +162,8 @@ export default function ParksScreen() {
                 keyExtractor={(item) => item.id}
                 style={S.list}
                 contentContainerStyle={S.content}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
                 renderSectionHeader={({ section }) => (
                     <Text style={S.h2}>{section.title}</Text>
                 )}

@@ -12,11 +12,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 
-/**
- * Garde d'authentification :
- * - Si pas d'utilisateur connecté, on force la redirection vers '/'
- *   (ton écran de connexion = app/index.js).
- */
 export default function RootLayout() {
 
     const { expand, collapse } = useSheet();
@@ -35,7 +30,7 @@ export default function RootLayout() {
             >
                 {/* HOME */}
                 <Tabs.Screen
-                    name="(Home)"
+                    name="Home"
                     options={{
                         title: "Home",
                         headerShown: false,
@@ -93,9 +88,7 @@ export default function RootLayout() {
                         headerShown: false,
                         tabBarIcon: ({ color, size }) => (
                             <Ionicons name="person" size={size} color={color} />
-                        ),
-                        tabBarBadge: 3,
-                        tabBarBadgeStyle: { backgroundColor: "tomato", color: "white" },
+                        )
                     }}
                 />
             </Tabs>

@@ -15,7 +15,7 @@ import {
     Platform
 } from 'react-native';
 import { Text, IconButton, Icon } from 'react-native-paper';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useNavigation } from 'expo-router';
 import { getParkById } from '@/app/utils/firebaseUtils';
 import Header from '@/app/components/Header';
 import Badge from './components/badge';
@@ -25,9 +25,8 @@ import ActivityCard  from "@/app/components/ActivityCard";
 import { mapInstallationsToActivities} from "@/app/(tabs)/Parks/Park/functions";
 import fakeAvis from "@/app/(tabs)/Parks/Park/fakeAvis";
 import AvisList from "@/app/(tabs)/Parks/Park/components/AvisList";
-import commentaire from "@/app/components/commentaire";
 import Commentaire from "@/app/components/commentaire";
-import { router } from 'expo-router';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -42,6 +41,10 @@ export default function PageParc() {
     const [imageIndex, setImageIndex] = useState(0);
     const [coordonnees, setCoordonnees] = useState<any>(null);
 
+    const navigation = useNavigation();
+    useEffect(() => {
+        navigation.setOptions({ headerShown: false, title: '' });
+    }, [navigation]);
 
     const images = [
         'https://picsum.photos/id/1018/800/400',
@@ -76,6 +79,7 @@ export default function PageParc() {
                 coordAires: JSON.stringify(coordAire),
                 superficie: park.SUPERFICIE?.toString() || "0",
                 nomParc: park.Nom,
+                idParc: id,
 
 
             },
@@ -134,7 +138,7 @@ export default function PageParc() {
 
 
     return (
-        <>
+        <SafeAreaView style={{flex: 1}}>
             <Header title={undefined} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -288,7 +292,7 @@ export default function PageParc() {
             <TouchableOpacity style={styles.reserveButton} onPress={handleReservation}>
                 <Text style={styles.reserveButtonText}>Réserver un spot</Text>
             </TouchableOpacity>
-        </>
+        </SafeAreaView>
     );
 }
 

@@ -27,9 +27,9 @@ export default function Index() {
                 // Signed up
                 const user = userCredential.user;
                 await ensureUserDoc(user.uid)
-                router.replace('./(tabs)/(Home)')
+                router.replace('./(tabs)/Home')
                 console.log("User signed up:", user);
-                router.replace('./(tabs)/(Home)'); // Navigate after successful sign-up
+                router.replace('./(tabs)/Home'); // Navigate after successful sign-up
             })
             .catch((error) => {
                 if(error.code === 'auth/email-already-exists') {

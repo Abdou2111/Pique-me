@@ -37,7 +37,7 @@ export default function LoginScreen() {
                     const user = userCredential.user;
                     console.log("User logged in:", user);
                     // Navigate to Index tab
-                    router.replace('/(tabs)/(Home)');
+                    router.replace('/(tabs)/Home');
                 })
                 .catch((error) => {
                     const errorCode = error.code;
