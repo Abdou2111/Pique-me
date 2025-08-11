@@ -113,10 +113,13 @@ export default function Profile() {
     }
 
     /* ——— Actions ——— */
+    const goToSignIn = () => {
+        router.replace('/'); // app/index.js
+    };
+
     const handleLogout = async () => {
-        await signOut(auth).catch(()=>{})
-        router.dismissAll()
-        router.replace('/') // app/index.js
+        await signOut(auth).catch(() => {});
+        goToSignIn();
     }
 
     const deleteAccount = () =>
@@ -127,10 +130,9 @@ export default function Profile() {
                 style:'destructive',
                 onPress: async () => {
                     try {
-                        await deleteAccountCompletely()
-                        await signOut(auth).catch(()=>{})
-                        router.dismissAll()
-                        router.replace('/')
+                        await deleteAccountCompletely();
+                        await signOut(auth).catch(()=>{});
+                        goToSignIn();
                     } catch (e:any) {
                         if (e?.code === 'auth/requires-recent-login') {
                             Alert.alert('Reconnexion requise', 'Veuillez vous reconnecter puis réessayez.')

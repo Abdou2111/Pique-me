@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { StatusBar } from "react-native";
-import { Tabs, router} from "expo-router";
+import React, {useEffect, useState} from "react";
+import {StatusBar} from "react-native";
+import {Redirect, router, Tabs} from "expo-router";
 import {useSheet} from "@/app/stores/useSheet";
 
 // Icons
@@ -9,17 +9,22 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 // Firebase
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import {onAuthStateChanged, type User} from 'firebase/auth';
+import {auth} from '../../firebaseConfig';
 
 export default function RootLayout() {
-
     const { expand, collapse } = useSheet();
+    const [user, setUser] = useState<User | null | undefined>(undefined);
+
+    useEffect(() => onAuthStateChanged(auth, setUser), []);
+    if (user === undefined) return null;
+    if (!user) return <Redirect href="/" />;     // Redirect to home if not logged in
     return (
         <>
             <StatusBar barStyle="light-content" />
             <Tabs
                 screenOptions={{
+                    headerShown: false,
                     tabBarActiveTintColor: "yellow",
                     tabBarInactiveTintColor: "black",
                     tabBarStyle: {
