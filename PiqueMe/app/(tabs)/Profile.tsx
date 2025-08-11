@@ -14,10 +14,9 @@ import { deleteAccountCompletely } from '../utils/firebaseUtils'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { router } from 'expo-router'
 import CompoReservation, {Spot, Reservation} from '../components/CompoReservation'
-import { getReservation } from '../utils/firebaseUtils'
+import { getReservation, cancelReservation } from '../utils/firebaseUtils'
 import { useFocusEffect } from 'expo-router'
-
-import AllResevation from './Parks/Reservation/AllReservation'
+import AllReservation from "./Parks/Reservation/AllReservation";
 
 
 
@@ -50,7 +49,8 @@ export default function Profile() {
     const [prefs,     setPrefs] = useState<string[]>([])
     const [allReservation, setAllReservations] = useState<Reservation[]>([])
     const [latestReservation, setLatestReservation] = useState<Reservation | null>(null)
-    const [hasReservations, setHasReservations] = useState(false)
+    const [hasReservations, setHasReservations] = useState(false);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
         if (!userDoc) return
@@ -64,31 +64,32 @@ export default function Profile() {
     }, [userDoc])
 
 
+    const fetchReservations = async () => {
+        const ids = userDoc?.reservations ?? []
+        if (!Array.isArray(ids) || ids.length === 0) {
+            setHasReservations(false)
+            setLatestReservation(null)
+            return
+        }
+
+        console.log("Les reservation: " + ids)
+        const all = await Promise.all(ids.map(id => getReservation(id)))
+        const valid = all.filter(r => r !== null)
+
+        valid.sort((a, b) => {
+            const dateA = new Date(a.dateDebut).getTime()
+            const dateB = new Date(b.dateDebut).getTime()
+            return dateB - dateA // plus récent en premier
+        })
+
+        setHasReservations(valid.length > 0);
+        setLatestReservation(valid[0]);
+        setAllReservations(valid);
+    }
+
+
     useFocusEffect(
         React.useCallback(() => {
-            const fetchReservations = async () => {
-                const ids = userDoc?.reservations ?? []
-                if (!Array.isArray(ids) || ids.length === 0) {
-                    setHasReservations(false)
-                    setLatestReservation(null)
-                    return
-                }
-
-                console.log("Les reservation: " + ids)
-                const all = await Promise.all(ids.map(id => getReservation(id)))
-                const valid = all.filter(r => r !== null)
-
-                valid.sort((a, b) => {
-                    const dateA = new Date(a.dateDebut).getTime()
-                    const dateB = new Date(b.dateDebut).getTime()
-                    return dateB - dateA // plus récent en premier
-                })
-
-                setHasReservations(valid.length > 0);
-                setLatestReservation(valid[0]);
-                setAllReservations(valid);
-            }
-
             fetchReservations()
         }, [userDoc])
     )
@@ -152,9 +153,35 @@ export default function Profile() {
 
     /* Annulation de la reservation */
     const handleCancel = (idReservation: string) => {
-        // appeler cancelReservation (idReseva) de firebase utils
+        Alert.alert(
+            'Annuler la réservation',
+            'Cette action est définitive. Voulez-vous vraiment annuler cette réservation ?',
+            [
+                { text: 'Annuler', style: 'cancel' },
+                {
+                    text: 'Supprimer',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            const resCancel = await cancelReservation(idReservation)
 
+                            if (resCancel.success) {
+                                Alert.alert('Succès', 'La réservation a été annulée avec succès.')
+                                // Optionnel : rafraîchir la liste ou naviguer
+                                await fetchReservations();
+                            } else {
+                                Alert.alert('Erreur', resCancel.message ?? 'Échec de l’annulation.')
+                            }
+                        } catch (error: any) {
+                            Alert.alert('Erreur', error?.message ?? 'Une erreur est survenue.')
+                        }
+                    }
+                }
+            ]
+        )
     }
+
+
 
     return (
         <Page title="Profil">
@@ -210,10 +237,7 @@ export default function Profile() {
                                 onCancel={() => {handleCancel(latestReservation?.id)}}
                                 onConfirm={() => {}}
                             />
-                            <Pressable onPress={() => router.push({
-                                pathname: '/Parks/Reservation/AllReservation',
-                                params: { reservations: JSON.stringify(allReservation) } // ou latestList si tu stockes la liste
-                            })}>
+                            <Pressable onPress={() => setShowAll(true)}>
                                 <Text style={S.linkTxt}>Voir tout ›</Text>
                             </Pressable>
                         </>
@@ -232,6 +256,16 @@ export default function Profile() {
                     <Text style={S.delTxt}>Supprimer mon compte  ›</Text>
                 </Pressable>
             </ScrollView>
+
+            {showAll && (
+                <View style={StyleSheet.absoluteFill}>
+                    <AllReservation
+                        reservations={allReservation ?? []}
+                        onCancel={handleCancel}
+                        onClose={() => setShowAll(false)}
+                    />
+                </View>
+            )}
 
             {/* Dialogs nom / mot de passe */}
             {showName && <NameDialog first={firstName} last={lastName} onCancel={()=>setShowName(false)} onSave={saveName} />}

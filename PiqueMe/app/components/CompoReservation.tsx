@@ -84,7 +84,7 @@ export default function CompoReservation({ reservation, onCancel, onConfirm }: C
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: 16,
+        marginVertical: 16,
     },
     image: {
         height:160,
