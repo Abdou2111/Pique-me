@@ -295,3 +295,56 @@ export async function getReservation(idReservation: string)
         return null;
     }
 }
+
+
+/**
+ * Annule une réservation en supprimant son ID du profil utilisateur
+ * et en supprimant le document de la collection 'reservations'
+ * @param {string} reservationId - ID de la réservation à annuler
+ * @returns {Promise<Object>} - Résultat de l’opération au format JSON
+ */
+export async function cancelReservation(reservationId: string) {
+    try {
+        // 1. Récupérer la réservation
+        const reservationRef = doc(db, 'reservations', reservationId)
+        const reservationSnap = await getDoc(reservationRef)
+
+        if (!reservationSnap.exists()) {
+            return {
+                success: false,
+                message: `Réservation avec l'ID ${reservationId} introuvable.`
+            }
+        }
+
+        const reservationData = reservationSnap.data()
+        const userId = reservationData.userId
+
+        if (!userId) {
+            return {
+                success: false,
+                message: `Le champ userId est manquant dans la réservation ${reservationId}.`
+            }
+        }
+
+        // 2. Supprimer l'ID de réservation du tableau de l'utilisateur
+        const userRef = doc(db, 'users', userId)
+        await updateDoc(userRef, {
+            reservations: arrayRemove(reservationId)
+        })
+
+        // 3. Supprimer le document de la collection 'reservations'
+        await deleteDoc(reservationRef)
+
+        return {
+            success: true,
+            message: `Réservation ${reservationId} annulée et supprimée avec succès.`,
+            userId: userId
+        }
+    } catch (error: any) {
+        return {
+            success: false,
+            message: 'Erreur lors de l’annulation de la réservation.',
+            error: error.message
+        }
+    }
+}

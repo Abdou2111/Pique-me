@@ -40,6 +40,7 @@ export default function PageParc() {
     const [activitiesToDisplay, setActivitiesToDisplay] = useState<any>(null);
     const [imageIndex, setImageIndex] = useState(0);
     const [coordonnees, setCoordonnees] = useState<any>(null);
+    const [canReserve, setCanReserve] = useState<boolean>(false);
 
     const navigation = useNavigation();
     useEffect(() => {
@@ -107,31 +108,33 @@ export default function PageParc() {
             setIsFavorite(isFavoriteParam === 'true');
         }
 
-        (async () => {
+        const fetchPark = async () => {
             if (typeof id === 'string') {
                 const result = await getParkById(id);
 
                 if (result) {
-                    //console.log("Installations brutes :", result.installations);
                     setPark(result);
-                    setActivitiesToDisplay(mapInstallationsToActivities(result.installations));
+                    const mappedActivities = mapInstallationsToActivities(result.installations);
+                    setActivitiesToDisplay(mappedActivities);
                     setCoordonnees(result.centroid);
-                    //console.log("centroid :" , result.centroid);
-                    //console.log('');
-                    //console.log('');
-                    //console.log("Saved coords: ", coordonnees);
-                    //console.log(result.Nom);
-                    //console.log(activitiesToDisplay[0]);
-                }
 
+                    // Vérifie s'il y a "Pique-Nique" dans les activités
+                    const hasPicnic = mappedActivities.some(activity => activity?.title?.trim().toLowerCase() === 'pique-nique');
+                    setCanReserve(hasPicnic);
+                }
             }
+
             setLoading(false);
-        })();
+        };
+
+        fetchPark();
     }, [id]);
+
 
     if (loading) return <ActivityIndicator size="large" style={{ marginTop: 40 }} />;
     if (!park) return <Text style={{ margin: 20 }}>Parc non trouvé.</Text>;
     console.log("Activities to display: ", activitiesToDisplay);
+
 
 
 
@@ -289,8 +292,20 @@ export default function PageParc() {
                 </ScrollView>
             </KeyboardAvoidingView>
 
-            <TouchableOpacity style={styles.reserveButton} onPress={handleReservation}>
-                <Text style={styles.reserveButtonText}>Réserver un spot</Text>
+            <TouchableOpacity
+                style={[
+                    styles.reserveButton,
+                    !canReserve && styles.reserveButtonDisabled
+                ]}
+                onPress={handleReservation}
+                disabled={!canReserve}
+            >
+                <Text style={[
+                    styles.reserveButtonText,
+                    !canReserve && styles.reserveButtonTextDisabled
+                ]}>
+                    Réserver un spot
+                </Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -448,6 +463,13 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
 
+    reserveButtonDisabled: {
+        backgroundColor: '#ccc', // gris pâle pour indiquer l'état désactivé
+    },
+
+    reserveButtonTextDisabled: {
+        color: '#888', // texte plus terne
+    }
 
 });
 

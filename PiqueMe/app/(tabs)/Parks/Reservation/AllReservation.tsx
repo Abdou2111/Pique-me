@@ -1,63 +1,80 @@
-import React, { useEffect, useState } from 'react'
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native'
-import {useLocalSearchParams, useNavigation, useRouter} from 'expo-router'
-import CompoReservation, {Reservation} from '../../../components/CompoReservation'
-import {Ionicons} from "@expo/vector-icons";
+import React from 'react'
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    TouchableOpacity,
+    Dimensions,
+    TouchableWithoutFeedback
+} from 'react-native'
+import CompoReservation, { Reservation } from '../../../components/CompoReservation'
+import { Ionicons } from '@expo/vector-icons'
 
-export default function AllReservation() {
-    const router = useRouter();
-    const { reservations } = useLocalSearchParams()
-    const [parsedReservations, setParsedReservations] = useState<Reservation[]>([])
+type AllReservationProps = {
+    reservations: Reservation[]
+    onCancel: (id: string) => void
+    onClose: () => void
+}
 
-    const navigation = useNavigation();
-    useEffect(() => {
-        navigation.setOptions({ headerShown: false, title: '' });
-    }, [navigation]);
+const screenHeight = Dimensions.get('window').height
 
-    useEffect(() => {
-        if (reservations) {
-            try {
-                const parsed = JSON.parse(reservations as string)
-                setParsedReservations(parsed)
-            } catch (error) {
-                console.error('Erreur de parsing des réservations :', error)
-                setParsedReservations([])
-            }
-        }
-    }, [reservations])
-
+export default function AllReservation({ reservations, onCancel, onClose }: AllReservationProps) {
     return (
-        <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={onClose}>
+            <View style={styles.backdrop}>
+                <TouchableWithoutFeedback>
+                    <View style={styles.overlay}>
+                        <View style={styles.container}>
+                            <View style={styles.header}>
+                                <TouchableOpacity onPress={onClose}>
+                                    <Ionicons name="close" size={24} color="black" />
+                                </TouchableOpacity>
+                                <Text style={styles.title}>Toutes les réservations</Text>
+                            </View>
 
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.push('/(tabs)/Profile')}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
-                </TouchableOpacity>
-                <Text style={styles.title}>Toutes les réservations</Text>
+                            {!Array.isArray(reservations) || reservations.length === 0 ? (
+                                <Text style={styles.empty}>Aucune réservation à afficher.</Text>
+                            ) : (
+                                <FlatList
+                                    data={reservations}
+                                    keyExtractor={(item) => item.id.toString()}
+                                    renderItem={({ item }) => (
+                                        <CompoReservation
+                                            reservation={item}
+                                            onCancel={() => onCancel(item.id)}
+                                            onConfirm={() => console.log('Confirmation')}
+                                        />
+                                    )}
+                                    contentContainerStyle={styles.list}
+                                    showsVerticalScrollIndicator={false}
+                                />
+                            )}
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
-
-
-            {parsedReservations.length === 0 ? (
-                <Text style={styles.empty}>Aucune réservation à afficher.</Text>
-            ) : (
-                <FlatList
-                    data={parsedReservations}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <CompoReservation
-                            reservation={item}
-                            onCancel={() => console.log('Annulation')}
-                            onConfirm={() => console.log('Confirmation')}
-                        />
-                    )}
-                    contentContainerStyle={styles.list}
-                />
-            )}
-        </View>
+        </TouchableWithoutFeedback>
     )
+
+
 }
 
 const styles = StyleSheet.create({
+    overlay: { position: 'absolute',
+        top: screenHeight * 0.4,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 10,
+    },
+
     container: {
         flex: 1,
         padding: 16,
@@ -69,7 +86,6 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         marginLeft: 12,
         marginTop: 10,
-
     },
     empty: {
         fontSize: 16,
@@ -86,6 +102,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 12,
         borderBottomWidth: 1,
-        borderColor: '#eee' },
+        borderColor: '#eee',
+    },
+    backdrop: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.4)', // voile sombre et transparent
+        justifyContent: 'flex-end', // pousse l’overlay vers le bas
+    },
 
 })

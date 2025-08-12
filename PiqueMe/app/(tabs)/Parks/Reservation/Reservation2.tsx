@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     View,
     Text,
@@ -7,7 +7,7 @@ import {
     ScrollView,
     Alert,
     ActivityIndicator,
-    Platform
+    Platform, Button
 } from 'react-native';
 import {useRouter, useLocalSearchParams, useNavigation} from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -18,12 +18,14 @@ import { db } from '@/firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import { createReservation } from '@/app/utils/firebaseUtils'; // assure que createReservation exporté
 import Header from '@/app/components/Header';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 /* ---------- Types ---------- */
 type Slot = {
     start: Date;
     end: Date;
     status: 'disponible' | 'reserve' | 'selectionne';
+    expired?: boolean;
 };
 
 type Period = 'morning' | 'afternoon' | 'evening';
@@ -58,7 +60,7 @@ const slotOverlaps = (slotStart: Date, slotEnd: Date, resStart: Date, resEnd: Da
     return slotStart < resEnd && resStart < slotEnd;
 };
 
-/* ---------- Component ---------- */
+/* ---------- Component -------Fgener--- */
 export default function Reservation2() {
     const router = useRouter();
 
@@ -82,12 +84,15 @@ export default function Reservation2() {
         return d;
     }, []);
 
-    const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
-    const [showDatePicker, setShowDatePicker] = React.useState(false);
-    const [selectedPeriod, setSelectedPeriod] = React.useState<Period | null>(null);
-    const [slots, setSlots] = React.useState<Slot[]>([]);
-    const [selectedSlot, setSelectedSlot] = React.useState<Slot | null>(null);
-    const [loading, setLoading] = React.useState(false);
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    //const [showDatePicker, setShowDatePicker] = useState(false);
+    const [selectedPeriod, setSelectedPeriod] = useState<Period | null>(null);
+    const [slots, setSlots] = useState<Slot[]>([]);
+    const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [androidTempDate, setAndroidTempDate] = useState<Date | undefined>(undefined);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
 
     // Récupérer reservations existantes pour idParc + date
     const fetchReservationsForDate = React.useCallback(
@@ -136,12 +141,28 @@ export default function Reservation2() {
             let generated = generateHalfHourSlots(start, end);
 
             // fetch existing reservations to mark reserved slots
+            console.log('\n\n\n')
+            console.log("id du parc: ", idParc);
             const reserved = await fetchReservationsForDate(idParc, selectedDate);
+
+            // Compare with actual time
+            const now = new Date();
+            const isToday = selectedDate.toDateString() === now.toDateString();
+
             // for each slot, if it overlaps any reserved interval, mark as reserved
             generated = generated.map(s => {
                 const isReserved = reserved.some(r => slotOverlaps(s.start, s.end, r.start, r.end));
-                return { ...s, status: isReserved ? 'reserve' : 'disponible' } as Slot;
+                const isExpired = isToday && s.end <= now;
+                return {
+                    ...s,
+                    status: isReserved ? 'reserve' : 'disponible',
+                    expired: isExpired
+                } as Slot & { expired?: boolean };
             });
+
+            console.log('Créneaux générés:', generated);
+            console.log('Réservations existantes:', reserved);
+
 
             if (mounted) setSlots(generated);
             setLoading(false);
@@ -153,7 +174,8 @@ export default function Reservation2() {
 
     /* ---------- User interactions ---------- */
     const onChangeDate = (_: any, date?: Date) => {
-        setShowDatePicker(false);
+        console.log("CHANGING DATE ...")
+        //setShowDatePicker(false);
         if (!date) return;
         // only allow today or future
         const selected = new Date(date);
@@ -164,6 +186,20 @@ export default function Reservation2() {
         }
         setSelectedDate(date);
     };
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date: Date) => {
+        setSelectedDate(date);
+        hideDatePicker();
+    };
+
 
     const onSelectPeriod = (p: Period) => {
         setSelectedPeriod(p);
@@ -259,31 +295,41 @@ export default function Reservation2() {
                 <ScrollView contentContainerStyle={styles.container}>
                     {/* Date picker */}
                     <View style={styles.section}>
-                        <Text style={styles.label}>Date</Text>
-                        <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-                            <Text>{formatDate(selectedDate)}</Text>
-                            <Text style={styles.small}>Changer</Text>
-                        </TouchableOpacity>
-                        {/* Adapter en fonction du telephone*/}
-                        {showDatePicker && Platform.OS === 'ios' && (
+                        <View style={styles.row}>
+                            <Text style={styles.label}>
+                                Date sélectionnée : {selectedDate.toLocaleDateString()}
+                            </Text>
+
+                            <Button title="Changer" onPress={showDatePicker} />
+                        </View>
+
+                        <DateTimePickerModal
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                            minimumDate={new Date()}
+                            locale="fr" // pour affichage en français
+                        />
+
+
+
+                        {androidTempDate && Platform.OS === 'android' && (
+
                             <DateTimePicker
-                                value={selectedDate}
+                                value={androidTempDate}
                                 mode="date"
-                                display="spinner"
-                                onChange={onChangeDate}
+                                display="calendar"
+                                onChange={(event, date) => {
+                                    setAndroidTempDate(undefined); // ferme le picker
+                                    if (event.type === 'set' && date) {
+                                        onChangeDate(null, date);
+                                    }
+                                }}
                                 minimumDate={today}
                             />
                         )}
 
-                        {showDatePicker && Platform.OS === 'android' && (
-                            <DateTimePicker
-                                value={selectedDate}
-                                mode="date"
-                                display="calendar"
-                                onChange={onChangeDate}
-                                minimumDate={today}
-                            />
-                        )}
                     </View>
 
                     {/* Period buttons */}
@@ -335,15 +381,20 @@ export default function Reservation2() {
                                         {/* two rows: :00 and :30 */}
                                         {[0, 30].map(min => {
                                             const slot = slots.find(s => s.start.getHours() === hour && s.start.getMinutes() === min);
-                                            const bg =
-                                                slot?.status === 'reserve' ? '#e74c3c' :
-                                                    slot?.status === 'selectionne' ? '#f39c12' : '#51ba4a';
+                                            const isExpired = slot?.expired;
+                                            const bg = isExpired
+                                                ? '#ccc' // gris pour les expirés
+                                                : slot?.status === 'reserve'
+                                                    ? '#e74c3c'
+                                                    : slot?.status === 'selectionne'
+                                                        ? '#f39c12'
+                                                        : '#51ba4a';
                                             return (
                                                 <TouchableOpacity
                                                     key={min}
-                                                    style={[styles.slot, { backgroundColor: bg }]}
-                                                    onPress={() => slot && onToggleSlot(slot)}
-                                                    disabled={!slot || slot.status === 'reserve'}
+                                                    style={[styles.slot, { backgroundColor: bg, opacity: isExpired ? 0.5 : 1 }]}
+                                                    onPress={() => slot && !isExpired && onToggleSlot(slot)}
+                                                    disabled={!slot || slot.status === 'reserve' || isExpired}
                                                 >
                                                     <Text style={styles.slotText}>
                                                         {slot ? formatTime(slot.start) : '--:--'}
@@ -426,4 +477,11 @@ const styles = StyleSheet.create({
 
     confirmButton: { position: 'absolute', right: 16, bottom: 20, backgroundColor: 'black', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 24 },
     confirmText: { color: '#fff', fontWeight: '700' },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between', // pousse le bouton à droite
+        marginVertical: 10,
+        marginRight: 5,
+    },
 });
