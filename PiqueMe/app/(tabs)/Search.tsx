@@ -206,6 +206,50 @@ export default function Search() {
     );
   }, []);
 
+  /* helper: returns best match by name from list */
+  const bestMatchByName = (q: string, list: Park[]): Park | null => {
+    const Q = norm(q);
+    return (
+        list.find(p => norm(p.name) === Q) ||         // exact
+        list.find(p => norm(p.name).startsWith(Q)) || // prefix
+        list.find(p => norm(p.name).includes(Q)) ||   // contains
+        null
+    );
+  };
+
+  const centerOnPark = (p: Park) => {
+    const next: Region = {
+      latitude: p.lat,
+      longitude: p.lng,
+      latitudeDelta: km2degLat(1),
+      longitudeDelta: km2degLng(1, p.lat),
+    };
+    mapRef.current?.animateToRegion(next, 400);
+    setRegion(next); // keep state in sync
+  };
+  // centers on the best match or the current query
+  const focusOnQuery = (text?: string) => {
+    const q = (text ?? queryText).trim();
+    if (!q) return;
+
+    // respect active tag filters if any
+    const eligible = parks.filter(p =>
+        ![...active].length || [...active].every(t => p.tags.includes(t))
+    );
+
+    const match = bestMatchByName(q, eligible);
+    if (match) centerOnPark(match);
+  };
+  /* Automatically center on park if query matches exactly */
+  useEffect(() => {
+    const q = queryText.trim();
+    if (!q) return;
+    const exact = parks.find(p => norm(p.name) === norm(q));
+    if (exact && !inside(exact, region)) {
+      centerOnPark(exact);
+    }
+  }, [queryText, parks, region, active]);
+
   /* filtered list for markers + bottom sheet */
   const shown = useMemo(
     () =>
@@ -276,6 +320,7 @@ export default function Search() {
           value={queryText}
           onChange={setQueryText}
           placeholder="Rechercher des parcs…"
+          onSubmit={focusOnQuery}
         />
 
         <ScrollView
