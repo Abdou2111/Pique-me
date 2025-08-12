@@ -1,6 +1,6 @@
 /* app/(tabs)/Search.tsx */
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {useState, useEffect, useMemo, useCallback, useRef} from 'react';
 import {
   View,
   Text,
@@ -39,16 +39,8 @@ import {
   DocumentData,
 } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
-
-/* ─── Types ── */
-type Park = {
-  id: string;
-  name: string;
-  lat: number;
-  lng: number;
-  tags: string[];
-  filters: string[];
-};
+import { subscribeParksCache, getParksSync, type Park } from "../utils/parcCache";
+import { getLastLocation } from "../utils/locationCache";
 
 /* ─── Tags disponibles ── */
 const FILTERS = [
@@ -131,16 +123,38 @@ const SNAP_PEEK = SHEET_H - COLLAPSED_H;
 /* ─────────────────────────────────────────────────────────────────────── */
 export default function Search() {
   const insets = useSafeAreaInsets();
+  const mapRef = useRef<MapView>(null);
 
   /* UI state */
   const [queryText, setQueryText] = useState('');
   const [active, setActive] = useState<Set<string>>(new Set());
-  const [region, setRegion] = useState<Region | null>(null);
 
+  const last = getLastLocation();
+  // Montreal default location if no last known position
+  const initialRegion = useMemo<Region>(() => {
+    const lat = last?.latitude ?? 45.5019;
+    const lng = last?.longitude ?? -73.5674;
+    const latDelta = km2degLat(last ? 1 : 2);
+    const lngDelta = km2degLng(lat ? 1 : 2, lat);
+    return { latitude: lat, longitude: lng, latitudeDelta: latDelta, longitudeDelta: lngDelta };
+  }, [last]);
+
+  const [region, setRegion] = useState<Region | null>(initialRegion);
+  const sameRegion = (a: Region, b: Region) =>
+      Math.abs(a.latitude - b.latitude) < 1e-6 &&
+      Math.abs(a.longitude - b.longitude) < 1e-6 &&
+      Math.abs(a.latitudeDelta - b.latitudeDelta) < 1e-6 &&
+      Math.abs(a.longitudeDelta - b.longitudeDelta) < 1e-6;
   /* data state */
-  const [parks, setParks] = useState<Park[]>([]);
+  const [parks, setParks] = useState<Park[]>(() => getParksSync());
 
-  /* ask for location once on mount */
+  // @ts-ignore
+  useEffect(() => {
+    const unsub = subscribeParksCache((p) => setParks(p));
+    return unsub;
+  }, []);
+
+  /* update location in background */
   useEffect(() => {
     (async () => {
       try {
@@ -150,22 +164,16 @@ export default function Search() {
         const { coords } = await Location.getCurrentPositionAsync({});
         const latDelta = km2degLat(1);
         const lngDelta = km2degLng(1, coords.latitude);
-        setRegion({
+        const reg: Region = {
           latitude: coords.latitude,
           longitude: coords.longitude,
           latitudeDelta: latDelta,
           longitudeDelta: lngDelta,
-        });
-      } catch {
-        // fallback Montréal
-        const latDelta = km2degLat(2);
-        setRegion({
-          latitude: 45.5019,
-          longitude: -73.5674,
-          latitudeDelta: latDelta,
-          longitudeDelta: latDelta,
-        });
-      }
+        };
+        // smooth camera move without blocking first paint
+        mapRef.current?.animateToRegion(reg, 400)
+        setRegion(reg);
+      } catch {}
     })();
   }, []);
 
@@ -242,12 +250,15 @@ export default function Search() {
     <SafeAreaView style={S.flex}>
       {region && (
         <MapView
-          style={S.map}
-          initialRegion={region}
-          onRegionChangeComplete={setRegion}
-          showsUserLocation
-          showsMyLocationButton
-          followsUserLocation={false}
+            ref={mapRef}
+            style={S.map}
+            initialRegion={initialRegion}
+            onRegionChangeComplete={(r) => {
+              if (!sameRegion(r, region)) setRegion(r);
+            }}
+            showsUserLocation
+            showsMyLocationButton
+            moveOnMarkerPress={false}
         >
           {shown.map((p, i) => (
             <Marker

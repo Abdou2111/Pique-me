@@ -11,10 +11,16 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 // Firebase
 import {onAuthStateChanged, type User} from 'firebase/auth';
 import {auth} from '../../firebaseConfig';
+import {warmParks} from "@/app/utils/parcCache";
+import {warmLocation} from "@/app/utils/locationCache";
 
 export default function RootLayout() {
     const { expand, collapse } = useSheet();
     const [user, setUser] = useState<User | null | undefined>(undefined);
+    useEffect(() => {
+        warmParks();    // charge les parcs en background au lancement de l'app
+        warmLocation();
+    }, []);
 
     useEffect(() => onAuthStateChanged(auth, setUser), []);
     if (user === undefined) return null;
