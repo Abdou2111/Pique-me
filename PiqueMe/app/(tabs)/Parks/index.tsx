@@ -155,7 +155,7 @@ export default function ParksScreen() {
 
     return (
         <SafeAreaView style={S.ctn}>
-            <Header title="Parcs" />
+            <Header />
 
             <SectionList
                 sections={sections}

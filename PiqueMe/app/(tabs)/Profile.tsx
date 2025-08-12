@@ -17,7 +17,7 @@ import CompoReservation, {Spot, Reservation} from '../components/CompoReservatio
 import { getReservation, cancelReservation } from '../utils/firebaseUtils'
 import { useFocusEffect } from 'expo-router'
 import AllReservation from "./Parks/Reservation/AllReservation";
-
+import { SafeAreaView } from 'react-native-safe-area-context' // à ajouter en haut si pas déjà
 
 
 /* ————— Tags ————— */
@@ -186,93 +186,95 @@ export default function Profile() {
 
 
     return (
-        <Page title="Profil">
-            <ScrollView contentContainerStyle={S.ctn}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Page title="Profil">
+                <ScrollView contentContainerStyle={S.ctn}>
 
-                {/* Avatar (visuel) */}
-                <View style={S.avatarWrap}>
-                    <Image source={require('../../assets/images/avatar.jpg')} style={S.avatar}/>
-                    <View style={S.camBadge}><Ionicons name="camera" size={18} color="#fff" /></View>
-                </View>
-
-                {/* Informations personnelles */}
-                <Card title="Informations personnelles">
-                    <Field label="Email" value={auth.currentUser?.email ?? ''} />
-                    <Field label="Nom" value={`${firstName} ${lastName}`.trim()} editable onEdit={()=>setShowName(true)} />
-                    <Field label="Mot de passe" value="•••••••" editable onEdit={()=>setShowPwd(true)} />
-                </Card>
-
-                {/* Préférences — visible 24/7 */}
-                <Card title="Préférences">
-                    <Text style={S.label}>Tags sélectionnés</Text>
-                    <View style={S.tagGrid}>
-                        {ALL_TAGS.map(tag => {
-                            const selected = prefs.includes(tag)
-                            return (
-                                <Pressable
-                                    key={tag}
-                                    onPress={() => toggleTag(tag)}
-                                    style={[S.tagChip, selected ? S.tagChipSelected : S.tagChipIdle]}
-                                >
-                                    <Ionicons
-                                        name={ICONS[tag]}
-                                        size={16}
-                                        color={selected ? '#fff' : '#374151'}
-                                        style={{ marginRight: 6 }}
-                                    />
-                                    <Text style={[S.tagText, selected ? S.tagTextSelected : S.tagTextIdle]}>
-                                        {LABELS[tag]}
-                                    </Text>
-                                </Pressable>
-                            )
-                        })}
-                        {prefs.length === 0 && <Text style={{ color:'#6b7280' }}>Aucun</Text>}
+                    {/* Avatar (visuel) */}
+                    <View style={S.avatarWrap}>
+                        <Image source={require('../../assets/images/avatar.jpg')} style={S.avatar}/>
+                        <View style={S.camBadge}><Ionicons name="camera" size={18} color="#fff" /></View>
                     </View>
-                </Card>
 
-                {/* Mes reservations */}
-                <Card title="Mes réservations">
-                    {hasReservations && latestReservation ? (
-                        <>
-                            <CompoReservation
-                                reservation={latestReservation}
-                                onCancel={() => {handleCancel(latestReservation?.id)}}
-                                onConfirm={() => {}}
-                            />
-                            <Pressable onPress={() => setShowAll(true)}>
-                                <Text style={S.linkTxt}>Voir tout ›</Text>
-                            </Pressable>
-                        </>
-                    ) : (
-                        <Text style={{ color:'#6b7280' }}>Aucune réservation faite. </Text>
-                    )}
-                </Card>
+                    {/* Informations personnelles */}
+                    <Card title="Informations personnelles">
+                        <Field label="Email" value={auth.currentUser?.email ?? ''} />
+                        <Field label="Nom" value={`${firstName} ${lastName}`.trim()} editable onEdit={()=>setShowName(true)} />
+                        <Field label="Mot de passe" value="•••••••" editable onEdit={()=>setShowPwd(true)} />
+                    </Card>
+
+                    {/* Préférences — visible 24/7 */}
+                    <Card title="Préférences">
+                        <Text style={S.label}>Tags sélectionnés</Text>
+                        <View style={S.tagGrid}>
+                            {ALL_TAGS.map(tag => {
+                                const selected = prefs.includes(tag)
+                                return (
+                                    <Pressable
+                                        key={tag}
+                                        onPress={() => toggleTag(tag)}
+                                        style={[S.tagChip, selected ? S.tagChipSelected : S.tagChipIdle]}
+                                    >
+                                        <Ionicons
+                                            name={ICONS[tag]}
+                                            size={16}
+                                            color={selected ? '#fff' : '#374151'}
+                                            style={{ marginRight: 6 }}
+                                        />
+                                        <Text style={[S.tagText, selected ? S.tagTextSelected : S.tagTextIdle]}>
+                                            {LABELS[tag]}
+                                        </Text>
+                                    </Pressable>
+                                )
+                            })}
+                            {prefs.length === 0 && <Text style={{ color:'#6b7280' }}>Aucun</Text>}
+                        </View>
+                    </Card>
+
+                    {/* Mes reservations */}
+                    <Card title="Mes réservations">
+                        {hasReservations && latestReservation ? (
+                            <>
+                                <CompoReservation
+                                    reservation={latestReservation}
+                                    onCancel={() => {handleCancel(latestReservation?.id)}}
+                                    onConfirm={() => {}}
+                                />
+                                <Pressable onPress={() => setShowAll(true)}>
+                                    <Text style={S.linkTxt}>Voir tout ›</Text>
+                                </Pressable>
+                            </>
+                        ) : (
+                            <Text style={{ color:'#6b7280' }}>Aucune réservation faite. </Text>
+                        )}
+                    </Card>
 
 
-                {/* Liens actions */}
-                <Pressable onPress={handleLogout} style={S.linkRow}>
-                    <Text style={S.linkTxt}>Déconnexion ›</Text>
-                </Pressable>
+                    {/* Liens actions */}
+                    <Pressable onPress={handleLogout} style={S.linkRow}>
+                        <Text style={S.linkTxt}>Déconnexion ›</Text>
+                    </Pressable>
 
-                <Pressable onPress={deleteAccount} style={S.delRow}>
-                    <Text style={S.delTxt}>Supprimer mon compte  ›</Text>
-                </Pressable>
-            </ScrollView>
+                    <Pressable onPress={deleteAccount} style={S.delRow}>
+                        <Text style={S.delTxt}>Supprimer mon compte  ›</Text>
+                    </Pressable>
+                </ScrollView>
 
-            {showAll && (
-                <View style={StyleSheet.absoluteFill}>
-                    <AllReservation
-                        reservations={allReservation ?? []}
-                        onCancel={handleCancel}
-                        onClose={() => setShowAll(false)}
-                    />
-                </View>
-            )}
+                {showAll && (
+                    <View style={StyleSheet.absoluteFill}>
+                        <AllReservation
+                            reservations={allReservation ?? []}
+                            onCancel={handleCancel}
+                            onClose={() => setShowAll(false)}
+                        />
+                    </View>
+                )}
 
-            {/* Dialogs nom / mot de passe */}
-            {showName && <NameDialog first={firstName} last={lastName} onCancel={()=>setShowName(false)} onSave={saveName} />}
-            {showPwd  && <PasswordDialog onCancel={()=>setShowPwd(false)} onSave={changePwd} />}
-        </Page>
+                {/* Dialogs nom / mot de passe */}
+                {showName && <NameDialog first={firstName} last={lastName} onCancel={()=>setShowName(false)} onSave={saveName} />}
+                {showPwd  && <PasswordDialog onCancel={()=>setShowPwd(false)} onSave={changePwd} />}
+            </Page>
+        </SafeAreaView>
     )
 }
 

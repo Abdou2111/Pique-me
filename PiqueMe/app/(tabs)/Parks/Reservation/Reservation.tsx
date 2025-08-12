@@ -67,53 +67,44 @@ export default function Reservation() {
         "https://picsum.photos/200/150",
     ];
 
-    React.useEffect(() => {
-        if (
-            parcCoords.length > 0 &&
-            parcCoords.every(c => typeof c.lat === 'number' && typeof c.lng === 'number')
-        ) {
-            const lats = parcCoords.map(c => c.lat);
-            const lngs = parcCoords.map(c => c.lng);
-
-            const minLat = Math.min(...lats);
-            const maxLat = Math.max(...lats);
-            const minLng = Math.min(...lngs);
-            const maxLng = Math.max(...lngs);
-
-            if (isFinite(minLat) && isFinite(maxLat) && isFinite(minLng) && isFinite(maxLng)) {
-                const latitude = (minLat + maxLat) / 2;
-                const longitude = (minLng + maxLng) / 2;
-
-                let latitudeDelta = (maxLat - minLat) * 1.2 || 0.01;
-                let longitudeDelta = (maxLng - minLng) * 1.2 || 0.01;
-
-                if (parcSuperficie > 0) {
-                    const deltaFromArea = Math.sqrt(parcSuperficie) / 1000 * 0.009;
-                    latitudeDelta = Math.max(latitudeDelta, deltaFromArea);
-                    longitudeDelta = Math.max(longitudeDelta, deltaFromArea);
+    useEffect(() => {
+        if (coordParc) {
+            try {
+                const parcCenter = JSON.parse(coordParc) as Coord;
+                if (
+                    typeof parcCenter.lat === "number" &&
+                    typeof parcCenter.lng === "number"
+                ) {
+                    const newRegion = {
+                        latitude: parcCenter.lat,
+                        longitude: parcCenter.lng,
+                        latitudeDelta: 0.01, // zoom plus serré
+                        longitudeDelta: 0.01,
+                    };
+                    setRegion(newRegion);
+                    if (mapRef.current) {
+                        mapRef.current.animateToRegion(newRegion, 1000);
+                    }
+                    return;
                 }
-
-                const newRegion = {latitude, longitude, latitudeDelta, longitudeDelta};
-                setRegion(newRegion);
-
-                if (mapRef.current) {
-                    mapRef.current.animateToRegion(newRegion, 1000);
-                }
-            }
-        } else {
-            const fallbackRegion = {
-                latitude: 45.5019,
-                longitude: -73.5674,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-            };
-            setRegion(fallbackRegion);
-
-            if (mapRef.current) {
-                mapRef.current.animateToRegion(fallbackRegion, 1000);
+            } catch (err) {
+                console.warn("coordParc invalide :", err);
             }
         }
-    }, [coordParc, superficie]);
+
+        // Fallback si coordonnées invalides
+        const fallbackRegion = {
+            latitude: 45.5019,
+            longitude: -73.5674,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+        };
+        setRegion(fallbackRegion);
+        if (mapRef.current) {
+            mapRef.current.animateToRegion(fallbackRegion, 1000);
+        }
+    }, [coordParc]);
+
 
     // Fonction de réservation : redirige vers Reservation2 avec les infos de l'aire sélectionnée
     const handleReservation = () => {
@@ -146,7 +137,7 @@ export default function Reservation() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Header title={undefined}/>
+            <Header/>
 
             <View style={styles.page}>
                 <View style={styles.textZone}>

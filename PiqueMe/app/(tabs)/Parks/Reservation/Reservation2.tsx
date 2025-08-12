@@ -281,7 +281,7 @@ export default function Reservation2() {
     /* ---------- Render ---------- */
     return (
         <>
-            <Header title={undefined}/>
+            <Header/>
 
             <View style={styles.page}>
                 {/* Header */}

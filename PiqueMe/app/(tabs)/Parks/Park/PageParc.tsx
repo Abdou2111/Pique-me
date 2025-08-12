@@ -142,7 +142,7 @@ export default function PageParc() {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Header title={undefined} />
+            <Header/>
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{flex: 1}}

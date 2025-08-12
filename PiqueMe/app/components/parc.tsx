@@ -90,10 +90,15 @@ const S = StyleSheet.create({
         position: 'relative',
         width: '100%',
         height: IMG_HEIGHT,
+        overflow: 'hidden',
     },
     img: {
         width: '100%',
         height: IMG_HEIGHT,
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     body: {
         // Hauteur fixe = total - image

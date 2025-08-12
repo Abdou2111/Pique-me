@@ -21,7 +21,7 @@ export default function FavoritesScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title="Parcs favoris" />
+            <Header />
             {loading ? (
                 <View style={styles.loader}>
                     <ActivityIndicator size="large" />
