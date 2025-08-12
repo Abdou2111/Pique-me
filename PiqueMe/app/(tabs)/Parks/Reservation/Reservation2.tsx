@@ -88,7 +88,7 @@ export default function Reservation2() {
     //const [showDatePicker, setShowDatePicker] = useState(false);
     const [selectedPeriod, setSelectedPeriod] = useState<Period | null>(null);
     const [slots, setSlots] = useState<Slot[]>([]);
-    const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+    const [selectedSlots, setSelectedSlots] = useState<Slot[]>([]);
     const [loading, setLoading] = useState(false);
     const [androidTempDate, setAndroidTempDate] = useState<Date | undefined>(undefined);
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -111,10 +111,10 @@ export default function Reservation2() {
             try {
                 const snaps = await getDocs(q);
                 // map to local simple intervals
-                const reservedIntervals: { start: Date; end: Date }[] = snaps.docs.map(d => {
+                const reservedIntervals: Array<{ start: Date; end: Date }> = snaps.docs.map(d => {
                     const data = d.data();
-                    const dbStart = (data.dateDebut as any)?.toDate ? (data.dateDebut as any).toDate() : new Date(data.dateDebut);
-                    const dbEnd = (data.dateFin as any)?.toDate ? (data.dateFin as any).toDate() : new Date(data.dateFin);
+                    const dbStart = (data.dateDebut as Timestamp).toDate?.() ?? new Date(data.dateDebut);
+                    const dbEnd = (data.dateFin as Timestamp).toDate?.() ?? new Date(data.dateFin);
                     return { start: dbStart, end: dbEnd };
                 });
                 return reservedIntervals;
@@ -131,7 +131,7 @@ export default function Reservation2() {
         let mounted = true;
         const build = async () => {
             setLoading(true);
-            setSelectedSlot(null);
+            setSelectedSlots([]);
             if (!selectedPeriod) {
                 setSlots([]);
                 setLoading(false);
@@ -141,8 +141,6 @@ export default function Reservation2() {
             let generated = generateHalfHourSlots(start, end);
 
             // fetch existing reservations to mark reserved slots
-            console.log('\n\n\n')
-            console.log("id du parc: ", idParc);
             const reserved = await fetchReservationsForDate(idParc, selectedDate);
 
             // Compare with actual time
@@ -160,10 +158,6 @@ export default function Reservation2() {
                 } as Slot & { expired?: boolean };
             });
 
-            console.log('Créneaux générés:', generated);
-            console.log('Réservations existantes:', reserved);
-
-
             if (mounted) setSlots(generated);
             setLoading(false);
         };
@@ -174,7 +168,6 @@ export default function Reservation2() {
 
     /* ---------- User interactions ---------- */
     const onChangeDate = (_: any, date?: Date) => {
-        console.log("CHANGING DATE ...")
         //setShowDatePicker(false);
         if (!date) return;
         // only allow today or future
@@ -206,30 +199,71 @@ export default function Reservation2() {
     };
 
     const onToggleSlot = (s: Slot) => {
-        if (s.status === 'reserve') return; // can't select reserved
-        // if clicking an already selected slot -> deselect
-        if (selectedSlot && selectedSlot.start.getTime() === s.start.getTime()) {
-            setSelectedSlot(null);
-            setSlots(prev => prev.map(x => x.start.getTime() === s.start.getTime() ? { ...x, status: 'disponible' } : x));
+        if (s.status === 'reserve' || s.expired) return;
+
+        const isSelected = selectedSlots.some(slot =>
+            slot.start.getTime() === s.start.getTime()
+        );
+
+        let updatedSlots: Slot[];
+
+        if (isSelected) {
+            updatedSlots = selectedSlots.filter(slot =>
+                slot.start.getTime() !== s.start.getTime()
+            );
+        } else {
+            updatedSlots = [...selectedSlots, s];
+        }
+
+        // Vérifier que les slots sont consécutifs
+        const sorted = updatedSlots.sort((a, b) => a.start.getTime() - b.start.getTime());
+        for (let i = 1; i < sorted.length; i++) {
+            const prev = sorted[i - 1];
+            const curr = sorted[i];
+            const diff = curr.start.getTime() - prev.end.getTime();
+            if (diff !== 0) {
+                Alert.alert('Sélection invalide', 'Veuillez sélectionner des créneaux consécutifs.');
+                return;
+            }
+        }
+
+        // Vérifier la durée totale
+        const totalMinutes = sorted.reduce((sum, slot) => {
+            return sum + (slot.end.getTime() - slot.start.getTime()) / 60000;
+        }, 0);
+
+        if (totalMinutes > 180) {
+            Alert.alert('Durée dépassée', 'Vous ne pouvez pas réserver plus de 3 heures.');
             return;
         }
-        // select this slot, deselect others
-        setSelectedSlot(s);
-        setSlots(prev => prev.map(x => {
-            if (x.start.getTime() === s.start.getTime()) return { ...x, status: 'selectionne' };
-            if (x.status === 'selectionne') return { ...x, status: 'disponible' };
-            return x;
-        }));
+
+        setSelectedSlots(sorted);
+
+        // Mettre à jour les états visuels
+        setSlots(prev =>
+            prev.map(x => {
+                const isInSelection = sorted.some(sel =>
+                    sel.start.getTime() === x.start.getTime()
+                );
+                return {
+                    ...x,
+                    status: isInSelection ? 'selectionne' : (x.status === 'selectionne' ? 'disponible' : x.status)
+                };
+            })
+        );
     };
 
+
     const onClearSelection = () => {
-        setSelectedSlot(null);
-        setSlots(prev => prev.map(x => x.status === 'selectionne' ? { ...x, status: 'disponible' } : x));
+        setSelectedSlots([]);
+        setSlots(prev => prev.map(x =>
+            x.status === 'selectionne' ? { ...x, status: 'disponible' } : x
+        ));
     };
 
     const confirmReservation = async () => {
-        if (!selectedSlot) {
-            Alert.alert('Aucun créneau', "Veuillez sélectionner un créneau avant de confirmer.");
+        if (selectedSlots.length === 0) {
+            Alert.alert('Aucun créneau', "Veuillez sélectionner au moins un créneau avant de confirmer.");
             return;
         }
         const auth = getAuth();
@@ -239,20 +273,25 @@ export default function Reservation2() {
             return;
         }
 
-        // createReservation expects Dates
         try {
             setLoading(true);
-            console.log("Informations de reservation: " + idParc, ' ', selectedSlot.start, ' ', selectedSlot.end, ' ', user.uid);
-            const res = await createReservation(idParc, idSpot, spotLabel, selectedSlot.start, selectedSlot.end, user.uid);
-            console.log(res);
+            const sorted = selectedSlots.sort((a, b) => a.start.getTime() - b.start.getTime());
+            const start = sorted[0].start;
+            const end = sorted[sorted.length - 1].end;
+
+            const res = await createReservation(idParc, idSpot, spotLabel, start, end, user.uid);
             setLoading(false);
             if (res?.success) {
-                Alert.alert('Succès', 'Réservation créée.');
-                // optionally go back or refresh slots to mark reserved
-                // refresh slots for current date/period
-                setSelectedSlot(null);
-                setSelectedPeriod(null);
-                // re-run effect by toggling date (quick trick) or re-fetch manually:
+                Alert.alert(
+                    'Succès',
+                    'Réservation créée.',
+                    [
+                        {
+                            text: 'OK',
+                            onPress: () => router.replace('../../Home'), // redirection vers la page d'accueil
+                        },
+                    ]
+                );
             } else {
                 Alert.alert('Erreur', res?.message || 'Erreur lors de la création.');
             }
@@ -262,6 +301,7 @@ export default function Reservation2() {
             Alert.alert('Erreur', 'Impossible de créer la réservation.');
         }
     };
+
 
     /* ---------- UI rendering helpers ---------- */
     const formatTime = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -418,12 +458,19 @@ export default function Reservation2() {
                     {/* Selected summary */}
                     <View style={styles.section}>
                         <Text style={styles.label}>Votre choix</Text>
-                        {selectedSlot ? (
-                            <View style={styles.selectionRow}>
-                                <Text style={styles.selectionText}>
-                                    {`${spotLabel || 'Spot'}: ${formatTime(selectedSlot.start)} le ${formatDate(selectedSlot.start)} ` +
-                                        `jusqu'à ${formatTime(selectedSlot.end)} ${formatDate(selectedSlot.end)}`}
-                                </Text>
+                        {selectedSlots.length > 0 ? (
+                            <View>
+                                {(() => {
+                                    const sorted = selectedSlots.sort((a, b) => a.start.getTime() - b.start.getTime());
+                                    const start = sorted[0].start;
+                                    const end = sorted[sorted.length - 1].end;
+                                    return (
+                                        <Text style={styles.selectionText}>
+                                            {`${spotLabel || 'Spot'}: ${formatTime(start)} le ${formatDate(start)} ` +
+                                                `jusqu'à ${formatTime(end)} le ${formatDate(end)}`}
+                                        </Text>
+                                    );
+                                })()}
                                 <TouchableOpacity onPress={onClearSelection} style={styles.trashButton}>
                                     <Ionicons name="trash" size={20} color="#333" />
                                 </TouchableOpacity>
@@ -431,6 +478,7 @@ export default function Reservation2() {
                         ) : (
                             <Text>Aucune sélection</Text>
                         )}
+
                     </View>
 
                 </ScrollView>

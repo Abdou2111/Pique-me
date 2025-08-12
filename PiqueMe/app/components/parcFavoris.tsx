@@ -40,7 +40,9 @@ export default function ParcFavoris({
                 <View style={S.info}>
                     <Text variant="titleMedium" numberOfLines={2} style={S.title}>{name}</Text>
                     <View style={S.note}>
-                        <Icon name="star" size={18} color="#FFD700" style={{ marginRight: 4 }} />
+                        <View style={{ marginRight: 4 }}>
+                            <Icon name="star" size={18} color="#FFD700" />
+                        </View>
                         <Text variant="bodyMedium" style={S.bold}>{Number(rating).toFixed(1)}</Text>
                         <Text style={S.grey}>({reviews})</Text>
                     </View>

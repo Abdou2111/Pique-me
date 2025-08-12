@@ -65,13 +65,9 @@ export default function PageParc() {
     };
 
     const handleReservation = () => {
-        console.log("Réservation demandée !");
-        //console.log("Coordonnées du parc: ", coordonnees);
 
         const coordAire = getCoordAire();
-        //console.log("Coordonnées des aires: ", coordAire);
 
-        console.log("SupaaaaaAAA", park.SUPERFICIE);
 
         router.push({
             pathname: '/Parks/Reservation/Reservation',
@@ -133,7 +129,6 @@ export default function PageParc() {
 
     if (loading) return <ActivityIndicator size="large" style={{ marginTop: 40 }} />;
     if (!park) return <Text style={{ margin: 20 }}>Parc non trouvé.</Text>;
-    console.log("Activities to display: ", activitiesToDisplay);
 
 
 
